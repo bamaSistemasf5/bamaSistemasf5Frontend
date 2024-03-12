@@ -2,7 +2,8 @@ import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
+import CreateClient from './components/CreateClient/CreateClient';
+// import Loading from './components/Loading/Loading';
 
 function App() {
 
@@ -10,7 +11,8 @@ function App() {
   return (
     <>
       <Header />
-      <div>body</div>
+      {/* <Loading /> */}
+      <CreateClient />
       <Footer />
     </>
   )
