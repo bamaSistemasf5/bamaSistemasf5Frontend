@@ -1,156 +1,140 @@
-import React, { useState, useEffect } from "react";
-// import { useParams, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import axios from "axios";
 import "./CreateClient.css";
 
-const CreateClient = ({ onSave, onCancel }) => {
+const CreateClientForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    lastname: '',
-    tel: '',
-    email: '',
-    password: '',
-    telefono: ''
+    cif_cliente: "",
+    nombre: "",
+    direccion: "",
+    poblacion: "",
+    provincia: "",
+    pais: "",
+    codigo_postal: "",
+    telefono: "",
+    email: ""
   });
 
-  const [errores, setErrores] = useState({});
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
-  const validarFormulario = () => {
-    const errores = {};
+  const validateForm = () => {
+    const errors = {};
 
-    // Validación de nombre cliente
-    if (!formData.name || formData.name.trim() === '') {
-      errores.nombreCliente = 'El nombre del cliente es requerido';
+    if (!formData.cif_cliente) {
+      errors.cif_cliente = "El CIF del cliente es requerido";
     }
 
-    // Validación de dirección social
-    if (!formData.lastname || formData.lastname.trim() === '') {
-      errores.direccionSocial = 'La dirección social es requerida';
+    if (!formData.nombre) {
+      errors.nombre = "El nombre del cliente es requerido";
     }
 
-    // Validación de CIF
-    if (!formData.tel || !/^\d{9}$/.test(formData.tel)) {
-      errores.CIF = 'El CIF debe contener 9 dígitos numéricos';
+    if (!formData.direccion) {
+      errors.direccion = "La dirección del cliente es requerida";
     }
 
-    // Validación de correo electrónico
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
-      errores.correoElectronico = 'El correo electrónico no es válido';
+    if (!formData.poblacion) {
+      errors.poblacion = "La población del cliente es requerida";
     }
 
-    // Validación de forma de pago
-    if (!formData.password || !/^(Transferencia|Confirming|Giro bancario)$/.test(formData.password)) {
-      errores.formaPago = 'La forma de pago debe ser Transferencia, Confirming o Giro bancario';
+    if (!formData.provincia) {
+      errors.provincia = "La provincia del cliente es requerida";
     }
 
-    // Validación de teléfono
-    if (!formData.telefono || !/^\d{9}$/.test(formData.telefono)) {
-      errores.telefono = 'El teléfono debe contener 9 dígitos numéricos';
+    if (!formData.pais) {
+      errors.pais = "El país del cliente es requerido";
     }
 
-    setErrores(errores);
-    return Object.keys(errores).length === 0;
+    if (!formData.codigo_postal) {
+      errors.codigo_postal = "El código postal del cliente es requerido";
+    }
+
+    if (!formData.telefono) {
+      errors.telefono = "El teléfono del cliente es requerido";
+    }
+
+    if (!formData.email) {
+      errors.email = "El correo electrónico del cliente es requerido";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "El correo electrónico no es válido";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (validarFormulario()) {
-      // Aquí puedes enviar el formulario
-      console.log('Formulario válido, enviar datos:', formData);
-    } else {
-      console.log('Formulario inválido, por favor corrija los errores');
+    if (validateForm()) {
+      try {
+        const response = await axios.post("http://localhost:3000/api/clients", formData);
+        console.log("Cliente creado con éxito:", response.data);
+        // Aquí puedes realizar alguna acción adicional después de crear el cliente
+      } catch (error) {
+        console.error("Error al crear el cliente:", error);
+        // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
+      }
     }
   };
 
   return (
     <div className="edit-profile-container">
-      <h2 className="edit-profile-heading">Crear nuevo cliente</h2>
+      <h2>Crear Cliente</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">Nombre cliente</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          {errores.nombreCliente && <span className="error-message">{errores.nombreCliente}</span>}
+          <label className="form-label">CIF Cliente:</label>
+          <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} className="form-input" />
+          {errors.cif_cliente && <span>{errors.cif_cliente}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Dirección social</label>
-          <input
-            type="text"
-            name="lastname"
-            value={formData.lastname}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          {errores.direccionSocial && <span className="error-message">{errores.direccionSocial}</span>}
+          <label className="form-label">Nombre:</label>
+          <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} className="form-input" />
+          {errors.nombre && <span>{errors.nombre}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">CIF</label>
-          <input
-            type="tel"
-            name="tel"
-            value={formData.tel}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          {errores.CIF && <span className="error-message">{errores.CIF}</span>}
+          <label className="form-label">Dirección:</label>
+          <input type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} className="form-input" />
+          {errors.direccion && <span>{errors.direccion}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Correo Electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          {errores.correoElectronico && <span className="error-message">{errores.correoElectronico}</span>}
+          <label className="form-label">Población:</label>
+          <input type="text" name="poblacion" value={formData.poblacion} onChange={handleInputChange} className="form-input" />
+          {errors.poblacion && <span>{errors.poblacion}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Forma de pago: Transferencia/Confirming/Giro bancario</label>
-          <input
-            type="text"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          {errores.formaPago && <span className="error-message">{errores.formaPago}</span>}
+          <label className="form-label">Provincia:</label>
+          <input type="text" name="provincia" value={formData.provincia} onChange={handleInputChange} className="form-input" />
+          {errors.provincia && <span>{errors.provincia}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Teléfono</label>
-          <input
-            type="tel"
-            name="telefono"
-            value={formData.telefono}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          {errores.telefono && <span className="error-message">{errores.telefono}</span>}
+          <label className="form-label">País:</label>
+          <input type="text" name="pais" value={formData.pais} onChange={handleInputChange} className="form-input" />
+          {errors.pais && <span>{errors.pais}</span>}
         </div>
-        <div className="button-group">
-          <button className="button" type="submit">
-            Guardar Cambios
-          </button>
-          <button className="button button-cancel" type="button" onClick={() => setFormData({})}>
-            Cancelar
-          </button>
+        <div className="form-group">
+          <label className="form-label">Código Postal:</label>
+          <input type="text" name="codigo_postal" value={formData.codigo_postal} onChange={handleInputChange} className="form-input" />
+          {errors.codigo_postal && <span>{errors.codigo_postal}</span>}
         </div>
+        <div className="form-group">
+          <label className="form-label">Teléfono:</label>
+          <input type="text" name="telefono" value={formData.telefono} onChange={handleInputChange} className="form-input" />
+          {errors.telefono && <span>{errors.telefono}</span>}
+        </div>
+        <div className="form-group">
+          <label className="form-label">Correo Electrónico:</label>
+          <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="form-input" />
+          {errors.email && <span>{errors.email}</span>}
+        </div>
+        <button type="submit" className="button">Crear Cliente</button>
       </form>
     </div>
   );
-}
+};
 
-export default CreateClient;
+export default CreateClientForm;
