@@ -2,7 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import Sidebar from '../Sidebar/Sidebar';
+// import Sidebar from '../Sidebar/Sidebar';
 
 export default function Header() {
   return (
@@ -30,7 +30,7 @@ export default function Header() {
 {/* <Navbar.Collapse id="responsive-navbar-nav"> */}
   {/* <Nav style={{ flex: 1, marginLeft: '20px' }}> */}
 
-    <Nav.Link href="#" style={{ width: '50px', display: 'flex', justifyContent: 'flex-end' }}><Sidebar/></Nav.Link> 
+  
     {/* /* Agrega más enlaces según sea necesario  */}
   {/* </Nav>
 </Navbar.Collapse> */}
