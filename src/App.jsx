@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import Login from "./pages/Login/Login.jsx"
 import  Dashboard  from './pages/Dashboard/Dashboard.jsx';
+import CreateClient from './components/CreateClient/CreateClient';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
       <Header />
       <Routes>
       <Route path='/' element={<Login />}/>
+      <Route path='/create-client' element={<CreateClient />}/>
       <Route path='/Dashboard' element={<Dashboard />} />
       </Routes>
       <Footer />
