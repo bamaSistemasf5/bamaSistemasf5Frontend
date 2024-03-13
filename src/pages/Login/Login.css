@@ -1,7 +1,7 @@
 .form-group {
     margin-bottom: 1rem;
-    margin-left: 10%;
-    width: 40%;
+    margin-left: 30%;
+    width: 20%;
   }
   
   .form-group label {
@@ -20,7 +20,7 @@
     background-color: #EC660D;
     color: #fff;
     border: none;
-    margin-left: 30%;
+    margin-left: 35%;
     margin-bottom: 10%;
   }
 
@@ -28,3 +28,27 @@
     font-weight: bold;
     font-size: 16px;
   }
+  
+  .acceso{
+    color: #E77219;
+    font-weight: bold;
+    display: flex;
+    margin-left: 35%;
+    font-size: 24px;
+  }
+
+  .img-container {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: 150px; /* Altura fija */
+    overflow: hidden; /* Oculta cualquier contenido que sobresalga de los límites */
+  }
+  
+  .img {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: auto; /* Mantiene la proporción de la imagen */
+  }
+
+  .login-container {
+    
+  }
+  

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css'; // Importa los estilos de Bootstrap
 import './Login.css';
+import rectangule from '../../../public/Img/Rectangle.svg'
+import telefono from '../../../public/Img/phone-logo.png'
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -14,30 +16,39 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <>
-    <p className='acceso'>Acceso a la intranet</p>
-    <form onSubmit={handleLogin}>
-      <div className="form-group">
-        <label>Nombre de usuario:</label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="form-control"
-        />
+    <div className="login-container">
+      <div className="img-container">
+        <img src={rectangule} alt="" className='img'/>
       </div>
-      <div className="form-group">
-        <label>Contraseña:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="form-control"
-        />
+      <div className="contenido">
+        <p className='acceso'>Acceso a la intranet</p>
+        <form onSubmit={handleLogin} className='formulario'>
+          <div className="form-group">
+            <label>USUARIO:</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="form-group">
+            <label>CONTRASEÑA:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <button type="submit" className="btn btn-iniciar">Iniciar sesión</button>
+        </form>
       </div>
-      <button type="submit" className="btn btn-iniciar">Iniciar sesión</button>
-    </form>
-    </>
+      <div className="soporte">
+        <p>Si necesitas ayuda para acceder, ponte en contacto</p>
+        <img src={telefono} alt="" />
+      </div>
+    </div>
   );
 };
 
