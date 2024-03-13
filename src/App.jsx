@@ -18,8 +18,7 @@ function App() {
       <Routes>
       <Route path='/' element={<Login />}/>
       <Route path='/create-client' element={<CreateClient />}/>
-      <Route path='/Dashboard' element={<Dashboard />} />
-      <Route path='/clients' element={<CreateClient />} />
+      <Route path='/dashboard' element={<Dashboard />} />
       </Routes>
       <Footer />
       </BrowserRouter>
