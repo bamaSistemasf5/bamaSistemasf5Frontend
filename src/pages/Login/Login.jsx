@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css'; // Importa los estilos de Bootstrap
 import './Login.css';
-import rectangule from '../../../public/Img/Rectangle.svg'
-import telefono from '../../../public/Img/phone-logo.png'
+import rectangule from '/Img/Rectangle.svg'
+import telefono from '/Img/phone-logo.png'
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');

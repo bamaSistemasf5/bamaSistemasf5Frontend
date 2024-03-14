@@ -17,7 +17,7 @@ function App() {
       <BrowserRouter>
       <Header />
       <Routes>
-      <Route path='/' element={<Login />}/>
+      <Route path='/login' element={<Login />}/>
       <Route path='/dashboard' element={<Dashboard />} />
       <Route path='/clients-view' element={<ClientsView />} />
       <Route path='/create-client' element={<CreateClient />}/>

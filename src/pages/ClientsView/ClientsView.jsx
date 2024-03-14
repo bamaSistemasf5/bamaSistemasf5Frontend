@@ -78,7 +78,7 @@ const ClientsView = () => {
   const handleConfirmAction = () => {
     if (clientToDelete) {
     
-      axios.delete(`http://localhost:300/clients-view/${clientToDelete.id}`)
+      axios.delete(`http://localhost:3000/clients-view/${clientToDelete.id}`)
       .then(response => {
       //Actualizar la lista de clientes después de eliminar
       const updatedClients = clients.filter(client => client.id !== clientToDelete.id);
