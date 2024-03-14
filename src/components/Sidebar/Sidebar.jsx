@@ -3,14 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/js/dist/dropdown'
 import 'bootstrap/js/dist/collapse'
-import './Sidebar.css'
+import './sidebar.css'
 
 
 function Sidebar() {
     return (
         <div className='container-fluid'>
             <div className='row'>
-                <div className='col-auto col-sm-2 bg-dark d-flex flex-column justify-content-between min-vh-100'>
+                <div className='col-auto col-sm-2  d-flex flex-column justify-content-between min-vh-100'
+                style={{
+                        backgroundColor: "#232D35"}}>
                     <div className='mt-2'>
                         <a className='text-decoration-none ms-4 d-flex align-items-center text-white d-none d-sm-inline' role='button'>
                             <span className='f5-4'>

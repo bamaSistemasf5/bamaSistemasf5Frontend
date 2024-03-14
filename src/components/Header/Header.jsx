@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 export default function Header() {
   return (
     
-      <div  style={{ height: '30vh', width: '100vw', display: 'flex', flexDirection: 'column', margin:'0' }}>
+      <div  style={{ height: '', width: '100vw', display: 'flex', flexDirection: 'column', margin:'0' }}>
         <div className='header-row' style={{ height: '15%', width: '100vw', backgroundColor: "#142264", color: 'white' }}>
           {/* Aquí puedes agregar el contenido del encabezado */}
         </div>
