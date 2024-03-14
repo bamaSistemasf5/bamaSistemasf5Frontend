@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ClientsView.css';
 import { Table, Button, Modal } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
+
 
 // Hook para navegar entre rutas
 
@@ -78,7 +78,7 @@ const ClientsView = () => {
   const handleConfirmAction = () => {
     if (clientToDelete) {
     
-      axios.delete(`http://localhost:3000/clients/${clientToDelete.id}`)
+      axios.delete(`http://localhost:300/clients-view/${clientToDelete.id}`)
       .then(response => {
       //Actualizar la lista de clientes después de eliminar
       const updatedClients = clients.filter(client => client.id !== clientToDelete.id);
