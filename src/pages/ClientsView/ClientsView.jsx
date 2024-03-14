@@ -62,7 +62,9 @@ const ClientsView = () => {
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
-    navigate(`/update-client/${client.cif_cliente}`, { state: { clientData: client } });
+    navigate(`/update-client/${client.cif_cliente}`, {
+      state: { clientData: client },
+    });
     setShowModal(true);
   };
 
@@ -89,7 +91,9 @@ const ClientsView = () => {
         });
     } else if (clientToEdit) {
       // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${clientToEdit.cif_cliente}`, { clientData: clientToEdit });
+      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
+        clientData: clientToEdit,
+      });
     }
     setShowModal(false);
   };
