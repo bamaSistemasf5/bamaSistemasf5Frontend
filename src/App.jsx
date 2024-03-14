@@ -21,6 +21,7 @@ function App() {
       <Route path='/dashboard' element={<Dashboard />} />
       <Route path='/clients-view' element={<ClientsView />} />
       <Route path='/create-client' element={<CreateClient />}/>
+      {/* <Route path="/edit-clie/:userId?" element={<UserProfile />} /> */}
       </Routes>
       <Footer />
       </BrowserRouter>
