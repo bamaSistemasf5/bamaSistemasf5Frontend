@@ -105,7 +105,7 @@ const ClientsView = () => {
   };
 
   const handleCreateUserClick = () => {
-    navigate("/create-user");
+    navigate("/create-client");
   };
 
   return (
