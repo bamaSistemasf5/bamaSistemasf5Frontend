@@ -16,10 +16,12 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
-      <div className="img-container">
+    <>
+        <div className="img-container">
         <img src={rectangule} alt="" className='img'/>
-      </div>
+      </div>  
+    <div className="login-container">
+
       <div className="contenido">
         <p className='acceso'>Acceso a la intranet</p>
         <form onSubmit={handleLogin} className='formulario'>
@@ -49,6 +51,8 @@ const Login = ({ onLogin }) => {
         <img src={telefono} alt="" />
       </div>
     </div>
+    
+    </>
   );
 };
 

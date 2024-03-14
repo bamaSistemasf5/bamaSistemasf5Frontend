@@ -2,6 +2,7 @@
     margin-bottom: 1rem;
     margin-left: 30%;
     width: 20%;
+    margin-right: 10%;
   }
   
   .form-group label {
@@ -49,6 +50,7 @@
   }
 
   .login-container {
-    
+    display: flex;
+    justify-content: center;
   }
   
