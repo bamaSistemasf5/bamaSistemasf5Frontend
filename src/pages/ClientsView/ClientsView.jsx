@@ -35,6 +35,7 @@ const ClientsView = () => {
     fetchData();
   }, []);
   
+  console.log(clients)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchInputs(prevState => ({
@@ -69,47 +70,47 @@ const ClientsView = () => {
     setClientToEdit(client);
     setShowModal(true);
   };
-
+  //console.log(clientToEdit)
   const handleDeleteClick = (client) => {
     setClientToDelete(client);
     setShowModal(true);
   };
-
+  //console.log(clientToDelete)
   const handleConfirmAction = () => {
     if (clientToDelete) {
-    
-      axios.delete(`http://localhost:3000/clients-view/${clientToDelete.id}`)
-      .then(response => {
-      //Actualizar la lista de clientes después de eliminar
-      const updatedClients = clients.filter(client => client.id !== clientToDelete.id);
-      setClients(updatedClients);
-      setFilteredClients(updatedClients);
-      })
-    .catch(error => {
-      console.error('Error deleting client:', error);
-      });
+      axios.delete(`http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`)
+        .then(response => {
+          // Actualizar la lista de clientes después de eliminar
+          const updatedClients = clients.filter(client => client.cif_cliente !== clientToDelete.cif_cliente);
+          setClients(updatedClients);
+          setFilteredClients(updatedClients);
+        })
+        .catch(error => {
+          console.error('Error deleting client:', error);
+        });
     } else if (clientToEdit) {
       // Lógica para editar al cliente
       // Aquí puedes implementar la llamada a la API para editar al cliente
       // Por ejemplo:
-      axios.put(`http://localhost:3000/clients-view/${clientToEdit.id}`, clientToEdit)
-      .then(response => {
-      // Actualizar la lista de clientes después de editar
-      const updatedClients = clients.map(client => {
-      if (client.id === clientToEdit.id) {
-        return response.data;
-       }
-      return client;
-           });
-           setClients(updatedClients);
-           setFilteredClients(updatedClients);
-         })
+      axios.put(`http://localhost:3000/clients-view/${clientToEdit.cif_cliente}`, clientToEdit)
+        .then(response => {
+          // Actualizar la lista de clientes después de editar
+          const updatedClients = clients.map(client => {
+            if (client.cif_cliente === clientToEdit.cif_cliente) {
+              return response.data;
+            }
+            return client;
+          });
+          setClients(updatedClients);
+          setFilteredClients(updatedClients);
+        })
         .catch(error => {
-           console.error('Error editing client:', error);
-         });
+          console.error('Error editing client:', error);
+        });
     }
     setShowModal(false);
   };
+  
 
   const handleCloseModal = () => {
     setShowModal(false);
