@@ -61,7 +61,8 @@ const ClientsView = () => {
   const [clientToEdit, setClientToEdit] = useState(null);
 
   const handleEditClick = (client) => {
-    setClientToEdit(client);
+    console.log("Cliente seleccionado para editar:", client);
+    navigate(`/update-client/${client.cif_cliente}`, { state: { clientData: client } });
     setShowModal(true);
   };
 
@@ -88,7 +89,7 @@ const ClientsView = () => {
         });
     } else if (clientToEdit) {
       // Redirige a la página de edición con los detalles del cliente
-      navigate(`/edit-client/${clientToEdit.cif_cliente}`);
+      navigate(`/update-client/${clientToEdit.cif_cliente}`, { clientData: clientToEdit });
     }
     setShowModal(false);
   };
@@ -97,6 +98,10 @@ const ClientsView = () => {
     setShowModal(false);
     setClientToDelete(null);
     setClientToEdit(null);
+  };
+
+  const handleCreateUserClick = () => {
+    navigate("/create-user");
   };
 
   return (
@@ -258,6 +263,11 @@ const ClientsView = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <div className="text-center">
+        <Button variant="success" onClick={handleCreateUserClick}>
+          Crear Nuevo Usuario
+        </Button>
+      </div>
     </div>
   );
 };
