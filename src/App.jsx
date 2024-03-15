@@ -9,7 +9,8 @@ import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import CreateClient from "./components/CreateClient/CreateClient";
 import ClientsView from "./pages/ClientsView/ClientsView.jsx";
 import UpdateClient from "./pages/UpdateClient/UpdateClient";
-
+import DeliveryNotes from "./pages/DeliveryNotes/DeliveryNotes";
+import CreateDelNotes from "./pages/CreateDelNotes/CreateDelNotes";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
           <Route path="/clients-view" element={<ClientsView />} />
           <Route path="/create-client" element={<CreateClient />} />
           <Route path="/update-client/:id?" element={<UpdateClient />} />
+          <Route path="/delivery-notes" element={<DeliveryNotes />} />
+          <Route path="/create-delivery-note" element={<CreateDelNotes />} />
         </Routes>
         <Footer />
       </BrowserRouter>
