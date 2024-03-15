@@ -322,7 +322,7 @@ return (
       </Modal.Footer>
     </Modal>
     <div className="text-center">
-      <Button variant="success" onClick={handleCreateDNClick}>
+      <Button variant="success" onClick={handleCreateClick}>
         Crear Nueva Factura
       </Button>
     </div>

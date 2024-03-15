@@ -131,7 +131,7 @@ const CreateInvoice = () => {
           <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="form-input" />
           {errors.email && <span>{errors.email}</span>}
         </div>
-        <button type="submit" className="button">Crear Cliente</button>
+        <button type="submit" className="button">Crear Factura</button>
       </form>
     </div>
   );
