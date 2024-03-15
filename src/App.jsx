@@ -10,6 +10,7 @@ import OrdersView from './pages/OrdersView/OrdersView.jsx';
 import CreateOrder from './pages/CreateOrder/CreateOrder.jsx';
 import Invoices from './pages/Invoices/Invoices.jsx'
 import CreateInvoice from './pages/CreateInvoice/CreateInvoice.jsx';
+import UpdateClient from './pages/UpdateClient/UpdateClient.jsx';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -30,7 +31,8 @@ function App() {
       <Route path='/dashboard' element={<Dashboard />} />
       {/* VISTA PARA EL USUARIO Q NO ES ADMIN VA AQUI */}
       <Route path='/clients-view' element={<ClientsView />} />
-      <Route path='/create-client' element={<CreateClient />}/>
+      <Route path='/create-client/' element={<CreateClient />}/>
+      <Route path="/update-client/:id?" element={<UpdateClient />} />
       <Route path='/orders-view' element={<OrdersView />} />
       <Route path='/create-order' element={<CreateOrder />}/>
       <Route path='/invoices-view' element={<Invoices />} />
