@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Invoices.css";
+// import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
 
@@ -322,7 +322,7 @@ return (
       </Modal.Footer>
     </Modal>
     <div className="text-center">
-      <Button variant="success" onClick={handleCreateDNClick}>
+      <Button variant="success" onClick={handleCreateClick}>
         Crear Nueva Factura
       </Button>
     </div>
