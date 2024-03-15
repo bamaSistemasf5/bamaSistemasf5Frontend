@@ -1,116 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './ClientsView.css';
-import { Table, Button, Modal } from 'react-bootstrap';
-
-
-// Hook para navegar entre rutas
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./ClientsView.css";
+import { Table, Button, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
 
 const ClientsView = () => {
+  const navigate = useNavigate(); // Inicializa useNavigate
+
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
-    cif_cliente: '',
-    nombre: '',
-    direccion: '',
-    poblacion: '',
-    provincia: '',
-    pais: '',
-    codigo_postal: '',
-    telefono: '',
-    email: ''
+    cif_cliente: "",
+    nombre: "",
+    direccion: "",
+    poblacion: "",
+    provincia: "",
+    pais: "",
+    codigo_postal: "",
+    telefono: "",
+    email: "",
   });
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/clients-view');
+        const response = await axios.get("http://localhost:3000/clients-view");
         setClients(response.data);
         setFilteredClients(response.data);
       } catch (error) {
-        console.error('Error fetching clients data:', error);
+        console.error("Error fetching clients data:", error);
       }
     };
-    
+
     fetchData();
   }, []);
-  
-  console.log(clients)
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSearchInputs(prevState => ({
+    setSearchInputs((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
-  
+
   const filterClients = () => {
-    const filteredData = clients.filter(client =>
-      Object.keys(searchInputs).every(key =>
+    const filteredData = clients.filter((client) =>
+      Object.keys(searchInputs).every((key) =>
         client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
-        )
-        );
-        setFilteredClients(filteredData);
-      };
-      
-      useEffect(() => {
-        filterClients();
-      }, [searchInputs]);
-      
-      
-      
-      
-      
-      const [showModal, setShowModal] = useState(false);
-      const [clientToDelete, setClientToDelete] = useState(null);
-      const [clientToEdit, setClientToEdit] = useState(null);
-     
-      
-      const handleEditClick = (client) => {
-    setClientToEdit(client);
+      )
+    );
+    setFilteredClients(filteredData);
+  };
+
+  useEffect(() => {
+    filterClients();
+  }, [searchInputs]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState(null);
+  const [clientToEdit, setClientToEdit] = useState(null);
+
+  const handleEditClick = (client) => {
+    console.log("Cliente seleccionado para editar:", client);
+    navigate(`/update-client/${client.cif_cliente}`, {
+      state: { clientData: client },
+    });
     setShowModal(true);
   };
-  //console.log(clientToEdit)
+
   const handleDeleteClick = (client) => {
     setClientToDelete(client);
     setShowModal(true);
   };
-  //console.log(clientToDelete)
+
   const handleConfirmAction = () => {
     if (clientToDelete) {
-      axios.delete(`http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`)
-        .then(response => {
-          // Actualizar la lista de clientes después de eliminar
-          const updatedClients = clients.filter(client => client.cif_cliente !== clientToDelete.cif_cliente);
+      axios
+        .delete(
+          `http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`
+        )
+        .then((response) => {
+          const updatedClients = clients.filter(
+            (client) => client.cif_cliente !== clientToDelete.cif_cliente
+          );
           setClients(updatedClients);
           setFilteredClients(updatedClients);
         })
-        .catch(error => {
-          console.error('Error deleting client:', error);
+        .catch((error) => {
+          console.error("Error deleting client:", error);
         });
     } else if (clientToEdit) {
-      // Lógica para editar al cliente
-      // Aquí puedes implementar la llamada a la API para editar al cliente
-      // Por ejemplo:
-      axios.put(`http://localhost:3000/clients-view/${clientToEdit.cif_cliente}`, clientToEdit)
-        .then(response => {
-          // Actualizar la lista de clientes después de editar
-          const updatedClients = clients.map(client => {
-            if (client.cif_cliente === clientToEdit.cif_cliente) {
-              return response.data;
-            }
-            return client;
-          });
-          setClients(updatedClients);
-          setFilteredClients(updatedClients);
-        })
-        .catch(error => {
-          console.error('Error editing client:', error);
-        });
+      // Redirige a la página de edición con los detalles del cliente
+      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
+        clientData: clientToEdit,
+      });
     }
     setShowModal(false);
   };
-  
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -118,59 +104,158 @@ const ClientsView = () => {
     setClientToEdit(null);
   };
 
+  const handleCreateUserClick = () => {
+    navigate("/create-client");
+  };
 
   return (
     <div>
-    <h1 className="text-center mb-4">Clientes</h1>
-    
-    <div>
-    <Table striped bordered responsive hover>
-        <thead>
-          <tr>
-            <th><input type="text" name="cif_cliente" value={searchInputs.cif_cliente} onChange={handleInputChange} placeholder="CIF Cliente" className="half-size-font" /></th>
-            <th><input type="text" name="nombre" value={searchInputs.nombre} onChange={handleInputChange} placeholder="Nombre" className="half-size-font" /></th>
-            <th><input type="text" name="direccion" value={searchInputs.direccion} onChange={handleInputChange} placeholder="Dirección" className="half-size-font" /></th>
-            <th><input type="text" name="poblacion" value={searchInputs.poblacion} onChange={handleInputChange} placeholder="Población" className="half-size-font" /></th>
-            <th><input type="text" name="provincia" value={searchInputs.provincia} onChange={handleInputChange} placeholder="Provincia" className="half-size-font" /></th>
-            <th><input type="text" name="pais" value={searchInputs.pais} onChange={handleInputChange} placeholder="País" className="half-size-font" /></th>
-            <th><input type="text" name="codigo_postal" value={searchInputs.codigo_postal} onChange={handleInputChange} placeholder="Código Postal" className="half-size-font" /></th>
-            <th><input type="text" name="telefono" value={searchInputs.telefono} onChange={handleInputChange} placeholder="Teléfono" className="half-size-font" /></th>
-            <th><input type="text" name="email" value={searchInputs.email} onChange={handleInputChange} placeholder="Email" className="half-size-font" /></th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredClients.map(client => (
-            <tr key={client.cif_cliente}>
-              <td className="table-data">{client.cif_cliente}</td>
-              <td className="table-data">{client.nombre}</td>
-              <td className="table-data">{client.direccion}</td>
-              <td className="table-data">{client.poblacion}</td>
-              <td className="table-data">{client.provincia}</td>
-              <td className="table-data">{client.pais}</td>
-              <td className="table-data">{client.codigo_postal}</td>
-              <td className="table-data">{client.telefono}</td>
-              <td className="table-data">{client.email}</td>
-              <td className="table-data">
-                  <Button variant="warning" onClick={() => handleEditClick(client)}>🖋️</Button>
+      <h1 className="text-center mb-4">Clientes</h1>
+      <div>
+        <Table striped bordered responsive hover>
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="text"
+                  name="cif_cliente"
+                  value={searchInputs.cif_cliente}
+                  onChange={handleInputChange}
+                  placeholder="CIF Cliente"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={searchInputs.nombre}
+                  onChange={handleInputChange}
+                  placeholder="Nombre"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="direccion"
+                  value={searchInputs.direccion}
+                  onChange={handleInputChange}
+                  placeholder="Dirección"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="poblacion"
+                  value={searchInputs.poblacion}
+                  onChange={handleInputChange}
+                  placeholder="Población"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="provincia"
+                  value={searchInputs.provincia}
+                  onChange={handleInputChange}
+                  placeholder="Provincia"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="pais"
+                  value={searchInputs.pais}
+                  onChange={handleInputChange}
+                  placeholder="País"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="codigo_postal"
+                  value={searchInputs.codigo_postal}
+                  onChange={handleInputChange}
+                  placeholder="Código Postal"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="telefono"
+                  value={searchInputs.telefono}
+                  onChange={handleInputChange}
+                  placeholder="Teléfono"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="email"
+                  value={searchInputs.email}
+                  onChange={handleInputChange}
+                  placeholder="Email"
+                  className="half-size-font"
+                />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredClients.map((client) => (
+              <tr key={client.cif_cliente}>
+                <td className="table-data">{client.cif_cliente}</td>
+                <td className="table-data">{client.nombre}</td>
+                <td className="table-data">{client.direccion}</td>
+                <td className="table-data">{client.poblacion}</td>
+                <td className="table-data">{client.provincia}</td>
+                <td className="table-data">{client.pais}</td>
+                <td className="table-data">{client.codigo_postal}</td>
+                <td className="table-data">{client.telefono}</td>
+                <td className="table-data">{client.email}</td>
+                <td className="table-data">
+                  <Button
+                    variant="warning"
+                    onClick={() => handleEditClick(client)}
+                  >
+                    🖋️
+                  </Button>
                 </td>
                 <td className="table-data">
-                  <Button variant="danger" onClick={() => handleDeleteClick(client)}>🗑️</Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDeleteClick(client)}
+                  >
+                    🗑️
+                  </Button>
                 </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-    <Modal show={showModal} onHide={handleCloseModal}>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {clientToDelete && (
-            <p>¿Seguro que quieres eliminar al cliente {clientToDelete.cif_cliente} {clientToDelete.nombre}?</p>
+            <p>
+              ¿Seguro que quieres eliminar al cliente{" "}
+              {clientToDelete.cif_cliente} {clientToDelete.nombre}?
+            </p>
           )}
           {clientToEdit && (
-            <p>¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente} {clientToEdit.nombre}?</p>
+            <p>
+              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
+              {clientToEdit.nombre}?
+            </p>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -182,7 +267,12 @@ const ClientsView = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-  </div>
+      <div className="text-center">
+        <Button variant="success" onClick={handleCreateUserClick}>
+          Crear Nuevo Usuario
+        </Button>
+      </div>
+    </div>
   );
 };
 
