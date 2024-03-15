@@ -23,18 +23,12 @@ function App() {
     <BrowserRouter>
       <Header authenticated={authenticated} onLogout={handleLogout} />
       <Routes>
-        <Route path='/' element={<Login onLogin={handleLogin} />} />
-        {authenticated ? (
+        <Route path='/' element={<Login />} />
           <>
             <Route path='/dashboard' element={<Dashboard />} />
-            <Route element={<PrivateRoute />} />
-
             <Route path='/clients-view' element={<ClientsView />} />
             <Route path='/create-client' element={<CreateClient />} />
           </>
-        ) : (
-          null
-        )}
       </Routes>
       <Footer />
     </BrowserRouter>
