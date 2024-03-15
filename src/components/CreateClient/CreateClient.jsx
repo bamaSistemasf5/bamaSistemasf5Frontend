@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./CreateClient.css";
+import { Container } from "react-bootstrap";
 
 const CreateClientForm = () => {
   const [formData, setFormData] = useState({
@@ -72,7 +73,7 @@ const CreateClientForm = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/api/clients", formData);
+        const response = await axios.post("http://localhost:3000/create-client", formData);
         console.log("Cliente creado con éxito:", response.data);
         // Aquí puedes realizar alguna acción adicional después de crear el cliente
       } catch (error) {
@@ -83,7 +84,7 @@ const CreateClientForm = () => {
   };
 
   return (
-    <div className="edit-profile-container">
+    <Container>
       <h2>Crear Cliente</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -133,7 +134,7 @@ const CreateClientForm = () => {
         </div>
         <button type="submit" className="button">Crear Cliente</button>
       </form>
-    </div>
+    </Container>
   );
 };
 
