@@ -23,6 +23,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^18.2.0",
+    "react-loading-overlay-ts": "^1.0.5",
     "react-router-dom": "^6.22.3",
     "robots-parser": "^3.0.1"
   },
