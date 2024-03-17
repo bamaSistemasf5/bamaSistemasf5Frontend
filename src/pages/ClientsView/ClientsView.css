@@ -20,16 +20,25 @@ input {
   margin: auto;
   padding-left: 2%;
 }
-.table-responsive th {
+th {
   font-size: 0.8em;
 }
-.table-responsive td {
+.buttons-title {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  font-size: 0.8em;
+}
+
+td {
   font-size: 8px;
+}
+tr:hover {
+  color: #EC550D!important;
 }
 
 /* Estilos para dispositivos móviles (hasta 767px) */
 @media (max-width: 767px) {
-  
   th {
     max-width: 30px;
   }
@@ -43,20 +52,19 @@ input {
   .table-responsive th {
     font-size: 12px;
   }
+  .buttons-title {
+    font-size: 0.4em;
+  }
+
   .table-responsive td {
     font-size: 8px;
   }
   .buttons-column {
-    display: flex;
-    justify-content: center;
-    margin: auto;
   }
-  .ed-button {
+  .e-d-buttons {
     height: 10px;
-    width: 10px;
-    margin: 0px;
+    width: 8px;
     display: flex;
-    margin: auto;
     justify-content: center;
     align-items: center;
     font-size: 5px;
@@ -72,10 +80,12 @@ input {
   table {
     height: 70vh;
   }
-  th{
+  th {
     max-width: 30px;
   }
-  
+  .buttons-title {
+    font-size: 0.4em;
+  }
   .table-data {
     font-size: 2px;
     max-width: 50px;
@@ -91,7 +101,7 @@ input {
   .table-responsive td {
     font-size: 8px;
   }
-  .ed-button {
+  .e-d-buttons {
     width: 4px;
     margin: 0px;
     display: flex;

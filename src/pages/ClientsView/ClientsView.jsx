@@ -71,9 +71,11 @@ const ClientsView = () => {
   const handleDeleteClick = (client) => {
     setClientToDelete(client);
     setShowModal(true); // Aquí asegúrate de que showModal se establezca en true
-    setModalMessage(`¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`);
+    setModalMessage(
+      `¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`
+    );
   };
-  
+
   const handleConfirmAction = () => {
     if (clientToDelete) {
       axios
@@ -109,7 +111,8 @@ const ClientsView = () => {
                 errorMessage = "Recurso no encontrado.";
                 break;
               case 500:
-                errorMessage = "Acción no permitida por restricción en pagos pendientes. Gracias, Luis.";
+                errorMessage =
+                  "Acción no permitida por restricción en pagos pendientes. Gracias, Luis.";
                 break;
               default:
                 errorMessage = "Ocurrió un error.";
@@ -123,8 +126,6 @@ const ClientsView = () => {
         });
     }
   };
-  
-  
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -139,8 +140,8 @@ const ClientsView = () => {
   return (
     <Container className="Container">
       <h1 className="text-center mb-4">Clientes</h1>
-      <div >
-        <Table className="table-responsive" striped bordered hover>
+      <div>
+        <Table className="table-responsive" striped bordered hover >
           <thead>
             <tr>
               <th>
@@ -233,6 +234,12 @@ const ClientsView = () => {
                   className="half-size-font"
                 />
               </th>
+              <th>
+                <p className="buttons-title">Editar</p>
+              </th>
+              <th>
+                <p className="buttons-title">Eliminar</p>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -248,7 +255,8 @@ const ClientsView = () => {
                 <td>{client.telefono}</td>
                 <td>{client.email}</td>
                 <td className="buttons-column">
-                  <Button className="ed-button"
+                  <Button
+                    className="e-d-buttons"
                     variant="warning"
                     onClick={() => handleEditClick(client)}
                   >
@@ -256,7 +264,8 @@ const ClientsView = () => {
                   </Button>
                 </td>
                 <td className="buttons-column">
-                  <Button className="ed-button" 
+                  <Button
+                    className="e-d-buttons"
                     variant="danger"
                     onClick={() => handleDeleteClick(client)}
                   >
@@ -269,33 +278,33 @@ const ClientsView = () => {
         </Table>
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
-    <Modal.Header closeButton>
-      <Modal.Title>Confirmación</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      {clientDeleted ? (
-        <p>Cliente eliminado con éxito.</p>
-      ) : (
-        <p>{modalMessage}</p>
-      )}
-    </Modal.Body>
-    <Modal.Footer>
-      {clientDeleted ? (
-        <Button variant="secondary" onClick={handleCloseModal}>
-          Cerrar
-        </Button>
-      ) : (
-        <>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
-            Confirmar
-          </Button>
-        </>
-      )}
-    </Modal.Footer>
-  </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {clientDeleted ? (
+            <p>Cliente eliminado con éxito.</p>
+          ) : (
+            <p>{modalMessage}</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          {clientDeleted ? (
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          ) : (
+            <>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Cancelar
+              </Button>
+              <Button variant="primary" onClick={handleConfirmAction}>
+                Confirmar
+              </Button>
+            </>
+          )}
+        </Modal.Footer>
+      </Modal>
       <div className="text-center">
         <Button variant="success" onClick={handleCreateUserClick}>
           Crear Nuevo Usuario
