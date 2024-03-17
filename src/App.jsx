@@ -68,11 +68,6 @@ function App() {
         <Route path="/create-invoice" element={<CreateInvoice />} />
       </Routes>
       <Footer />
-      <>
-        <p id="transcript">Transcript: {transcript}</p>
-
-        <button onClick={SpeechRecognition.startListening}>Start</button>
-      </>
     </BrowserRouter>
     
   );
