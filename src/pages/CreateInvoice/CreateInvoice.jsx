@@ -84,7 +84,7 @@ const CreateInvoice = () => {
 
   return (
     <div className="edit-profile-container">
-      <h2>Crear Cliente</h2>
+      <h2>Crear Factura</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">CIF Cliente:</label>
