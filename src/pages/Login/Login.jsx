@@ -21,21 +21,22 @@ const Login = ({ onLogin }) => {
         },
         body: JSON.stringify({ nombre: username, password }) // Cambia username por nombre
       });
-
+    
       if (!response.ok) {
         throw new Error('Failed to log in');
       }
-
+    
       const data = await response.json();
-      const role = data.role;
-      onLogin(role);
-
+      const { name, role } = data; // Supongamos que el nombre de usuario y el rol se devuelven en la respuesta JSON
+      setCurrentUser({ name, role }); // Actualiza el estado con el nombre de usuario y el rol
+    
       // Marca el inicio de sesión como exitoso
       setLoggedIn(true);
     } catch (error) {
       console.error('Error:', error);
       setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
     }
+    
   };
 
   // Si el inicio de sesión fue exitoso, redirige a la página de dashboard

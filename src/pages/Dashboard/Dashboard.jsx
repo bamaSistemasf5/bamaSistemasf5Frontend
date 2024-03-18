@@ -20,16 +20,6 @@ export default function Dashboard() {
         {/* Sidebar */}
         <Sidebar/>
       </div>
-        {/* profile... */}
-        {tab === 'profile' && <DashProfile/>}
-        {/* post */}
-        {tab === 'post' && <DashPosts/>}
-        {/* users */}
-        {tab === 'users' && <DashUsers/>}
-        {/* commets */}
-        {tab === 'comments' && <DashComments/>}
-        {/* dashboard component */}
-        {tab === 'dash' && <DashboardComponent/>}
     </div>
   )
 }

@@ -56,7 +56,7 @@ function App() {
     <BrowserRouter>
       <Header authenticated={authenticated} onLogout={handleLogout} />
       <Routes>
-        <Route path="/" element={<Login />} />
+      <Route path="/" element={<Login onLogin={handleLogin} />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/clients-view" element={<ClientsView />} />
         <Route path="/create-client/" element={<CreateClient />} />
