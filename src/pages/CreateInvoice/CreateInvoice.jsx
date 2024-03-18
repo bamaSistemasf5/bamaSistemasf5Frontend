@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./CreateClient.css";
-import { Container } from "react-bootstrap";
+// import "./CreateInvoice.css";
 
-const CreateClientForm = () => {
+const CreateInvoice = () => {
   const [formData, setFormData] = useState({
     cif_cliente: "",
     nombre: "",
@@ -73,7 +72,7 @@ const CreateClientForm = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/create-client", formData);
+        const response = await axios.post("http://localhost:3000/api/clients", formData);
         console.log("Cliente creado con éxito:", response.data);
         // Aquí puedes realizar alguna acción adicional después de crear el cliente
       } catch (error) {
@@ -84,7 +83,7 @@ const CreateClientForm = () => {
   };
 
   return (
-    <Container>
+    <div className="edit-profile-container">
       <h2>Crear Cliente</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -134,8 +133,8 @@ const CreateClientForm = () => {
         </div>
         <button type="submit" className="button">Crear Cliente</button>
       </form>
-    </Container>
+    </div>
   );
 };
 
-export default CreateClientForm;
+export default CreateInvoice;
