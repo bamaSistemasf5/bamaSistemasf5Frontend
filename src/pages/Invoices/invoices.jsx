@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./ClientsView.css";
+// import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
 
-const ClientsView = () => {
+const Invoices = () => {
   const navigate = useNavigate(); // Inicializa useNavigate
 
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredNotes] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
+    nro_factura: "",
+    fecha: "",
+    cliente: "",
     cif_cliente: "",
-    nombre: "",
-    direccion: "",
-    poblacion: "",
-    provincia: "",
-    pais: "",
-    codigo_postal: "",
-    telefono: "",
-    email: "",
+    fecha_vencimiento: "",
+    fecha_cobro: "",
+    estado: "",
+    base_imponible: "",
+    porc_iva: "",
+    importe_iva: "",
+    total_factura: "",
+    nro_pedido: "",
+    pedido: "",
+    albaran: ""
   });
 
   useEffect(() => {
@@ -57,13 +62,12 @@ const ClientsView = () => {
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [noteToDelete, setnoteToDelete] = useState(null);
   const [noteToEdit, setnoteToEdit] = useState(null);
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
-    navigate(`/update-client/${client.cif_cliente}`, {
+    navigate(`/update-invoice/${client.cif_cliente}`, {
       state: { noteData: client },
     });
     setShowModal(true);
@@ -71,10 +75,7 @@ const ClientsView = () => {
 
   const handleDeleteClick = (client) => {
     setnoteToDelete(client);
-    setShowModal(true); // Aquí asegúrate de que showModal se establezca en true
-    setModalMessage(
-      `¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`
-    );
+    setShowModal(true);
   };
 
   const handleConfirmAction = () => {
@@ -89,16 +90,14 @@ const ClientsView = () => {
           );
           setClients(updatedClients);
           setFilteredNotes(updatedClients);
-          setnoteToDelete(null);
-          setClientDeleted(true);
         })
         .catch((error) => {
           console.error("Error deleting client:", error);
         });
-    } else if (clientToEdit) {
+    } else if (noteToEdit) {
       // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
-        clientData: clientToEdit,
+      navigate(`/update-client/${noteToEdit.cif_cliente}`, {
+        noteData: noteToEdit,
       });
     }
     setShowModal(false);
@@ -110,13 +109,13 @@ const ClientsView = () => {
     setnoteToEdit(null);
   };
 
-  const handleCreateUserClick = () => {
-    navigate("/create-client");
+  const handleCreateClick = () => {
+    navigate("/create-invoice");
   };
 
   return (
     <div>
-      <h1 className="text-center mb-4">Clientes</h1>
+      <h1 className="text-center mb-4">Facturas</h1>
       <div>
         <Table striped bordered responsive hover>
           <thead>
@@ -124,90 +123,140 @@ const ClientsView = () => {
               <th>
                 <input
                   type="text"
-                  name="cif_cliente"
+                  name="dn-number"
                   value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
-                  placeholder="CIF Cliente"
+                  placeholder="Nro Factura"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="nombre"
+                  name="date"
                   value={searchInputs.nombre}
                   onChange={handleInputChange}
-                  placeholder="Nombre"
+                  placeholder="Fecha"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="direccion"
+                  name="client"
                   value={searchInputs.direccion}
                   onChange={handleInputChange}
-                  placeholder="Dirección"
+                  placeholder="Cliente"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="poblacion"
+                  name="cif-client"
                   value={searchInputs.poblacion}
                   onChange={handleInputChange}
-                  placeholder="Población"
+                  placeholder="CIF cliente"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
-                  type="text"
-                  name="provincia"
+                  type="date"
+                  name="check"
                   value={searchInputs.provincia}
                   onChange={handleInputChange}
-                  placeholder="Provincia"
+                  placeholder="Fecha de vencimiento"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
-                  type="text"
-                  name="pais"
+                  type="date"
+                  name="check"
+                  value={searchInputs.provincia}
+                  onChange={handleInputChange}
+                  placeholder="Fecha de cobro"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="checkbox"
+                  name="check"
+                  value={searchInputs.provincia}
+                  onChange={handleInputChange}
+                  placeholder="Estado"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="number"
+                  name="total"
                   value={searchInputs.pais}
                   onChange={handleInputChange}
-                  placeholder="País"
+                  placeholder="Base imponible"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
-                  type="text"
-                  name="codigo_postal"
+                  type="number"
+                  name="invoiced"
                   value={searchInputs.codigo_postal}
                   onChange={handleInputChange}
-                  placeholder="Código Postal"
+                  placeholder="% IVA"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
-                  type="text"
-                  name="telefono"
+                  type="number"
+                  name="invoiced-nr"
                   value={searchInputs.telefono}
                   onChange={handleInputChange}
-                  placeholder="Teléfono"
+                  placeholder="Total IVA"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="number"
+                  name="bill-nr"
+                  value={searchInputs.email}
+                  onChange={handleInputChange}
+                  placeholder="Total factura"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="email"
-                  value={searchInputs.email}
+                  name="check"
+                  value={searchInputs.provincia}
                   onChange={handleInputChange}
-                  placeholder="Email"
+                  placeholder="Nro de pedido"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="check"
+                  value={searchInputs.provincia}
+                  onChange={handleInputChange}
+                  placeholder="Pedido"
+                  className="half-size-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="check"
+                  value={searchInputs.provincia}
+                  onChange={handleInputChange}
+                  placeholder="Albarán"
                   className="half-size-font"
                 />
               </th>
@@ -251,16 +300,16 @@ const ClientsView = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clientToDelete && (
+          {noteToDelete && (
             <p>
               ¿Seguro que quieres eliminar al cliente{" "}
-              {clientToDelete.cif_cliente} {clientToDelete.nombre}?
+              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
             </p>
           )}
-          {clientToEdit && (
+          {noteToEdit && (
             <p>
-              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
-              {clientToEdit.nombre}?
+              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
+              {noteToEdit.nombre}?
             </p>
           )}
         </Modal.Body>
@@ -274,12 +323,12 @@ const ClientsView = () => {
         </Modal.Footer>
       </Modal>
       <div className="text-center">
-        <Button variant="success" onClick={handleCreateUserClick}>
-          Crear Nuevo Usuario
+        <Button variant="success" onClick={handleCreateClick}>
+          Crear Nueva Factura
         </Button>
       </div>
     </div>
   );
 };
 
-export default ClientsView;
+export default Invoices

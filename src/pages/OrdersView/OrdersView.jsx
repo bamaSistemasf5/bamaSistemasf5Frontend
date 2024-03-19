@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./ClientsView.css";
+import "./OrdersView.css";
 import { Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
 
-const ClientsView = () => {
+const OrdersView = () => {
   const navigate = useNavigate(); // Inicializa useNavigate
 
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredNotes] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
+    nro_pedido: "",
+    fecha: "",
+    cliente: "",
     cif_cliente: "",
-    nombre: "",
-    direccion: "",
-    poblacion: "",
-    provincia: "",
-    pais: "",
-    codigo_postal: "",
-    telefono: "",
-    email: "",
+    importe: "",
+    porcentaje_facturado: "",
+    estado: "",
+    facturas: "",
+    albaranes: "",
   });
 
   useEffect(() => {
@@ -57,7 +57,6 @@ const ClientsView = () => {
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [noteToDelete, setnoteToDelete] = useState(null);
   const [noteToEdit, setnoteToEdit] = useState(null);
 
@@ -71,10 +70,7 @@ const ClientsView = () => {
 
   const handleDeleteClick = (client) => {
     setnoteToDelete(client);
-    setShowModal(true); // Aquí asegúrate de que showModal se establezca en true
-    setModalMessage(
-      `¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`
-    );
+    setShowModal(true);
   };
 
   const handleConfirmAction = () => {
@@ -89,16 +85,14 @@ const ClientsView = () => {
           );
           setClients(updatedClients);
           setFilteredNotes(updatedClients);
-          setnoteToDelete(null);
-          setClientDeleted(true);
         })
         .catch((error) => {
           console.error("Error deleting client:", error);
         });
-    } else if (clientToEdit) {
+    } else if (noteToEdit) {
       // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
-        clientData: clientToEdit,
+      navigate(`/update-order/${noteToEdit.cif_cliente}`, {
+        noteData: noteToEdit,
       });
     }
     setShowModal(false);
@@ -111,7 +105,7 @@ const ClientsView = () => {
   };
 
   const handleCreateUserClick = () => {
-    navigate("/create-client");
+    navigate("/create-order");
   };
 
   return (
@@ -127,7 +121,7 @@ const ClientsView = () => {
                   name="cif_cliente"
                   value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
-                  placeholder="CIF Cliente"
+                  placeholder="Nro Pedido"
                   className="half-size-font"
                 />
               </th>
@@ -137,7 +131,7 @@ const ClientsView = () => {
                   name="nombre"
                   value={searchInputs.nombre}
                   onChange={handleInputChange}
-                  placeholder="Nombre"
+                  placeholder="Fecha pedido"
                   className="half-size-font"
                 />
               </th>
@@ -147,7 +141,7 @@ const ClientsView = () => {
                   name="direccion"
                   value={searchInputs.direccion}
                   onChange={handleInputChange}
-                  placeholder="Dirección"
+                  placeholder="Cliente"
                   className="half-size-font"
                 />
               </th>
@@ -157,7 +151,7 @@ const ClientsView = () => {
                   name="poblacion"
                   value={searchInputs.poblacion}
                   onChange={handleInputChange}
-                  placeholder="Población"
+                  placeholder="CIF cliente"
                   className="half-size-font"
                 />
               </th>
@@ -167,7 +161,7 @@ const ClientsView = () => {
                   name="provincia"
                   value={searchInputs.provincia}
                   onChange={handleInputChange}
-                  placeholder="Provincia"
+                  placeholder="Importe"
                   className="half-size-font"
                 />
               </th>
@@ -177,14 +171,14 @@ const ClientsView = () => {
                   name="pais"
                   value={searchInputs.pais}
                   onChange={handleInputChange}
-                  placeholder="País"
+                  placeholder="Porcentaje facturado"
                   className="half-size-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="codigo_postal"
+                  name="Estado"
                   value={searchInputs.codigo_postal}
                   onChange={handleInputChange}
                   placeholder="Código Postal"
@@ -197,7 +191,7 @@ const ClientsView = () => {
                   name="telefono"
                   value={searchInputs.telefono}
                   onChange={handleInputChange}
-                  placeholder="Teléfono"
+                  placeholder="Total facturas"
                   className="half-size-font"
                 />
               </th>
@@ -207,7 +201,7 @@ const ClientsView = () => {
                   name="email"
                   value={searchInputs.email}
                   onChange={handleInputChange}
-                  placeholder="Email"
+                  placeholder="Total Albaranes"
                   className="half-size-font"
                 />
               </th>
@@ -238,7 +232,7 @@ const ClientsView = () => {
                     variant="danger"
                     onClick={() => handleDeleteClick(client)}
                   >
-                    🗑️
+                    ↓
                   </Button>
                 </td>
               </tr>
@@ -251,16 +245,16 @@ const ClientsView = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clientToDelete && (
+          {noteToDelete && (
             <p>
               ¿Seguro que quieres eliminar al cliente{" "}
-              {clientToDelete.cif_cliente} {clientToDelete.nombre}?
+              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
             </p>
           )}
-          {clientToEdit && (
+          {noteToEdit && (
             <p>
-              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
-              {clientToEdit.nombre}?
+              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
+              {noteToEdit.nombre}?
             </p>
           )}
         </Modal.Body>
@@ -275,11 +269,11 @@ const ClientsView = () => {
       </Modal>
       <div className="text-center">
         <Button variant="success" onClick={handleCreateUserClick}>
-          Crear Nuevo Usuario
+          Crear Nuevo Pedido
         </Button>
       </div>
     </div>
   );
 };
 
-export default ClientsView;
+export default OrdersView;
