@@ -14,30 +14,35 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nombre: username, password }) // Cambia username por nombre
-      });
-    
-      if (!response.ok) {
-        throw new Error('Failed to log in');
-      }
-    
-      const data = await response.json();
-      const { name, role } = data; // Supongamos que el nombre de usuario y el rol se devuelven en la respuesta JSON
-      setCurrentUser({ name, role }); // Actualiza el estado con el nombre de usuario y el rol
-    
-      // Marca el inicio de sesión como exitoso
-      setLoggedIn(true);
+        const response = await fetch('http://localhost:3000/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nombre: username, password }) // Cambia username por nombre
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to log in');
+        }
+
+        const data = await response.json();
+        const role = data.role;
+        onLogin(role);
+
+        // Guardar información del usuario en localStorage
+        localStorage.setItem('user', JSON.stringify({ nombre: username, rol: rol }));
+        console.log('Datos del usuario guardados en localStorage:', { nombre: username, rol: rol });
+
+        // Marca el inicio de sesión como exitoso
+        setLoggedIn(true);
     } catch (error) {
-      console.error('Error:', error);
-      setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
+        console.error('Error:', error);
+        setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
     }
-    
-  };
+};
+
+
 
   // Si el inicio de sesión fue exitoso, redirige a la página de dashboard
   if (loggedIn) {

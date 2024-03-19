@@ -40,10 +40,10 @@ useEffect(() => {
 }, []);
 
 const handleInputChange = (e) => {
-  const { name, value } = e.target;
+  const { cliente, value } = e.target;
   setSearchInputs((prevState) => ({
     ...prevState,
-    [name]: value,
+    [cliente]: value,
   }));
 };
 
@@ -303,7 +303,7 @@ return (
                   Ver Detalle
                 </Button>
                 </td>
-                <td>
+                <td className="table-data">
                 <Button
                   variant="warning"
                   onClick={() => handleEditClick(invoice)}

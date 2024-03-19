@@ -7,15 +7,17 @@ import 'bootstrap/js/dist/collapse'
 import './Sidebar.css'
 
 
-function Sidebar() {
+function Sidebar({ username }) {
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        // Supongamos que currentUser es pasado como una prop desde tu componente de autenticación
-        // Este es solo un ejemplo simplificado, ajusta esto según cómo manejes la autenticación en tu aplicación
-        setCurrentUser({ name: 'Nombre del usuario' }); // Simplemente coloca el objeto de usuario cuando se inicie sesión
-    }, []);
-
+        // Establece el nombre de usuario en currentUser cuando se inicie sesión
+        if (username) {
+            setCurrentUser({ username });
+            console.log(username);
+        }
+    }, [username]);
+    console.log(currentUser);
     return (
         <div className='container-fluid'>
             <div className='row'>
@@ -23,16 +25,15 @@ function Sidebar() {
                 style={{
                         backgroundColor: "#232D35"}}>
                     <div className='mt-2'>
-
-                    <div className="dropdown open">
-                        <a className="btn border-none dropdown-toggle text-white" type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                         <i className='bi bi-person f5-4'></i> <span className='fs-5 ms-3 d-none d-sm-inline'>{currentUser ? currentUser.n : 'Invitado'}</span>
-                        </a>
-                        <div className="dropdown-menu" aria-labelledby="triggerId">
-                            <a className="dropdown-item" href="#">Perfil</a>
-                            <a className="dropdown-item" href="#">Configuración</a>
-                        </div>
+                        <div className="dropdown open">
+                            <a className="btn border-none dropdown-toggle text-white" type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                             <i className='bi bi-person f5-4'></i> <span className='fs-5 ms-3 d-none d-sm-inline'>{currentUser ? currentUser.username : 'Invitado'}</span>
+                            </a>
+                            <div className="dropdown-menu" aria-labelledby="triggerId">
+                                <a className="dropdown-item" href="#">Perfil</a>
+                                <a className="dropdown-item" href="#">Configuración</a>
+                            </div>
                     </div>
 
                         <hr className='text-white d-none d-sm-block' />
