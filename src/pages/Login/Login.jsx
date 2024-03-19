@@ -27,8 +27,10 @@ const Login = ({ onLogin }) => {
       }
     
       const data = await response.json();
-      const { name, role } = data; // Supongamos que el nombre de usuario y el rol se devuelven en la respuesta JSON
-      setCurrentUser({ name, role }); // Actualiza el estado con el nombre de usuario y el rol
+      const role = data.role;
+      // const username = data.username; // Suponiendo que el backend envía el nombre de usuario en la respuesta
+      onLogin(role, username);
+      console.log(username, role);
     
       // Marca el inicio de sesión como exitoso
       setLoggedIn(true);
