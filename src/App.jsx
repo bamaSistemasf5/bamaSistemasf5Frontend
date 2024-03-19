@@ -6,7 +6,7 @@ import Login from "./pages/Login/Login.jsx";
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import CreateClient from './components/CreateClient/CreateClient';
 import ClientsView from './pages/ClientsView/ClientsView.jsx';
-import Invoices from './pages/Invoices/Invoices.jsx';
+import Invoices from './pages/Invoices/invoices.jsx';
 import CreateInvoice from './pages/CreateInvoice/CreateInvoice.jsx'
 
 
