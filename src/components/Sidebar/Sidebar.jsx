@@ -23,7 +23,8 @@ function Sidebar() {
             <div className='row'>
                 <div className='col-auto col-sm-2  d-flex flex-column justify-content-between min-vh-100'
                      style={{
-                         backgroundColor: "#232D35"
+                         backgroundColor: "#232D35",
+                         width: "120vw",
                      }}>
                     <div className='mt-2'>
                         <div className="dropdown open">
