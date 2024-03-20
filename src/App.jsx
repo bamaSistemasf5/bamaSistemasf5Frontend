@@ -39,6 +39,7 @@ function App() {
   const handleLogin = () => {
     setAuthenticated(true);
   };
+  
 
   const handleLogout = () => {
     setAuthenticated(false);
