@@ -4,7 +4,7 @@ import "./CreateInvoice.css";
 
 const CreateInvoice = () => {
   const [formData, setFormData] = useState({
-    cif_cliente: "",
+    cif_invoicee: "",
     nombre: "",
     direccion: "",
     poblacion: "",
@@ -25,40 +25,40 @@ const CreateInvoice = () => {
   const validateForm = () => {
     const errors = {};
 
-    if (!formData.cif_cliente) {
-      errors.cif_cliente = "El CIF del cliente es requerido";
+    if (!formData.cif_invoicee) {
+      errors.cif_invoicee = "El CIF del invoicee es requerido";
     }
 
     if (!formData.nombre) {
-      errors.nombre = "El nombre del cliente es requerido";
+      errors.nombre = "El nombre del invoicee es requerido";
     }
 
     if (!formData.direccion) {
-      errors.direccion = "La dirección del cliente es requerida";
+      errors.direccion = "La dirección del invoicee es requerida";
     }
 
     if (!formData.poblacion) {
-      errors.poblacion = "La población del cliente es requerida";
+      errors.poblacion = "La población del invoicee es requerida";
     }
 
     if (!formData.provincia) {
-      errors.provincia = "La provincia del cliente es requerida";
+      errors.provincia = "La provincia del invoicee es requerida";
     }
 
     if (!formData.pais) {
-      errors.pais = "El país del cliente es requerido";
+      errors.pais = "El país del invoicee es requerido";
     }
 
     if (!formData.codigo_postal) {
-      errors.codigo_postal = "El código postal del cliente es requerido";
+      errors.codigo_postal = "El código postal del invoicee es requerido";
     }
 
     if (!formData.telefono) {
-      errors.telefono = "El teléfono del cliente es requerido";
+      errors.telefono = "El teléfono del invoicee es requerido";
     }
 
     if (!formData.email) {
-      errors.email = "El correo electrónico del cliente es requerido";
+      errors.email = "El correo electrónico del invoicee es requerido";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "El correo electrónico no es válido";
     }
@@ -72,11 +72,11 @@ const CreateInvoice = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/api/clients", formData);
-        console.log("Cliente creado con éxito:", response.data);
-        // Aquí puedes realizar alguna acción adicional después de crear el cliente
+        const response = await axios.post("http://localhost:3000/api/invoices", formData);
+        console.log("invoicee creado con éxito:", response.data);
+        // Aquí puedes realizar alguna acción adicional después de crear el invoicee
       } catch (error) {
-        console.error("Error al crear el cliente:", error);
+        console.error("Error al crear el invoicee:", error);
         // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
       }
     }
@@ -87,9 +87,9 @@ const CreateInvoice = () => {
       <h2>Crear Factura</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">CIF Cliente:</label>
-          <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} className="form-input" />
-          {errors.cif_cliente && <span>{errors.cif_cliente}</span>}
+          <label className="form-label">CIF invoicee:</label>
+          <input type="text" name="cif_invoicee" value={formData.cif_invoicee} onChange={handleInputChange} className="form-input" />
+          {errors.cif_invoicee && <span>{errors.cif_invoicee}</span>}
         </div>
         <div className="form-group">
           <label className="form-label">Nombre:</label>
