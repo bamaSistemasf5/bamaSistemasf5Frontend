@@ -5,8 +5,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Navigate } from 'react-router-dom'; // Importa Navigate para la redirección
 
-export default function Header({ onLogout, setCurrentUser }) {
+export default function Header({ onLogout }) {
   const [logout, setLogout] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     // Verifica si hay un usuario almacenado en localStorage al inicio
@@ -73,7 +74,6 @@ export default function Header({ onLogout, setCurrentUser }) {
     </>
   );
 }
-
 
 
 
