@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+//import { useNavigate } from "react-router-dom"; 
 
-const Invoices = () => { const navigate = useNavigate(); // Inicializa useNavigate
-
+const Invoices = () => { //const navigate = useNavigate();
 const [invoices, setInvoices] = useState([]);
 const [filteredinvoices, setFilteredInvoices] = useState([]);
 const [searchInputs, setSearchInputs] = useState({
   nro_factura: "",
   fecha: "",
-  invoicee: "",
-  cif_invoicee: "",
+  invoice: "",
+  cif_invoice: "",
   fecha_vencimiento: "",
   fecha_cobro: "",
   estado: "",
@@ -61,55 +60,39 @@ useEffect(() => {
 }, [searchInputs]);
 
 const [showModal, setShowModal] = useState(false);
-const [invoiceToDelete, setinvoiceToDelete] = useState(null);
-const [invoiceToEdit, setinvoiceToEdit] = useState(null);
+const [invoiceToDownload, setInvoiceToDownload] = useState(null);
 
-const handleEditClick = (invoice) => {
-  console.log("invoice seleccionado para editar:", invoice);
-  navigate(`/update-invoice/${invoice.cif_invoice}`, {
-    state: { invoiceData: invoice },
-  });
+//Para ver en detalle la fctura
+const handleDetailClick = (invoice) => {
+  setInvoiceToDownload(invoice);
   setShowModal(true);
 };
 
-const handleDeleteClick = (invoice) => {
-  setinvoiceToDelete(invoice);
-  setShowModal(true);
-};
+const handleDownloadAction = () => { //AQUÍ VIENE LAA LÓGICA DE DESCARGAR LA FACTURA
+  // if (invoiceToDownload) {
+  //   axios
+  //     .download(
+  //       `http://localhost:3000/invoices-view/${invoiceToDownload.cif_invoice}`
+  //     )
+  //     .then((response) => {
+  //       const updatedinvoices = invoices.filter(
+  //         (invoice) => invoice.cif_invoice !== invoiceToDelete.cif_invoice
+  //       );
+  //       setInvoices(updatedinvoices);
+  //       setFilteredInvoices(updatedinvoices);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error download invoice:", error);
+  //     });
+  // } 
 
-const handleConfirmAction = () => {
-  if (invoiceToDelete) {
-    axios
-      .delete(
-        `http://localhost:3000/invoices-view/${invoiceToDelete.cif_invoice}`
-      )
-      .then((response) => {
-        const updatedinvoices = invoices.filter(
-          (invoice) => invoice.cif_invoice !== invoiceToDelete.cif_invoice
-        );
-        setInvoices(updatedinvoices);
-        setFilteredInvoices(updatedinvoices);
-      })
-      .catch((error) => {
-        console.error("Error deleting invoice:", error);
-      });
-  } else if (invoiceToEdit) {
-    // Redirige a la página de edición con los detalles del invoicee
-    navigate(`/update-invoice/${invoiceToEdit.cif_invoice}`, {
-      invoiceData: invoiceToEdit,
-    });
-  }
   setShowModal(false);
 };
 
 const handleCloseModal = () => {
   setShowModal(false);
-  setinvoiceToDelete(null);
-  setinvoiceToEdit(null);
-};
-
-const handleCreateClick = () => {
-  navigate("/create-invoice");
+  setInvoiceToDownload(null);
+  
 };
 
 return (
@@ -280,18 +263,10 @@ return (
               <td className="table-data">{invoice.albaran}</td>
               <td className="table-data">
                 <Button
-                  variant="warning"
-                  onClick={() => handleEditClick(invoice)}
+                  variant="secondary"
+                  onClick={() => handleDetailClick(invoice)}
                 >
-                  🖋️
-                </Button>
-              </td>
-              <td className="table-data">
-                <Button
-                  variant="danger"
-                  onClick={() => handleDeleteClick(invoice)}
-                >
-                  🗑️
+                  Ver Detalle
                 </Button>
               </td>
             </tr>
@@ -301,19 +276,13 @@ return (
     </div>
     <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Confirmación</Modal.Title>
+        <Modal.Title>DETALLE DE FACTURA</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {invoiceToDelete && (
+        {invoiceToDownload && (
           <p>
-            ¿Seguro que quieres eliminar al invoice{" "}
-            {invoiceToDelete.cif_invoice} {invoiceToDelete.nombre}?
-          </p>
-        )}
-        {invoiceToEdit && (
-          <p>
-            ¿Seguro que quieres editar al invoice {invoiceToEdit.cif_invoice}{" "}
-            {invoiceToEdit.nombre}?
+            DOCUMENTO PDF {invoiceToDownload.cif_invoice}{" "}
+            {invoiceToDownload.nombre}?
           </p>
         )}
       </Modal.Body>
@@ -321,16 +290,12 @@ return (
         <Button variant="secondary" onClick={handleCloseModal}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleConfirmAction}>
-          Confirmar
+        <Button variant="primary" onClick={handleDownloadAction}>
+          Descargar PDF
         </Button>
       </Modal.Footer>
     </Modal>
-    <div className="text-center">
-      <Button variant="success" onClick={handleCreateClick}>
-        Crear Nueva Factura
-      </Button>
-    </div>
+
   </div>
 );
 };
