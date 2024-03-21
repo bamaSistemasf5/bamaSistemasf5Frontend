@@ -60,9 +60,8 @@ export default function Header({ onLogout }) {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
 
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav style={{ flex: 1, marginLeft: '20px' }}>
-              <Nav.Link href="/" style={{ width: '50px', display: 'flex', justifyContent: 'flex-end' }}>Inicio</Nav.Link>
-              {/* Agrega más enlaces según sea necesario */}
+            <Nav style={{ flex: 1, }} className='cabecera'>
+              <Nav.Link href="/dashboard" style={{ width: '80px', display: 'flex', justifyContent: 'flex-center' }}>Contacto</Nav.Link>
             </Nav>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ marginRight: '10px', color: '#142264' }}>{currentUser}</div>
