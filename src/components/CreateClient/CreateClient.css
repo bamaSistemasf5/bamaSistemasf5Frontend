@@ -44,6 +44,7 @@
     text-align: center;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
   
   .button-cancel {

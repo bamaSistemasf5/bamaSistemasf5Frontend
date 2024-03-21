@@ -28,15 +28,15 @@ function Sidebar() {
                      }}>
                     <div className='mt-2'>
                         <div className="dropdown open">
-                            <a className="btn border-none dropdown-toggle text-white" type="button" id="triggerId"
+                            <a className="btn border-none  text-white" type="button" id="triggerId"
                                data-bs-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="false">
                                 <i className='bi bi-person f5-4'></i> <span
                                 className='fs-5 ms-3 d-none d-sm-inline'>{currentUser ? currentUser : 'Invitado'}</span>
                             </a>
                             <div className="dropdown-menu" aria-labelledby="triggerId">
-                                <a className="dropdown-item" href="#">Perfil</a>
-                                <a className="dropdown-item" href="#">Configuración</a>
+                                {/* <a className="dropdown-item" href="#">Perfil</a>
+                                <a className="dropdown-item" href="#">Configuración</a> */}
                             </div>
                         </div>
 
@@ -57,10 +57,10 @@ function Sidebar() {
                                     </a>
                                     <ul className="nav collapse ms-2 flex-column" id='submenu' data-bs-parent ="#parentM" >
                                         <li className="nav-item">
-                                            <a className="nav-link text-white" href="#" aria-current="page">Pedidos</a>
+                                            <a className="nav-link text-white" href="/orders-view" aria-current="page">Pedidos</a>
                                         </li>
                                         <li className="nav-item ">
-                                            <a className="nav-link text-white" href="#">Facturas</a>
+                                            <a className="nav-link text-white" href="/invoices-view">Facturas</a>
                                         </li>
                                         <li className="nav-item ">
                                             <a className="nav-link text-white" href="#">Albaranes</a>
