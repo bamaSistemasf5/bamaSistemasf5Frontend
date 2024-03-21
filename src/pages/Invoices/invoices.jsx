@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
-//import { useNavigate } from "react-router-dom"; 
 
-const Invoices = () => { //const navigate = useNavigate();
+const Invoices = () => { 
 const [invoices, setInvoices] = useState([]);
-const [filteredinvoices, setFilteredInvoices] = useState([]);
+const [filteredInvoices, setFilteredInvoices] = useState([]);
 const [searchInputs, setSearchInputs] = useState({
   nro_factura: "",
   fecha: "",
@@ -15,9 +14,9 @@ const [searchInputs, setSearchInputs] = useState({
   fecha_vencimiento: "",
   fecha_cobro: "",
   estado: "",
-  base_imponible: "",
-  porc_iva: "",
-  importe_iva: "",
+  // base_imponible: "",
+  // porc_iva: "",
+  iva_total: "",
   total_factura: "",
   nro_pedido: "",
   pedido: "",
@@ -60,40 +59,21 @@ useEffect(() => {
 }, [searchInputs]);
 
 const [showModal, setShowModal] = useState(false);
-const [invoiceToDownload, setInvoiceToDownload] = useState(null);
+//const [invoiceToDownload, setInvoiceToDownload] = useState(null);
 
 //Para ver en detalle la fctura
-const handleDetailClick = (invoice) => {
-  setInvoiceToDownload(invoice);
-  setShowModal(true);
+const handleDownloadPDF = async () => {
+  try {
+    // Endpoint para generar y guardar el PDF
+    await axios.post(`/invoices-view/${invoices}/download`);
+    console.log("Descargando PDF...")
+    // Lógica adicional después de descargar el PDF, como mostrar un mensaje de éxito
+  } catch (error) {
+    console.error('Error al generar y guardar el PDF:', error);
+    // Manejo de errores, como mostrar un mensaje de error al usuario
+  }
 };
-
-const handleDownloadAction = () => { //AQUÍ VIENE LAA LÓGICA DE DESCARGAR LA FACTURA
-  // if (invoiceToDownload) {
-  //   axios
-  //     .download(
-  //       `http://localhost:3000/invoices-view/${invoiceToDownload.cif_invoice}`
-  //     )
-  //     .then((response) => {
-  //       const updatedinvoices = invoices.filter(
-  //         (invoice) => invoice.cif_invoice !== invoiceToDelete.cif_invoice
-  //       );
-  //       setInvoices(updatedinvoices);
-  //       setFilteredInvoices(updatedinvoices);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error download invoice:", error);
-  //     });
-  // } 
-
-  setShowModal(false);
-};
-
-const handleCloseModal = () => {
-  setShowModal(false);
-  setInvoiceToDownload(null);
-  
-};
+const handleCloseModal = () => setShowModal(false);
 
 return (
   <div>
@@ -125,7 +105,7 @@ return (
             <th>
               <input
                 type="text"
-                name="invoice"
+                name="cliente"
                 value={searchInputs.cliente}
                 onChange={handleInputChange}
                 placeholder="Cliente"
@@ -145,7 +125,7 @@ return (
             <th>
               <input
                 type="date"
-                name="check"
+                name="fecha vencimiento"
                 value={searchInputs.fecha_vencimiento}
                 onChange={handleInputChange}
                 placeholder="Fecha de vencimiento"
@@ -155,7 +135,7 @@ return (
             <th>
               <input
                 type="date"
-                name="check"
+                name="fecha cobro"
                 value={searchInputs.fecha_cobro}
                 onChange={handleInputChange}
                 placeholder="Fecha de cobro"
@@ -172,7 +152,7 @@ return (
                 className="half-size-font"
               />
             </th>
-            <th>
+            {/* <th>
               <input
                 type="number"
                 name="base-imponible"
@@ -181,8 +161,8 @@ return (
                 placeholder="Base imponible"
                 className="half-size-font"
               />
-            </th>
-            <th>
+            </th> */}
+            {/* <th>
               <input
                 type="number"
                 name="porc-iva"
@@ -191,12 +171,12 @@ return (
                 placeholder="% IVA"
                 className="half-size-font"
               />
-            </th>
+            </th> */}
             <th>
               <input
                 type="number"
-                name="importe-iva"
-                value={searchInputs.importe_iva}
+                name="iva_total"
+                value={searchInputs.iva_total}
                 onChange={handleInputChange}
                 placeholder="Total IVA"
                 className="half-size-font"
@@ -245,8 +225,8 @@ return (
           </tr>
         </thead>
         <tbody>
-          {filteredinvoices.map((invoice) => (
-            <tr key={invoice.cif_invoicee}>
+          {filteredInvoices.map((invoice) => (
+            <tr key={invoice.cif_invoice}>
               <td className="table-data">{invoice.nro_factura}</td>
               <td className="table-data">{invoice.fecha}</td>
               <td className="table-data">{invoice.cliente}</td>
@@ -254,9 +234,9 @@ return (
               <td className="table-data">{invoice.fecha_vencimiento}</td>
               <td className="table-data">{invoice.fecha_cobro}</td>
               <td className="table-data">{invoice.estado}</td>
-              <td className="table-data">{invoice.base_imponible}</td>
-              <td className="table-data">{invoice.porc_iva}</td>
-              <td className="table-data">{invoice.importe_iva}</td>
+              {/* <td className="table-data">{invoice.base_imponible}</td> */}
+              {/* <td className="table-data">{invoice.porc_iva}</td> */}
+              <td className="table-data">{invoice.iva_total}</td>
               <td className="table-data">{invoice.total_factura}</td>
               <td className="table-data">{invoice.nro_pedido}</td>
               <td className="table-data">{invoice.pedido}</td>
@@ -264,8 +244,7 @@ return (
               <td className="table-data">
                 <Button
                   variant="secondary"
-                  onClick={() => handleDetailClick(invoice)}
-                >
+                  onClick={() => setShowModal(true)}>
                   Ver Detalle
                 </Button>
               </td>
@@ -279,20 +258,15 @@ return (
         <Modal.Title>DETALLE DE FACTURA</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {invoiceToDownload && (
-          <p>
-            DOCUMENTO PDF {invoiceToDownload.cif_invoice}{" "}
-            {invoiceToDownload.nombre}?
-          </p>
-        )}
-      </Modal.Body>
+          Contenido del detalle de la factura
+        </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleCloseModal}>
-          Cancelar
-        </Button>
-        <Button variant="primary" onClick={handleDownloadAction}>
+      <Button variant="primary" onClick={handleDownloadPDF}>
           Descargar PDF
         </Button>
+        <Button variant="secondary" onClick={handleCloseModal}>
+          Cancelar
+        </Button> 
       </Modal.Footer>
     </Modal>
 
@@ -300,4 +274,4 @@ return (
 );
 };
 
-export default Invoices
+export default Invoices;

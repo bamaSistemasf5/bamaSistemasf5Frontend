@@ -7,8 +7,6 @@ import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import CreateClient from './components/CreateClient/CreateClient';
 import ClientsView from './pages/ClientsView/ClientsView.jsx';
 import Invoices from './pages/Invoices/invoices.jsx';
-import CreateInvoice from './pages/CreateInvoice/CreateInvoice.jsx'
-
 
 function App() {
   
@@ -24,7 +22,7 @@ function App() {
             <Route path='/create-client' element={<CreateClient />} />
 
             <Route path='/invoices-view' element={<Invoices/>} />
-            <Route path='/create-invoice' element={<CreateInvoice/>} />
+            
           </>
 
       </Routes>
