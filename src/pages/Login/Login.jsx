@@ -10,35 +10,55 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [loggedIn, setLoggedIn] = useState(false); // Nuevo estado para controlar el inicio de sesión exitoso
 
-  const handleLogin = async (e) => {
+
+const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-        const response = await fetch('http://localhost:3000/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nombre: username, password }) // Cambia username por nombre
-        });
+      const response = await fetch('http://localhost:3000/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre: username, password })
+      });
 
-        if (!response.ok) {
-            throw new Error('Failed to log in');
-        }
+      if (!response.ok) {
+          throw new Error('Failed to log in');
+      }
 
-        const data = await response.json();
-        const role = data.role;
-        onLogin(role);
+      const data = await response.json();
+      console.log('Respuesta del servidor:', data);
 
-        // Guardar información del usuario en localStorage
-        localStorage.setItem('user', JSON.stringify({ nombre: username, rol: rol }));
-        console.log('Datos del usuario guardados en localStorage:', { nombre: username, rol: rol });
+      const token = data.token;
+      const userId = data.userid; // Extrae el userId de la respuesta del servidor
 
-        // Marca el inicio de sesión como exitoso
-        setLoggedIn(true);
-    } catch (error) {
-        console.error('Error:', error);
-        setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
+      // Hacer una solicitud para obtener los detalles del usuario usando el userId
+      const userResponse = await fetch(`http://localhost:3000/users/${userId}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // Envía el token JWT en el encabezado de autorización
+          }
+      });
+
+      if (!userResponse.ok) {
+          throw new Error('Failed to fetch user details');
+      }
+
+      const userData = await userResponse.json();
+      console.log('Detalles del usuario:', userData.user);
+      
+      // Guardar información del usuario en localStorage
+      localStorage.setItem('user', JSON.stringify({ nombre: userData.user.nombre, id_rol: userData.user.id_rol }));
+      console.log('Datos del usuario guardados en localStorage:', { nombre: userData.user.nombre, id_rol: userData.user.id_rol });
+      
+
+      // Marca el inicio de sesión como exitoso
+      setLoggedIn(true);
+  } catch (error) {
+      console.error('Error:', error);
+      setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
     }
 };
 
