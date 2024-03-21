@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom'; // Importa Navigate para la redirección
 import './Login.css';
 import rectangule from '/Img/Rectangle.svg';
-import telefono from '/Img/phone-logo.png';
+import telefono from '/Img/phone-logo2.svg';
+import sobre from '/Img/envelope-icono.svg'
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -85,7 +86,7 @@ const handleLogin = async (e) => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="form-control"
+                className="form-controls"
               />
             </div>
             <div className="form-group">
@@ -94,15 +95,22 @@ const handleLogin = async (e) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="form-control"
+                className="form-controls"
               />
             </div>
             <button type="submit" className="btn btn-iniciar">Iniciar sesión</button>
           </form>
         </div>
         <div className="soporte">
-          <p>Si necesitas ayuda para acceder, ponte en contacto</p>
-          <img src={telefono} alt="" />
+          <p>Si necesitas ayuda para acceder,ponte en contacto:</p>
+          <div className="icono-telf">
+            <img src={telefono} alt="" className='telefono' />
+            <p className='numero-telf'>TELÉFONO <br/>+34 917 978 924</p>  
+          </div>
+        <div className="icono-mesj">
+        <img src={sobre} alt="" className='telefono' />
+            <p className='numero-telf'>EMAIL <br/>infobama@bama.es</p> 
+        </div>
         </div>
       </div>
     </>

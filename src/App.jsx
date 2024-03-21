@@ -12,6 +12,7 @@ import CreateOrder from "./pages/CreateOrder/CreateOrder.jsx";
 import Invoices from "./pages/Invoices/invoices.jsx"
 import UpdateClient from "./pages/UpdateClient/UpdateClient.jsx";
 import DeliveryNotes from "./pages/DeliveryNotes/DeliveryNotes.jsx";
+import UserDashboard from "./components/UserDashboard/UserDashboard";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -65,6 +66,7 @@ function App() {
         <Route path="/orders-view" element={<OrdersView />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/invoices-view" element={<Invoices />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
       </Routes>
       <Footer />
     </BrowserRouter>

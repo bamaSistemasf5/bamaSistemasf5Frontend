@@ -1,8 +1,6 @@
 .form-group {
     margin-bottom: 1rem;
-    margin-left: 30%;
     width: 20%;
-    margin-right: 10%;
   }
   
   .form-group label {
@@ -10,18 +8,16 @@
   }
   
   .form-group input {
-    padding: 0.5rem;
     border-radius: 4px;
-    border: 1px solid #ccc;
+    margin: inherit;
   }
   
   .btn-iniciar {
     padding: 0.5rem 1rem;
     border-radius: 4px;
   background-color: #EC660D !important;
-    color: #fff;
+    color: #fff !important;
     border: none;
-    margin-left: 30%;
     margin-bottom: 10%;
   }
 
@@ -33,7 +29,6 @@
   .acceso{
     color: #E77219;
     font-weight: bold;
-    margin-left: 30%;
     font-size: 24px;
   }
 
@@ -57,11 +52,25 @@
 
   .soporte{
     margin-right: 151px;
+    margin-top: 4vh;
+    width: 19vw;
   }
   form{
     width: 605px;
   }
   .contenido{
-    width: 50vh;
+    width: 40vh;
     overflow-x: hidden;
+    width: 19vw;
+  }
+  .icono-telf{
+    display: flex;
+    gap: 1vw;
+  }
+  .telefono{
+   width: 2vw; 
+  }
+  .icono-mesj{
+    display: flex;
+    gap: 1vw;
   }

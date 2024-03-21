@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import ClientView from '../../pages/ClientsView/ClientsView';
 import CreateClientForm from '../../components/CreateClient/CreateClient';
 import './Dashboard.css'; // Importar el archivo CSS que contiene los estilos
+import Invoices from '../Invoices/invoices';
 
 export default function Dashboard() {
   const [roleId, setRoleId] = useState(null);
@@ -24,8 +24,8 @@ export default function Dashboard() {
       </div>
       <div className="content">
         {/* Contenido del dashboard */}
-        {roleId === 1 && <CreateClientForm />} {/* Mostrar CreateClientForm solo si el rol es 1 */}
-        {roleId === 2 && <ClientView />} {/* Mostrar ClientView solo si el rol es 2 */}
+        {roleId === 1 && <Invoices />} {/* Mostrar CreateClientForm solo si el rol es 1 */}
+        {roleId === 2 && <CreateClientForm/>} {/* Mostrar ClientView solo si el rol es 2 */}
       </div>
     </div>
   );
