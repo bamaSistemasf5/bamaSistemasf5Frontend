@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import "./Invoices.css";
+import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+//import { useNavigate } from "react-router-dom"; 
 
-const Invoices = () => { const navigate = useNavigate(); // Inicializa useNavigate
-
-const [clients, setClients] = useState([]);
-const [filteredClients, setFilteredClients] = useState([]);
+const Invoices = () => { //const navigate = useNavigate();
+const [invoices, setInvoices] = useState([]);
+const [filteredinvoices, setFilteredInvoices] = useState([]);
 const [searchInputs, setSearchInputs] = useState({
   nro_factura: "",
   fecha: "",
-  cliente: "",
-  cif_cliente: "",
+  invoice: "",
+  cif_invoice: "",
   fecha_vencimiento: "",
   fecha_cobro: "",
   estado: "",
@@ -28,11 +27,11 @@ const [searchInputs, setSearchInputs] = useState({
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/clients-view");
-      setClients(response.data);
-      setFilteredClients(response.data);
+      const response = await axios.get("http://localhost:3000/invoices-view");
+      setInvoices(response.data);
+      setFilteredInvoices(response.data);
     } catch (error) {
-      console.error("Error fetching clients data:", error);
+      console.error("Error fetching invoices data:", error);
     }
   };
 
@@ -47,69 +46,53 @@ const handleInputChange = (e) => {
   }));
 };
 
-const filterClients = () => {
-  const filteredData = clients.filter((client) =>
+const filterInvoices = () => {
+  const filteredData = invoices.filter((invoice) =>
     Object.keys(searchInputs).every((key) =>
-      client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
+      invoice[key].toLowerCase().includes(searchInputs[key].toLowerCase())
     )
   );
-  setFilteredClients(filteredData);
+  setFilteredInvoices(filteredData);
 };
 
 useEffect(() => {
-  filterClients();
+  filterInvoices();
 }, [searchInputs]);
 
 const [showModal, setShowModal] = useState(false);
-const [clientToDelete, setClientToDelete] = useState(null);
-const [clientToEdit, setClientToEdit] = useState(null);
+const [invoiceToDownload, setInvoiceToDownload] = useState(null);
 
-const handleEditClick = (client) => {
-  console.log("Cliente seleccionado para editar:", client);
-  navigate(`/update-invoice/${client.cif_cliente}`, {
-    state: { clientData: client },
-  });
+//Para ver en detalle la fctura
+const handleDetailClick = (invoice) => {
+  setInvoiceToDownload(invoice);
   setShowModal(true);
 };
 
-const handleDeleteClick = (client) => {
-  setClientToDelete(client);
-  setShowModal(true);
-};
+const handleDownloadAction = () => { //AQUÍ VIENE LAA LÓGICA DE DESCARGAR LA FACTURA
+  // if (invoiceToDownload) {
+  //   axios
+  //     .download(
+  //       `http://localhost:3000/invoices-view/${invoiceToDownload.cif_invoice}`
+  //     )
+  //     .then((response) => {
+  //       const updatedinvoices = invoices.filter(
+  //         (invoice) => invoice.cif_invoice !== invoiceToDelete.cif_invoice
+  //       );
+  //       setInvoices(updatedinvoices);
+  //       setFilteredInvoices(updatedinvoices);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error download invoice:", error);
+  //     });
+  // } 
 
-const handleConfirmAction = () => {
-  if (clientToDelete) {
-    axios
-      .delete(
-        `http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`
-      )
-      .then((response) => {
-        const updatedClients = clients.filter(
-          (client) => client.cif_cliente !== clientToDelete.cif_cliente
-        );
-        setClients(updatedClients);
-        setFilteredClients(updatedClients);
-      })
-      .catch((error) => {
-        console.error("Error deleting client:", error);
-      });
-  } else if (clientToEdit) {
-    // Redirige a la página de edición con los detalles del cliente
-    navigate(`/update-client/${clientToEdit.cif_cliente}`, {
-      clientData: clientToEdit,
-    });
-  }
   setShowModal(false);
 };
 
 const handleCloseModal = () => {
   setShowModal(false);
-  setClientToDelete(null);
-  setClientToEdit(null);
-};
-
-const handleCreateClick = () => {
-  navigate("/create-invoice");
+  setInvoiceToDownload(null);
+  
 };
 
 return (
@@ -123,7 +106,7 @@ return (
               <input
                 type="text"
                 name="dn-number"
-                value={searchInputs.cif_cliente}
+                value={searchInputs.nro_factura}
                 onChange={handleInputChange}
                 placeholder="Nro Factura"
                 className="half-size-font"
@@ -131,9 +114,9 @@ return (
             </th>
             <th>
               <input
-                type="text"
+                type="date"
                 name="date"
-                value={searchInputs.nombre}
+                value={searchInputs.fecha}
                 onChange={handleInputChange}
                 placeholder="Fecha"
                 className="half-size-font"
@@ -142,8 +125,8 @@ return (
             <th>
               <input
                 type="text"
-                name="client"
-                value={searchInputs.direccion}
+                name="invoice"
+                value={searchInputs.cliente}
                 onChange={handleInputChange}
                 placeholder="Cliente"
                 className="half-size-font"
@@ -152,10 +135,10 @@ return (
             <th>
               <input
                 type="text"
-                name="cif-client"
-                value={searchInputs.poblacion}
+                name="cif-cliente"
+                value={searchInputs.cif_cliente}
                 onChange={handleInputChange}
-                placeholder="CIF cliente"
+                placeholder="Cif Cliente"
                 className="half-size-font"
               />
             </th>
@@ -163,7 +146,7 @@ return (
               <input
                 type="date"
                 name="check"
-                value={searchInputs.provincia}
+                value={searchInputs.fecha_vencimiento}
                 onChange={handleInputChange}
                 placeholder="Fecha de vencimiento"
                 className="half-size-font"
@@ -173,7 +156,7 @@ return (
               <input
                 type="date"
                 name="check"
-                value={searchInputs.provincia}
+                value={searchInputs.fecha_cobro}
                 onChange={handleInputChange}
                 placeholder="Fecha de cobro"
                 className="half-size-font"
@@ -181,9 +164,9 @@ return (
             </th>
             <th>
               <input
-                type="checkbox"
+                type="text"
                 name="check"
-                value={searchInputs.provincia}
+                value={searchInputs.estado}
                 onChange={handleInputChange}
                 placeholder="Estado"
                 className="half-size-font"
@@ -192,8 +175,8 @@ return (
             <th>
               <input
                 type="number"
-                name="total"
-                value={searchInputs.pais}
+                name="base-imponible"
+                value={searchInputs.base_imponible}
                 onChange={handleInputChange}
                 placeholder="Base imponible"
                 className="half-size-font"
@@ -202,8 +185,8 @@ return (
             <th>
               <input
                 type="number"
-                name="invoiced"
-                value={searchInputs.codigo_postal}
+                name="porc-iva"
+                value={searchInputs.porc_iva}
                 onChange={handleInputChange}
                 placeholder="% IVA"
                 className="half-size-font"
@@ -212,8 +195,8 @@ return (
             <th>
               <input
                 type="number"
-                name="invoiced-nr"
-                value={searchInputs.telefono}
+                name="importe-iva"
+                value={searchInputs.importe_iva}
                 onChange={handleInputChange}
                 placeholder="Total IVA"
                 className="half-size-font"
@@ -222,8 +205,8 @@ return (
             <th>
               <input
                 type="number"
-                name="bill-nr"
-                value={searchInputs.email}
+                name="total-factura"
+                value={searchInputs.total_factura}
                 onChange={handleInputChange}
                 placeholder="Total factura"
                 className="half-size-font"
@@ -232,8 +215,8 @@ return (
             <th>
               <input
                 type="text"
-                name="check"
-                value={searchInputs.provincia}
+                name="nro-pedido"
+                value={searchInputs.nro_pedido}
                 onChange={handleInputChange}
                 placeholder="Nro de pedido"
                 className="half-size-font"
@@ -242,8 +225,8 @@ return (
             <th>
               <input
                 type="text"
-                name="check"
-                value={searchInputs.provincia}
+                name="pedido"
+                value={searchInputs.pedido}
                 onChange={handleInputChange}
                 placeholder="Pedido"
                 className="half-size-font"
@@ -252,8 +235,8 @@ return (
             <th>
               <input
                 type="text"
-                name="check"
-                value={searchInputs.provincia}
+                name="albaran"
+                value={searchInputs.albaran}
                 onChange={handleInputChange}
                 placeholder="Albarán"
                 className="half-size-font"
@@ -262,31 +245,28 @@ return (
           </tr>
         </thead>
         <tbody>
-          {filteredClients.map((client) => (
-            <tr key={client.cif_cliente}>
-              <td className="table-data">{client.cif_cliente}</td>
-              <td className="table-data">{client.nombre}</td>
-              <td className="table-data">{client.direccion}</td>
-              <td className="table-data">{client.poblacion}</td>
-              <td className="table-data">{client.provincia}</td>
-              <td className="table-data">{client.pais}</td>
-              <td className="table-data">{client.codigo_postal}</td>
-              <td className="table-data">{client.telefono}</td>
-              <td className="table-data">{client.email}</td>
+          {filteredinvoices.map((invoice) => (
+            <tr key={invoice.cif_invoicee}>
+              <td className="table-data">{invoice.nro_factura}</td>
+              <td className="table-data">{invoice.fecha}</td>
+              <td className="table-data">{invoice.cliente}</td>
+              <td className="table-data">{invoice.cif_cliente}</td>
+              <td className="table-data">{invoice.fecha_vencimiento}</td>
+              <td className="table-data">{invoice.fecha_cobro}</td>
+              <td className="table-data">{invoice.estado}</td>
+              <td className="table-data">{invoice.base_imponible}</td>
+              <td className="table-data">{invoice.porc_iva}</td>
+              <td className="table-data">{invoice.importe_iva}</td>
+              <td className="table-data">{invoice.total_factura}</td>
+              <td className="table-data">{invoice.nro_pedido}</td>
+              <td className="table-data">{invoice.pedido}</td>
+              <td className="table-data">{invoice.albaran}</td>
               <td className="table-data">
                 <Button
-                  variant="warning"
-                  onClick={() => handleEditClick(client)}
+                  variant="secondary"
+                  onClick={() => handleDetailClick(invoice)}
                 >
-                  🖋️
-                </Button>
-              </td>
-              <td className="table-data">
-                <Button
-                  variant="danger"
-                  onClick={() => handleDeleteClick(client)}
-                >
-                  🗑️
+                  Ver Detalle
                 </Button>
               </td>
             </tr>
@@ -296,19 +276,13 @@ return (
     </div>
     <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Confirmación</Modal.Title>
+        <Modal.Title>DETALLE DE FACTURA</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {clientToDelete && (
+        {invoiceToDownload && (
           <p>
-            ¿Seguro que quieres eliminar al cliente{" "}
-            {clientToDelete.cif_cliente} {clientToDelete.nombre}?
-          </p>
-        )}
-        {clientToEdit && (
-          <p>
-            ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
-            {clientToEdit.nombre}?
+            DOCUMENTO PDF {invoiceToDownload.cif_invoice}{" "}
+            {invoiceToDownload.nombre}?
           </p>
         )}
       </Modal.Body>
@@ -316,16 +290,12 @@ return (
         <Button variant="secondary" onClick={handleCloseModal}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleConfirmAction}>
-          Confirmar
+        <Button variant="primary" onClick={handleDownloadAction}>
+          Descargar PDF
         </Button>
       </Modal.Footer>
     </Modal>
-    <div className="text-center">
-      <Button variant="success" onClick={handleCreateClick}>
-        Crear Nueva Factura
-      </Button>
-    </div>
+
   </div>
 );
 };
