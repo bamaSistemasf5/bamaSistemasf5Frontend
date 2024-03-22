@@ -24,7 +24,7 @@ const OrdersView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
+        const response = await axios.get("http://localhost:3000/order/orders");
         setClients(response.data);
         setFilteredNotes(response.data);
       } catch (error) {
@@ -62,7 +62,7 @@ const OrdersView = () => {
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
-    navigate(`/update-client/${client.cif_cliente}`, {
+    navigate(`/order/update-order/${client.cif_cliente}`, {
       state: { noteData: client },
     });
     setShowModal(true);
