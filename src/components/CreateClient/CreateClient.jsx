@@ -84,9 +84,9 @@ const CreateClientForm = () => {
   };
 
   return (
-    <Container>
-      <h2>Crear Cliente</h2>
-      <form onSubmit={handleSubmit}>
+    <Container className="create-container">
+      <h2 className="h2-client-create">Crear Cliente</h2>
+      <form onSubmit={handleSubmit} className="formulario-create">
         <div className="form-group">
           <label className="form-label">CIF Cliente:</label>
           <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} className="form-input" />

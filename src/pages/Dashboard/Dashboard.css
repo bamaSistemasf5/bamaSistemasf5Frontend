@@ -1,0 +1,13 @@
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    flex: 0 0 200px; /* Fijar el ancho del Sidebar */
+  }
+  
+  .content {
+    flex: 1; /* Permitir que el contenido ocupe el espacio restante */
+  }
+  

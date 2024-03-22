@@ -6,13 +6,14 @@ import Col from "react-bootstrap/Col";
 export default function Footer() {
   return (
     <footer
-      style={{
-        backgroundColor: "#232D35",
-        color: "#fff",
-        padding: "20px",
-        marginBottom: "0",
-        // marginTop: "20px",
-      }}
+    style={{
+      backgroundColor: "#232D35",
+      color: "#fff",
+      padding: "20px",
+      // position: "fixed",
+      bottom: "0",
+      width: "100%",
+    }}
     >
       <Row
         style={{

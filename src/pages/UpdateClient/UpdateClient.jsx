@@ -23,10 +23,10 @@ const UpdateClient = () => {
   useEffect(() => {
     console.log('useEffect ejecutado');
     // Comprueba si hay datos del cliente en las props de location
-    if (location && location.state && location.state.clientData) {
-      console.log('Datos del cliente encontrados en location.state:', location.state.clientData);
+    if (location && location.state && location.state.noteData) {
+      console.log('Datos del cliente encontrados en location.state:', location.state.noteData);
       // Si hay datos, establece el estado con esos datos
-      setFormData(location.state.clientData);
+      setFormData(location.state.noteData);
     } else {
       console.log('Datos del cliente no encontrados en location.state.');
     }

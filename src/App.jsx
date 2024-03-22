@@ -10,9 +10,9 @@ import ClientsView from "./pages/ClientsView/ClientsView.jsx";
 import OrdersView from "./pages/OrdersView/OrdersView.jsx";
 import CreateOrder from "./pages/CreateOrder/CreateOrder.jsx";
 import Invoices from "./pages/Invoices/invoices.jsx"
-import CreateInvoice from "./pages/CreateInvoice/CreateInvoice.jsx";
 import UpdateClient from "./pages/UpdateClient/UpdateClient.jsx";
 import DeliveryNotes from "./pages/DeliveryNotes/DeliveryNotes.jsx";
+import UserDashboard from "./components/UserDashboard/UserDashboard";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -39,6 +39,7 @@ function App() {
   const handleLogin = () => {
     setAuthenticated(true);
   };
+  
 
   const handleLogout = () => {
     setAuthenticated(false);
@@ -56,7 +57,7 @@ function App() {
     <BrowserRouter>
       <Header authenticated={authenticated} onLogout={handleLogout} />
       <Routes>
-      <Route path="/" element={<Login onLogin={handleLogin} />} />
+        <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/clients-view" element={<ClientsView />} />
         <Route path="/create-client/" element={<CreateClient />} />
@@ -65,7 +66,7 @@ function App() {
         <Route path="/orders-view" element={<OrdersView />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/invoices-view" element={<Invoices />} />
-        <Route path="/create-invoice" element={<CreateInvoice />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
       </Routes>
       <Footer />
     </BrowserRouter>
