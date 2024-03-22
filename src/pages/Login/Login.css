@@ -53,4 +53,12 @@
     display: flex;
     justify-content: center;
   }
+
+  .soporte{
+    width: 30%;
+    margin-left: 20%;
+  }
+  form{
+    width: 1120px;
+  }
   

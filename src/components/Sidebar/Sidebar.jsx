@@ -1,12 +1,21 @@
-import React from 'react'
+
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
-// import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/js/dist/dropdown'
 import 'bootstrap/js/dist/collapse'
 import './Sidebar.css'
 
 
 function Sidebar() {
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        // Supongamos que currentUser es pasado como una prop desde tu componente de autenticación
+        // Este es solo un ejemplo simplificado, ajusta esto según cómo manejes la autenticación en tu aplicación
+        setCurrentUser({ name: 'Nombre del usuario' }); // Simplemente coloca el objeto de usuario cuando se inicie sesión
+    }, []);
+
     return (
         <div className='container-fluid'>
             <div className='row'>
@@ -18,7 +27,7 @@ function Sidebar() {
                     <div className="dropdown open">
                         <a className="btn border-none dropdown-toggle text-white" type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
-                               <i className='bi bi-person f5-4'></i> <span className='fs-5 ms-3 d-none d-sm-inline'>Juan</span>
+                         <i className='bi bi-person f5-4'></i> <span className='fs-5 ms-3 d-none d-sm-inline'>{currentUser ? currentUser.n : 'Invitado'}</span>
                         </a>
                         <div className="dropdown-menu" aria-labelledby="triggerId">
                             <a className="dropdown-item" href="#">Perfil</a>

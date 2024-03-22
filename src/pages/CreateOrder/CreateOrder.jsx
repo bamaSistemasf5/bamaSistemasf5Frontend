@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./CreateClient.css";
-import { Container } from "react-bootstrap";
+import "./CreateOrder.css";
 
-const CreateClientForm = () => {
+const CreateOrder = () => {
   const [formData, setFormData] = useState({
     cif_cliente: "",
     nombre: "",
@@ -73,7 +72,7 @@ const CreateClientForm = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/create-client", formData);
+        const response = await axios.post("http://localhost:3000/api/clients", formData);
         console.log("Cliente creado con éxito:", response.data);
         // Aquí puedes realizar alguna acción adicional después de crear el cliente
       } catch (error) {
@@ -84,58 +83,40 @@ const CreateClientForm = () => {
   };
 
   return (
-    <Container>
-      <h2>Crear Cliente</h2>
+    <div className="edit-profile-container">
+      <h2>Crear Albarán</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">CIF Cliente:</label>
+          <label className="form-label">Número Albarán:</label>
           <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} className="form-input" />
           {errors.cif_cliente && <span>{errors.cif_cliente}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Nombre:</label>
+          <label className="form-label">Cliente:</label>
           <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} className="form-input" />
           {errors.nombre && <span>{errors.nombre}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Dirección:</label>
+          <label className="form-label">Fecha Albarán:</label>
           <input type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} className="form-input" />
           {errors.direccion && <span>{errors.direccion}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Población:</label>
+          <label className="form-label">Importe:</label>
           <input type="text" name="poblacion" value={formData.poblacion} onChange={handleInputChange} className="form-input" />
           {errors.poblacion && <span>{errors.poblacion}</span>}
         </div>
         <div className="form-group">
-          <label className="form-label">Provincia:</label>
+          <label className="form-label">CIF Pedido</label>
           <input type="text" name="provincia" value={formData.provincia} onChange={handleInputChange} className="form-input" />
           {errors.provincia && <span>{errors.provincia}</span>}
         </div>
-        <div className="form-group">
-          <label className="form-label">País:</label>
-          <input type="text" name="pais" value={formData.pais} onChange={handleInputChange} className="form-input" />
-          {errors.pais && <span>{errors.pais}</span>}
-        </div>
-        <div className="form-group">
-          <label className="form-label">Código Postal:</label>
-          <input type="text" name="codigo_postal" value={formData.codigo_postal} onChange={handleInputChange} className="form-input" />
-          {errors.codigo_postal && <span>{errors.codigo_postal}</span>}
-        </div>
-        <div className="form-group">
-          <label className="form-label">Teléfono:</label>
-          <input type="text" name="telefono" value={formData.telefono} onChange={handleInputChange} className="form-input" />
-          {errors.telefono && <span>{errors.telefono}</span>}
-        </div>
-        <div className="form-group">
-          <label className="form-label">Correo Electrónico:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="form-input" />
-          {errors.email && <span>{errors.email}</span>}
-        </div>
-        <button type="submit" className="button">Crear Cliente</button>
+       
+        <button type="submit" className="button">Descargar Albarán</button>
+        <button type="submit" className="button button-cancel">Descargar Albarán Firmado</button>
       </form>
-    </Container>
+    </div>
   );
 };
 
-export default CreateClientForm;
+export default CreateOrder;

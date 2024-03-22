@@ -8,7 +8,7 @@ const OrdersView = () => {
   const navigate = useNavigate(); // Inicializa useNavigate
 
   const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     nro_pedido: "",
     fecha: "",
@@ -26,7 +26,7 @@ const OrdersView = () => {
       try {
         const response = await axios.get("http://localhost:3000/clients-view");
         setClients(response.data);
-        setFilteredNotes(response.data);
+        setFilteredClients(response.data);
       } catch (error) {
         console.error("Error fetching clients data:", error);
       }
@@ -43,56 +43,56 @@ const OrdersView = () => {
     }));
   };
 
-  const filterNotes = () => {
+  const filterClients = () => {
     const filteredData = clients.filter((client) =>
       Object.keys(searchInputs).every((key) =>
         client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
       )
     );
-    setFilteredNotes(filteredData);
+    setFilteredClients(filteredData);
   };
 
   useEffect(() => {
-    filterNotes();
+    filterClients();
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [clientToDelete, setClientToDelete] = useState(null);
+  const [clientToEdit, setClientToEdit] = useState(null);
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
     navigate(`/update-client/${client.cif_cliente}`, {
-      state: { noteData: client },
+      state: { clientData: client },
     });
     setShowModal(true);
   };
 
   const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
+    setClientToDelete(client);
     setShowModal(true);
   };
 
   const handleConfirmAction = () => {
-    if (noteToDelete) {
+    if (clientToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.cif_cliente}`
+          `http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`
         )
         .then((response) => {
           const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== noteToDelete.cif_cliente
+            (client) => client.cif_cliente !== clientToDelete.cif_cliente
           );
           setClients(updatedClients);
-          setFilteredNotes(updatedClients);
+          setFilteredClients(updatedClients);
         })
         .catch((error) => {
           console.error("Error deleting client:", error);
         });
-    } else if (noteToEdit) {
+    } else if (clientToEdit) {
       // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-order/${noteToEdit.cif_cliente}`, {
-        noteData: noteToEdit,
+      navigate(`/update-order/${clientToEdit.cif_cliente}`, {
+        clientData: clientToEdit,
       });
     }
     setShowModal(false);
@@ -100,8 +100,8 @@ const OrdersView = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
+    setClientToDelete(null);
+    setClientToEdit(null);
   };
 
   const handleCreateUserClick = () => {
@@ -245,16 +245,16 @@ const OrdersView = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {noteToDelete && (
+          {clientToDelete && (
             <p>
               ¿Seguro que quieres eliminar al cliente{" "}
-              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
+              {clientToDelete.cif_cliente} {clientToDelete.nombre}?
             </p>
           )}
-          {noteToEdit && (
+          {clientToEdit && (
             <p>
-              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
-              {noteToEdit.nombre}?
+              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
+              {clientToEdit.nombre}?
             </p>
           )}
         </Modal.Body>

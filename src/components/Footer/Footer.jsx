@@ -10,6 +10,8 @@ export default function Footer() {
         backgroundColor: "#232D35",
         color: "#fff",
         padding: "20px",
+        marginBottom: "0",
+        // marginTop: "20px",
       }}
     >
       <Row

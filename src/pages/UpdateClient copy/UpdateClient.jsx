@@ -23,10 +23,10 @@ const UpdateClient = () => {
   useEffect(() => {
     console.log('useEffect ejecutado');
     // Comprueba si hay datos del cliente en las props de location
-    if (location && location.state && location.state.noteData) {
-      console.log('Datos del cliente encontrados en location.state:', location.state.noteData);
+    if (location && location.state && location.state.clientData) {
+      console.log('Datos del cliente encontrados en location.state:', location.state.clientData);
       // Si hay datos, establece el estado con esos datos
-      setFormData(location.state.noteData);
+      setFormData(location.state.clientData);
     } else {
       console.log('Datos del cliente no encontrados en location.state.');
     }
@@ -48,7 +48,7 @@ const UpdateClient = () => {
       .then(response => {
         console.log('Client data updated successfully:', response.data);
         // Redirigir a la página de detalles del cliente después de la actualización (BETA)
-        // navigate(`/client-details/${id}`);
+       // navigate(`/client-details/${id}`);
       })
       .catch(error => {
         console.error('Error updating client data:', error);
