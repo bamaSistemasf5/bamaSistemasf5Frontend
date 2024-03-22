@@ -77,7 +77,7 @@ const handleCloseModal = () => setShowModal(false);
 
 return (
   <div>
-    <h1 className="text-center mb-4">Facturas</h1>
+    <h1 className="text-center mb-4 facturas">Facturas</h1>
     <div>
       <Table striped bordered responsive hover>
         <thead>
