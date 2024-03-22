@@ -4,11 +4,10 @@ import "./DeliveryNotes.css";
 import { Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
 
-const DeliveryNotes = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+const DeliveryNotes = () => { const navigate = useNavigate(); // Inicializa useNavigate
 
   const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredClients] = useState([]);
+  const [filteredClients, setFilteredNotes] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     nro_albaran: "",
     fecha: "",
@@ -26,73 +25,73 @@ const DeliveryNotes = () => {
       try {
         const response = await axios.get("http://localhost:3000/clients-view");
         setClients(response.data);
-        setFilteredClients(response.data);
+        setFilteredNotes(response.data);
       } catch (error) {
         console.error("Error fetching clients data:", error);
       }
     };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSearchInputs((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setSearchInputs((prevState) => ({
+    ...prevState,
+    [name]: value,
+  }));
+};
 
-  const filterClients = () => {
+  const filterNotes = () => {
     const filteredData = clients.filter((client) =>
       Object.keys(searchInputs).every((key) =>
         client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
       )
     );
-    setFilteredClients(filteredData);
+    setFilteredNotes(filteredData);
   };
 
   useEffect(() => {
-    filterClients();
+    filterNotes();
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [clientToDelete, setClientToDelete] = useState(null);
-  const [clientToEdit, setClientToEdit] = useState(null);
+  const [noteToDelete, setnoteToDelete] = useState(null);
+  const [noteToEdit, setnoteToEdit] = useState(null);
 
   const handleEditClick = (client) => {
-    console.log("Cliente seleccionado para editar:", client);
-    navigate(`/update-client/${client.cif_cliente}`, {
-      state: { clientData: client },
+    console.log("Albaran seleccionado para editar:", client);
+    navigate(`/update-delivery-note/${note.nro_albaran}`, {
+      state: { noteData: client },
     });
     setShowModal(true);
   };
 
   const handleDeleteClick = (client) => {
-    setClientToDelete(client);
+    setnoteToDelete(client);
     setShowModal(true);
   };
 
   const handleConfirmAction = () => {
-    if (clientToDelete) {
+    if (noteToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`
+          `http://localhost:3000/clients-view/${noteToDelete.nro_albaran}`
         )
         .then((response) => {
-          const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== clientToDelete.cif_cliente
-          );
-          setClients(updatedClients);
-          setFilteredClients(updatedClients);
+          const updateNote = note.filter(
+            (note) => note.nro_albaran !== noteToDelete.nro_albaran
+          ); setNote(updateNote);
+
+          setFilteredNotes(updateNote);
         })
         .catch((error) => {
-          console.error("Error deleting client:", error);
+          console.error("Error deleting note:", error);
         });
-    } else if (clientToEdit) {
+    } else if (noteToEdit) {
       // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
-        clientData: clientToEdit,
+      navigate(`/update-note/${noteToEdit.nro_albaran}`, {
+        noteData: noteToEdit,
       });
     }
     setShowModal(false);
@@ -100,13 +99,13 @@ const DeliveryNotes = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setClientToDelete(null);
-    setClientToEdit(null);
+    setnoteToDelete(null);
+    setnoteToEdit(null);
   };
 
-  const handleCreateClick = () => {
-    navigate("/create-delivery-note");
-  };
+const handleCreateDNClick = () => {
+  navigate("/create-delivery-note");
+};
 
   return (
     <div>
@@ -210,19 +209,19 @@ const DeliveryNotes = () => {
           <tbody>
             {filteredClients.map((client) => (
               <tr key={client.cif_cliente}>
-                <td className="table-data">{client.cif_cliente}</td>
-                <td className="table-data">{client.nombre}</td>
-                <td className="table-data">{client.direccion}</td>
-                <td className="table-data">{client.poblacion}</td>
-                <td className="table-data">{client.provincia}</td>
-                <td className="table-data">{client.pais}</td>
-                <td className="table-data">{client.codigo_postal}</td>
-                <td className="table-data">{client.telefono}</td>
-                <td className="table-data">{client.email}</td>
+                <td className="table-data">{note.nro_albaran}</td>
+                <td className="table-data">{note.fecha}</td>
+                <td className="table-data">{note.cliente}</td>
+                <td className="table-data">{note.cif_cliente}</td>
+                <td className="table-data">{note.firmado}</td>
+                <td className="table-data">{note.importe}</td>
+                <td className="table-data">{note.facturado}</td>
+                <td className="table-data">{note.pedido}</td>
+                <td className="table-data">{note.factura}</td>
                 <td className="table-data">
                   <Button
                     variant="warning"
-                    onClick={() => handleEditClick(client)}
+                    onClick={() => handleEditClick(note)}
                   >
                     🖋️
                   </Button>
@@ -230,7 +229,7 @@ const DeliveryNotes = () => {
                 <td className="table-data">
                   <Button
                     variant="danger"
-                    onClick={() => handleDeleteClick(client)}
+                    onClick={() => handleDeleteClick(note)}
                   >
                     🗑️
                   </Button>
@@ -245,16 +244,16 @@ const DeliveryNotes = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clientToDelete && (
+          {noteToDelete && (
             <p>
-              ¿Seguro que quieres eliminar al cliente{" "}
-              {clientToDelete.cif_cliente} {clientToDelete.nombre}?
+              ¿Seguro que quieres eliminar el albaran{" "}
+              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
             </p>
           )}
-          {clientToEdit && (
+          {noteToEdit && (
             <p>
-              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
-              {clientToEdit.nombre}?
+              ¿Seguro que quieres editar al albaran {noteToEdit.cif_cliente}{" "}
+              {noteToEdit.nombre}?
             </p>
           )}
         </Modal.Body>
@@ -276,4 +275,4 @@ const DeliveryNotes = () => {
   );
 };
 
-export default DeliveryNotes;
+export default DeliveryNotes
