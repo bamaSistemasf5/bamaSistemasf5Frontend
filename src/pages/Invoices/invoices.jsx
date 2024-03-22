@@ -72,10 +72,10 @@ const handleShowModal = (invoice) => {
 const handleCloseModal = () => setShowModal(false);
 
 //Para ver en detalle la fctura
-const handleDownloadPDF = async (id) => {
+const handleDownloadPDF = async (invoice) => {
   try {
     // Endpoint para generar y guardar el PDF
-    await axios.post(`/invoices-view/${id}/download`);
+    await axios.post(`/invoices-view/${invoice.nro_factura}/download`);
     console.log("Descargando PDF...")
     // Lógica adicional después de descargar el PDF, como mostrar un mensaje de éxito
   } catch (error) {
@@ -254,7 +254,7 @@ return (
               <td className="table-data">
                 <Button
                   variant="secondary"
-                  onClick={() => handleShowModal(invoice.id)}>
+                  onClick={() => handleShowModal(invoice.nro_factura)}>
                   Ver Detalle
                 </Button>
               </td>
@@ -278,7 +278,7 @@ return (
           )}
         </Modal.Body>
       <Modal.Footer>
-      <Button variant="primary" onClick={() => handleDownloadPDF(selectedInvoice?.id)}>
+      <Button variant="primary" onClick={() => handleDownloadPDF(selectedInvoice)}>
           Descargar PDF
         </Button>
         <Button variant="secondary" onClick={handleCloseModal}>
