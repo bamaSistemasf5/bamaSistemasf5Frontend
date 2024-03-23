@@ -21,6 +21,7 @@
     "firebase": "^10.8.1",
     "flowbite-react": "^0.7.5",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.1",
     "powerbi-client": "^2.22.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",

@@ -1,15 +1,17 @@
 
-.half-size-font, .table-data {
-    font-size: 0.5em; 
+.large-font{
+    font-size: 12px;
+    overflow:hidden;
   }
-  
+
   .text-center {
     text-align: center;
   }
-
+  .datos{
+    font-size: 30px;
+  }
   .custom-container {
-    margin: 2em;
-    max-width: 96%; /* Reducir el margen lateral a la mitad */
+    max-width: 96; /* Reducir el margen lateral a la mitad */
   }
 
 tr:hover {

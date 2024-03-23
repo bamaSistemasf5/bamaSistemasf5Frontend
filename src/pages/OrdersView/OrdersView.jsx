@@ -2,22 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OrdersView.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+import { useNavigate } from "react-router-dom";
 
 const OrdersView = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
 
-  const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
-    nro_pedido: "",
-    fecha: "",
     cliente: "",
+    fecha_pedido: "",
     cif_cliente: "",
-    importe: "",
-    porcentaje_facturado: "",
+    total: "",
     estado: "",
-    facturas: "",
     albaranes: "",
   });
 
@@ -25,10 +22,10 @@ const OrdersView = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:3000/order/orders");
-        setClients(response.data);
-        setFilteredNotes(response.data);
+        setOrders(response.data);
+        setFilteredOrders(response.data);
       } catch (error) {
-        console.error("Error fetching clients data:", error);
+        console.error("Error fetching orders data:", error);
       }
     };
 
@@ -43,56 +40,53 @@ const OrdersView = () => {
     }));
   };
 
-  const filterNotes = () => {
-    const filteredData = clients.filter((client) =>
-      Object.keys(searchInputs).every((key) =>
-        client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
-      )
+  const filterOrders = () => {
+    const filteredData = orders.filter((order) =>
+      order.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase())
     );
-    setFilteredNotes(filteredData);
+    setFilteredOrders(filteredData);
   };
 
   useEffect(() => {
-    filterNotes();
+    filterOrders();
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+  const [orderToEdit, setOrderToEdit] = useState(null);
 
-  const handleEditClick = (client) => {
-    console.log("Cliente seleccionado para editar:", client);
-    navigate(`/order/update-order/${client.cif_cliente}`, {
-      state: { noteData: client },
+  const handleEditClick = (order) => {
+    console.log("Order selected for editing:", order);
+    navigate(`/order/update-order/${order.cif_cliente}`, {
+      state: { orderData: order },
     });
     setShowModal(true);
   };
 
-  const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
+  const handleDeleteClick = (order) => {
+    setOrderToDelete(order);
     setShowModal(true);
   };
 
   const handleConfirmAction = () => {
-    if (noteToDelete) {
+    if (orderToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.cif_cliente}`
+          `http://localhost:3000/order/delete-order/${orderToDelete.id_pedido}`
         )
         .then((response) => {
-          const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== noteToDelete.cif_cliente
+          const updatedOrders = orders.filter(
+            (order) => order.cif_cliente !== orderToDelete.cif_cliente
           );
-          setClients(updatedClients);
-          setFilteredNotes(updatedClients);
+          setOrders(updatedOrders);
+          setFilteredOrders(updatedOrders);
         })
         .catch((error) => {
-          console.error("Error deleting client:", error);
+          console.error("Error deleting order:", error);
         });
-    } else if (noteToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-order/${noteToEdit.cif_cliente}`, {
-        noteData: noteToEdit,
+    } else if (orderToEdit) {
+      navigate(`/update-order/${orderToEdit.cif_cliente}`, {
+        orderData: orderToEdit,
       });
     }
     setShowModal(false);
@@ -100,17 +94,17 @@ const OrdersView = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
+    setOrderToDelete(null);
+    setOrderToEdit(null);
   };
 
-  const handleCreateUserClick = () => {
+  const handleCreateOrderClick = () => {
     navigate("/create-order");
   };
 
   return (
     <div>
-      <h1 className="text-center mb-4">Clientes</h1>
+      <h1 className="text-center mb-4">Pedidos</h1>
       <div>
         <Table striped bordered responsive hover>
           <thead>
@@ -118,119 +112,88 @@ const OrdersView = () => {
               <th>
                 <input
                   type="text"
+                  name="cliente"
+                  value={searchInputs.cliente}
+                  onChange={handleInputChange}
+                  placeholder="Cliente"
+                  className="large-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="date"
+                  name="fecha_pedido"
+                  value={searchInputs.fecha_pedido}
+                  onChange={handleInputChange}
+                  placeholder="Fecha pedido"
+                  className="large-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
                   name="cif_cliente"
                   value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
-                  placeholder="Nro Pedido"
-                  className="half-size-font"
+                  placeholder="CIF Cliente"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="nombre"
-                  value={searchInputs.nombre}
+                  name="total"
+                  value={searchInputs.total}
                   onChange={handleInputChange}
-                  placeholder="Fecha pedido"
-                  className="half-size-font"
+                  placeholder="Total"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="direccion"
-                  value={searchInputs.direccion}
+                  name="estado"
+                  value={searchInputs.estado}
                   onChange={handleInputChange}
-                  placeholder="Cliente"
-                  className="half-size-font"
+                  placeholder="Estado"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="poblacion"
-                  value={searchInputs.poblacion}
+                  name="albaranes"
+                  value={searchInputs.albaranes}
                   onChange={handleInputChange}
-                  placeholder="CIF cliente"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="provincia"
-                  value={searchInputs.provincia}
-                  onChange={handleInputChange}
-                  placeholder="Importe"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="pais"
-                  value={searchInputs.pais}
-                  onChange={handleInputChange}
-                  placeholder="Porcentaje facturado"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="Estado"
-                  value={searchInputs.codigo_postal}
-                  onChange={handleInputChange}
-                  placeholder="Código Postal"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="telefono"
-                  value={searchInputs.telefono}
-                  onChange={handleInputChange}
-                  placeholder="Total facturas"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="email"
-                  value={searchInputs.email}
-                  onChange={handleInputChange}
-                  placeholder="Total Albaranes"
-                  className="half-size-font"
+                  placeholder="Albaranes"
+                  className="large-font"
                 />
               </th>
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => (
-              <tr key={client.cif_cliente}>
-                <td className="table-data">{client.cif_cliente}</td>
-                <td className="table-data">{client.nombre}</td>
-                <td className="table-data">{client.direccion}</td>
-                <td className="table-data">{client.poblacion}</td>
-                <td className="table-data">{client.provincia}</td>
-                <td className="table-data">{client.pais}</td>
-                <td className="table-data">{client.codigo_postal}</td>
-                <td className="table-data">{client.telefono}</td>
-                <td className="table-data">{client.email}</td>
-                <td className="table-data">
+            {filteredOrders.map((order) => (
+              <tr key={order.id_pedido}>
+                <td className="table-data cliente">{order.cliente}</td>
+                <td className="table-data fpedido">{order.fecha_pedido}</td>
+                <td className="table-data cif">{order.cif_cliente}</td>
+                <td className="table-data total">{order.total}</td>
+                <td className="table-data estado">{order.estado}</td>
+                <td className="table-data albaranes">{order.albaranes}</td>
+                <td className="table-data edit">
                   <Button
                     variant="warning"
-                    onClick={() => handleEditClick(client)}
+                    onClick={() => handleEditClick(order)}
+                    className="edit-order"
                   >
                     🖋️
                   </Button>
                 </td>
-                <td className="table-data">
+                <td className="table-data delete">
                   <Button
                     variant="danger"
-                    onClick={() => handleDeleteClick(client)}
+                    onClick={() => handleDeleteClick(order)}
+                    className=""
                   >
                     ↓
                   </Button>
@@ -245,16 +208,16 @@ const OrdersView = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {noteToDelete && (
+          {orderToDelete && (
             <p>
-              ¿Seguro que quieres eliminar al cliente{" "}
-              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
+              ¿Seguro que quieres eliminar el pedido{" "}
+              {orderToDelete.nro_pedido} {orderToDelete.cliente}?
             </p>
           )}
-          {noteToEdit && (
+          {orderToEdit && (
             <p>
-              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
-              {noteToEdit.nombre}?
+              ¿Seguro que quieres editar el pedido {orderToEdit.id_pedido}{" "}
+              {orderToEdit.cliente}?
             </p>
           )}
         </Modal.Body>
@@ -268,7 +231,7 @@ const OrdersView = () => {
         </Modal.Footer>
       </Modal>
       <div className="text-center">
-        <Button variant="success" onClick={handleCreateUserClick}>
+        <Button variant="success" onClick={handleCreateOrderClick}>
           Crear Nuevo Pedido
         </Button>
       </div>
@@ -277,3 +240,5 @@ const OrdersView = () => {
 };
 
 export default OrdersView;
+
+
