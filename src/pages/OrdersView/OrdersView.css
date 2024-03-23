@@ -2,6 +2,9 @@
     font-size: 12px;
     overflow:hidden;
   }
+  .pedidos{
+    overflow: hidden;
+  }
 
   .albaranes{
     width: 25vw;
@@ -15,9 +18,9 @@
     width: 3vw;
   }
 
-  .estado-order{
+ .estado-order{
     font-size: 12px !important;
-    width: 8vw;
+    width: 5vw;
   }
 
   .total-order{
@@ -42,4 +45,13 @@
 
   .npedido{
     font-size: 12px !important;
+    width: 8vw;
+  }
+
+  .edit{
+    width: 2vw;
+  }
+
+  .delete{
+    width: 2vw;
   }

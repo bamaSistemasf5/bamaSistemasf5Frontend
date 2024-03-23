@@ -10,8 +10,9 @@ const OrdersView = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
-    cliente: "",
+    id_pedido: "",
     fecha_pedido: "",
+    cliente: "",
     cif_cliente: "",
     total: "",
     estado: "",
@@ -104,18 +105,18 @@ const OrdersView = () => {
 
   return (
     <div>
-      <h1 className="text-center mb-4">Pedidos</h1>
+      <h1 className="text-center mb-4 pedidos">Pedidos</h1>
       <div>
         <Table striped bordered responsive hover>
           <thead>
             <tr>
-              <th>
+            <th>
                 <input
                   type="text"
-                  name="cliente"
-                  value={searchInputs.cliente}
+                  name="nro pedido"
+                  value={searchInputs.id_pedido}
                   onChange={handleInputChange}
-                  placeholder="Cliente"
+                  placeholder="Nº Pedido"
                   className="large-font"
                 />
               </th>
@@ -126,6 +127,16 @@ const OrdersView = () => {
                   value={searchInputs.fecha_pedido}
                   onChange={handleInputChange}
                   placeholder="Fecha pedido"
+                  className="large-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  name="cliente"
+                  value={searchInputs.cliente}
+                  onChange={handleInputChange}
+                  placeholder="Cliente"
                   className="large-font"
                 />
               </th>
@@ -174,11 +185,12 @@ const OrdersView = () => {
           <tbody>
             {filteredOrders.map((order) => (
               <tr key={order.id_pedido}>
-                <td className="table-data cliente">{order.cliente}</td>
+                <td className="table-data npedido">{order.id_pedido}</td>
                 <td className="table-data fpedido">{order.fecha_pedido}</td>
-                <td className="table-data cif">{order.cif_cliente}</td>
-                <td className="table-data total">{order.total}</td>
-                <td className="table-data estado">{order.estado}</td>
+                <td className="table-data client-order">{order.cliente}</td>
+                <td className="table-data cif-order">{order.cif_cliente}</td>
+                <td className="table-data total-order">{order.total}</td>
+                <td className="table-data estado-order">{order.estado}</td>
                 <td className="table-data albaranes">{order.albaranes}</td>
                 <td className="table-data edit">
                   <Button
