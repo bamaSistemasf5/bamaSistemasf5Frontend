@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from 'date-fns';
 import { FaDownload } from 'react-icons/fa';
-import jsPDF from 'jspdf';
+
 
 const OrdersView = () => {
   const navigate = useNavigate();
@@ -28,32 +28,6 @@ const OrdersView = () => {
     column: "fecha_pedido",
     ascending: true,
   });
-  const handleDownloadPDF = async (order) => {
-    try {
-      if (order) {
-        const pdf = new jsPDF();
-        let yPos = 10;
-        const lineHeight = 10;
-        pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Fecha de pedido: ${order.fecha_pedido}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Total: ${order.total}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Estado: ${order.estado}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Albaranes: ${order.albaranes}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.save("order.pdf");
-      }
-    } catch (error) {
-      console.error("Error generating and saving PDF:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -226,7 +200,7 @@ const OrdersView = () => {
     onClick={() => handleSortClick("fecha_pedido")}
     style={{ cursor: 'pointer' }}
   >
-    Fecha Pedido
+    Total
     {sortBy.column === "fecha_pedido" && (
       <span>{sortBy.ascending ? "↓" : "↑"}</span>
     )}
@@ -246,6 +220,7 @@ const OrdersView = () => {
               <th>
                 <span className="large-font">Albaranes</span>
               </th>
+              
             </tr>
           </thead>
           <tbody>
@@ -302,7 +277,7 @@ const OrdersView = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="text-center">
+      <div className="text-center crear-order">
         <Button variant="success" onClick={handleCreateOrderClick}>
           Crear Nuevo Pedido
         </Button>
