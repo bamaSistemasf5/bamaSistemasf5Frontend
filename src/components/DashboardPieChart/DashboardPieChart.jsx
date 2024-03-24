@@ -81,7 +81,7 @@ const DashboardPieChart = () => {
       arcLinkLabelsThickness={2}
       arcLinkLabelsColor="red"
 
-      arcLabelsTextColor="red"
+      arcLabelsTextColor="black"
       width={window.innerWidth * 0.8} // La mitad del ancho de la ventana
       height={window.innerHeight * 0.5} // La mitad de la altura de la ventana
     />

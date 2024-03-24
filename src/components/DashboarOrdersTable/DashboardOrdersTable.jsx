@@ -5,17 +5,20 @@ import { tokens } from "../../pages/Dashboard/DashboardTheme";
 
 import axios from "axios"; // Importar axios para hacer la solicitud GET
 
-const DashboardTable = () => {
+const DashboardOrdersTable = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   
   // Definir las columnas de la tabla
   const columns = [
    
-    { field: "nro_factura", headerName: "Nro Factura", flex: 1 },
-    { field: "fecha", headerName: "Fecha", flex: 1 },
+    { field: "id_pedido", headerName: "Nro. Pedido", flex: 1 },
+    { field: "cif_cliente", headerName: "CIF CLiente", flex: 1 },
     { field: "cliente", headerName: "Cliente", flex: 1 },
-    // Añadir más columnas según sea necesario
+    { field: "fecha_pedido", headerName: "Fecha Pedido", flex: 1 },
+    { field: "total", headerName: "Total", flex: 1 },
+    { field: "estado", headerName: "Estado", flex: 1 },
+
   ];
 
   // Estado para almacenar los datos de la tabla
@@ -25,11 +28,11 @@ const DashboardTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/invoices-view");
+        const response = await axios.get("http://localhost:3000/order/orders");
         // Agregar nro_factura como id único a cada fila
         const rowsWithId = response.data.map(row => ({
           ...row,
-          id: row.nro_factura, // Usar nro_factura como id
+          id: row.id_pedido, // Usar nro_factura como id
         }));
         setRows(rowsWithId); // Establecer los datos con nro_factura como id en el estado de la tabla
       } catch (error) {
@@ -79,4 +82,4 @@ const DashboardTable = () => {
   );
 };
 
-export default DashboardTable;
+export default DashboardOrdersTable;

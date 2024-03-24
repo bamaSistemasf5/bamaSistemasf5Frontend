@@ -8,7 +8,7 @@ import { ColorModeContext, useMode } from "./DashboardTheme.js";
 import TopBar from '../../components/TopBar/TopBar.jsx';
 //import DashboardSidebar from '../../components/DashboardSidebar/DashboardSidebar';
 import DashboardPieChart from '../../components/DashboardPieChart/DashboardPieChart.jsx';
-import DashboardTable from '../../components/DashboardTable/DashboardTable.jsx';
+import DashboardOrdersTable from '../../components/DashboarOrdersTable/DashboardOrdersTable.jsx';
 import DashboardBarChart from '../../components/DashboardBarChart/DashboardBarChart.jsx';
 import OrdersLineChart from '../../components/OrdersLineChart/OrdersLineChart.jsx';
 
@@ -48,7 +48,7 @@ export default function Dashboard() {
         <OrdersLineChart />
         </div>
         <div className="dashboard-table-container">
-        <DashboardTable/>
+        <DashboardOrdersTable/>
         </div>
 
 
