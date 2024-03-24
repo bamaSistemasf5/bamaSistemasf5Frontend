@@ -3,6 +3,11 @@ import axios from "axios";
 import "./OrdersView.css";
 import { Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns';
+import { FaDownload } from 'react-icons/fa';
+import jsPDF from 'jspdf';
 
 const OrdersView = () => {
   const navigate = useNavigate();
@@ -11,13 +16,44 @@ const OrdersView = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     id_pedido: "",
-    fecha_pedido: "",
+    fecha_pedido: null, // Cambiado a null para el DatePicker
     cliente: "",
     cif_cliente: "",
     total: "",
     estado: "",
     albaranes: "",
   });
+
+  const [sortBy, setSortBy] = useState({
+    column: "fecha_pedido",
+    ascending: true,
+  });
+  const handleDownloadPDF = async (order) => {
+    try {
+      if (order) {
+        const pdf = new jsPDF();
+        let yPos = 10;
+        const lineHeight = 10;
+        pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Fecha de pedido: ${order.fecha_pedido}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Total: ${order.total}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Estado: ${order.estado}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Albaranes: ${order.albaranes}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.save("order.pdf");
+      }
+    } catch (error) {
+      console.error("Error generating and saving PDF:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,16 +77,59 @@ const OrdersView = () => {
     }));
   };
 
-  const filterOrders = () => {
-    const filteredData = orders.filter((order) =>
-      order.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase())
-    );
-    setFilteredOrders(filteredData);
+  const handleDateChange = (date) => {
+    setSearchInputs((prevState) => ({
+      ...prevState,
+      fecha_pedido: date,
+    }));
+  };
+
+  const handleSortClick = (column) => {
+    setSortBy({
+      column: column,
+      ascending: sortBy.column === column ? !sortBy.ascending : true,
+    });
   };
 
   useEffect(() => {
     filterOrders();
-  }, [searchInputs]);
+  }, [searchInputs, sortBy]);
+
+  const filterOrders = () => {
+    let filteredData = orders.filter((order) =>
+      order.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase())
+    );
+
+    if (searchInputs.fecha_pedido) {
+      const year = format(new Date(searchInputs.fecha_pedido), 'yyyy');
+      const month = format(new Date(searchInputs.fecha_pedido), 'MM');
+      const day = format(new Date(searchInputs.fecha_pedido), 'dd');
+
+      filteredData = filteredData.filter((order) => {
+        const orderYear = format(new Date(order.fecha_pedido), 'yyyy');
+        const orderMonth = format(new Date(order.fecha_pedido), 'MM');
+        const orderDay = format(new Date(order.fecha_pedido), 'dd');
+
+        return (
+          orderYear === year &&
+          orderMonth === month &&
+          orderDay === day
+        );
+      });
+    }
+
+    filteredData.sort((a, b) => {
+      const dateA = new Date(a[sortBy.column]);
+      const dateB = new Date(b[sortBy.column]);
+      if (sortBy.ascending) {
+        return dateA - dateB;
+      } else {
+        return dateB - dateA;
+      }
+    });
+
+    setFilteredOrders(filteredData);
+  };
 
   const [showModal, setShowModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
@@ -111,25 +190,24 @@ const OrdersView = () => {
           <thead>
             <tr>
             <th>
-                <input
-                  type="text"
-                  name="nro pedido"
-                  value={searchInputs.id_pedido}
-                  onChange={handleInputChange}
-                  placeholder="Nº Pedido"
-                  className="large-font"
-                />
+                <span className="large-font">Nº Pedido</span>
               </th>
-              <th>
-                <input
-                  type="date"
-                  name="fecha_pedido"
-                  value={searchInputs.fecha_pedido}
-                  onChange={handleInputChange}
-                  placeholder="Fecha pedido"
-                  className="large-font"
-                />
-              </th>
+              <th onClick={() => handleSortClick("fecha_pedido")}>
+  <DatePicker
+    selected={searchInputs.fecha_pedido}
+    onChange={handleDateChange}
+    placeholderText="Seleccionar fecha"
+    dateFormat="yyyy-MM-dd"
+    // minDate={new Date()} // Comenta esta línea para permitir fechas pasadas
+    // maxDate={new Date()} // Si deseas permitir solo fechas pasadas
+    // locale="es" // Cambiar el idioma a español
+  />
+  {/* {sortBy.column === "fecha_pedido" && (
+    <span>{sortBy.ascending ? "↓" : "↑"}</span>
+  )} */}
+</th>
+
+
               <th>
                 <input
                   type="text"
@@ -141,25 +219,20 @@ const OrdersView = () => {
                 />
               </th>
               <th>
-                <input
-                  type="text"
-                  name="cif_cliente"
-                  value={searchInputs.cif_cliente}
-                  onChange={handleInputChange}
-                  placeholder="CIF Cliente"
-                  className="large-font"
-                />
+                <span className="large-font">CIF Cliente</span>
               </th>
-              <th>
-                <input
-                  type="text"
-                  name="total"
-                  value={searchInputs.total}
-                  onChange={handleInputChange}
-                  placeholder="Total"
-                  className="large-font"
-                />
-              </th>
+              <th onClick={() => handleSortClick("fecha_pedido")}>
+  <span
+    onClick={() => handleSortClick("fecha_pedido")}
+    style={{ cursor: 'pointer' }}
+  >
+    Fecha Pedido
+    {sortBy.column === "fecha_pedido" && (
+      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+    )}
+  </span>
+</th>
+
               <th>
                 <input
                   type="text"
@@ -171,14 +244,7 @@ const OrdersView = () => {
                 />
               </th>
               <th>
-                <input
-                  type="text"
-                  name="albaranes"
-                  value={searchInputs.albaranes}
-                  onChange={handleInputChange}
-                  placeholder="Albaranes"
-                  className="large-font"
-                />
+                <span className="large-font">Albaranes</span>
               </th>
             </tr>
           </thead>
@@ -201,31 +267,25 @@ const OrdersView = () => {
                     🖋️
                   </Button>
                 </td>
-                <td className="table-data delete">
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDeleteClick(order)}
-                    className=""
-                  >
-                    ↓
-                  </Button>
-                </td>
+                <td className="table-data descarga">
+  <Button
+    variant="success"
+    onClick={() => handleDownloadPDF(order)}
+  >
+    <FaDownload /> Descargar PDF
+  </Button>
+</td>
               </tr>
             ))}
           </tbody>
         </Table>
       </div>
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {orderToDelete && (
-            <p>
-              ¿Seguro que quieres eliminar el pedido{" "}
-              {orderToDelete.nro_pedido} {orderToDelete.cliente}?
-            </p>
-          )}
           {orderToEdit && (
             <p>
               ¿Seguro que quieres editar el pedido {orderToEdit.id_pedido}{" "}
@@ -252,5 +312,3 @@ const OrdersView = () => {
 };
 
 export default OrdersView;
-
-

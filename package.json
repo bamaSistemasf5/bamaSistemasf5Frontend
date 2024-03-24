@@ -25,6 +25,7 @@
     "powerbi-client": "^2.22.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
+    "react-datepicker": "^6.5.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
     "react-loading-overlay-ts": "^1.0.5",
