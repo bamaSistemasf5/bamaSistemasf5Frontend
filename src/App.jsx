@@ -9,7 +9,7 @@ import CreateClient from "./components/CreateClient/CreateClient";
 import ClientsView from "./pages/ClientsView/ClientsView.jsx";
 import OrdersView from "./pages/OrdersView/OrdersView.jsx";
 import CreateOrder from "./pages/CreateOrder/CreateOrder.jsx";
-import Invoices from "./pages/Invoices/Invoices.jsx";
+import Invoices from './pages/Invoices/Invoices.jsx';
 import CreateInvoice from "./pages/CreateInvoice/CreateInvoice.jsx";
 import UpdateClient from "./pages/UpdateClient/UpdateClient.jsx";
 import DeliveryNotes from "./pages/DeliveryNotes/DeliveryNotes.jsx";
