@@ -21,16 +21,18 @@ const OrdersLineChart = ({ isCustomLineColors = false, isDashboard = false }) =>
                     if (!totalsByYear[year]) {
                         totalsByYear[year] = { year, totalFacturado: 0, totalPendiente: 0 };
                     }
-                    // Verificar si el valor de total_factura es válido antes de convertirlo a float
-                    const totalFacturado = parseFloat(invoice.total);
-                    console.log("Total Facturado:", totalFacturado);
-                    if (!isNaN(totalFacturado)) {
-                        totalsByYear[year].totalFacturado += totalFacturado;
-                        if (invoice.estado === "Pendiente") {
-                            totalsByYear[year].totalPendiente += totalFacturado;
+                    // Verificar si el valor de total es válido antes de convertirlo a float
+                    if (invoice.total !== null && invoice.total !== undefined) {
+                        const totalFacturado = parseFloat(invoice.total);
+                        console.log("Total Facturado:", totalFacturado);
+                        if (!isNaN(totalFacturado)) {
+                            totalsByYear[year].totalFacturado += totalFacturado;
+                            if (invoice.estado === "Pendiente") {
+                                totalsByYear[year].totalPendiente += totalFacturado;
+                            }
+                        } else {
+                            console.error("Valor de total no válido:", invoice.total);
                         }
-                    } else {
-                        console.error("Valor de total_factura no válido:", invoice.total_factura);
                     }
                 });
 
