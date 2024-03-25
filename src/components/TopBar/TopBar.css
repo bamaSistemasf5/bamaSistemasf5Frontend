@@ -1,0 +1,10 @@
+.dashboard-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 10%;
+    font-size: larger;
+    font-weight: bolder;
+/*  
+    background-color: red; */
+}
