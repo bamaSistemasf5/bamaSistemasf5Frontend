@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LineChart } from '@mui/x-charts/LineChart';
+import {LineChart}  from '@mui/x-charts/LineChart';
 import { Stack } from "@mui/material"; // Importa los componentes necesarios de Material-UI
 import axios from "axios";
 

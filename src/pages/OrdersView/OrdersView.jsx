@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from 'date-fns';
 import { FaDownload } from 'react-icons/fa';
+import jsPDF from "jspdf";
 
 
 const OrdersView = () => {
@@ -51,6 +52,29 @@ const OrdersView = () => {
     }));
   };
 
+const handleDownloadPDF = (order) => {
+  try {
+    if (order) {
+      const pdf = new jsPDF();
+      // Definir la posición inicial del texto
+      let yPos = 10;
+      // Agregar cada elemento de texto con una posición Y incrementada
+      pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
+      yPos += 10; // Incrementar la posición Y
+      pdf.text(`Fecha Pedido: ${order.fecha_pedido}`, 10, yPos);
+      yPos += 10; // Incrementar la posición Y
+      pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
+      yPos += 10; // Incrementar la posición Y
+      pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
+      // ...
+      pdf.save("pedido.pdf"); // Guarda el PDF con el nombre "pedido.pdf"
+    }
+  } catch (error) {
+    console.error("Error al generar y guardar el PDF:", error);
+  }
+};
+
+  
   const handleDateChange = (date) => {
     setSearchInputs((prevState) => ({
       ...prevState,
@@ -235,13 +259,13 @@ const OrdersView = () => {
                 <td className="table-data estado-order">{order.estado}</td>
                 <td className="table-data albaranes">{order.albaranes}</td>
                 <td className="table-data edit">
-                  <Button
-                    variant="warning"
-                    onClick={() => handleEditClick(order)}
-                    className="edit-order"
-                  >
-                    🖋️
-                  </Button>
+                <Button
+        variant="warning"
+        onClick={() => handleEditClick(order)} // Llama a handleEditClick al hacer clic en editar
+        className="edit-order"
+      >
+        🖋️
+      </Button>
                 </td>
                 <td className="table-data descarga"><Button
                 variant="success"
@@ -260,17 +284,14 @@ const OrdersView = () => {
         </Modal.Header>
         <Modal.Body>
           {orderToEdit && (
-            <p>
-              ¿Seguro que quieres editar el pedido {orderToEdit.id_pedido}{" "}
-              {orderToEdit.cliente}?
-            </p>
+            <p>¿Seguro que quieres editar el pedido {orderToEdit.id_pedido} {orderToEdit.cliente}?</p>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
+          <Button variant="primary" onClick={handleCloseModal}>
             Confirmar
           </Button>
         </Modal.Footer>

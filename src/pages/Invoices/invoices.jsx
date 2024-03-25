@@ -88,7 +88,7 @@ const Invoices = () => {
   
     setFilteredInvoices(filteredData);
   };
-  
+  // 
 
   useEffect(() => {
     filterInvoices();
