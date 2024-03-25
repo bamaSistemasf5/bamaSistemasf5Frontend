@@ -71,15 +71,9 @@ function Sidebar() {
                             {roleId === 2 && ( // Mostrar elementos solo si el id_rol es 2 (administrador)
                             <>
                             <li className="nav-item  my-1 py-2 py-sm-0">
-                                <a href="#" className="nav-link text-white text-center text-sm-start" aria-current="page">
-                                    <i className='bi bi-speedometer2'></i>
+                                <a href="client/clients-view" className="nav-link text-white text-center text-sm-start" aria-current="page">
+                                    <i className='bi bi-people'></i>
                                     <span className='ms-2 d-none d-sm-inline'>Clientes</span>
-                                </a>
-                            </li>
-                            <li className="nav-item  my-1 py-2 py-sm-0">
-                                <a href="#" className="nav-link text-white text-center text-sm-start" aria-current="page">
-                                    <i className='bi bi-speedometer2'></i>
-                                    <span className='ms-2 d-none d-sm-inline'>Analíticas</span>
                                 </a>
                             </li>
                     </>

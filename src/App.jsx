@@ -60,7 +60,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/clients-view" element={<ClientsView />} />
+        <Route path="/client/clients-view" element={<ClientsView />} />
         <Route path="/create-client/" element={<CreateClient />} />
         <Route path="/update-client/:id?" element={<UpdateClient />} />
         <Route path="/delivery-note/notes" element={<DeliveryNotes />} />

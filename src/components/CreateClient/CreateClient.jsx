@@ -19,7 +19,6 @@ const CreateClientForm = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -78,7 +77,6 @@ const CreateClientForm = () => {
       try {
         const response = await axios.post("http://localhost:3000/client/create-client", formData);
         console.log("Cliente creado con éxito:", response.data);
-        setShowSuccessModal(true); // Mostrar modal de éxito
         // Puedes realizar alguna acción adicional después de crear el cliente
       } catch (error) {
         console.error("Error al crear el cliente:", error);
@@ -138,23 +136,10 @@ const CreateClientForm = () => {
         </div>
         <button type="submit" className="button">Crear Cliente</button>
       </form>
-
-      {/* Modal de éxito */}
-      <Modal show={true} onHide={() => setShowSuccessModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Cliente Creado</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>¡El cliente se ha creado correctamente!</p>
-          {/* Puedes agregar más contenido al cuerpo del modal si lo deseas */}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>Cerrar</Button>
-        </Modal.Footer>
-      </Modal>
     </Container>
   );
 };
 
 export default CreateClientForm;
+
 
