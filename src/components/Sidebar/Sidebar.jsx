@@ -63,7 +63,7 @@ function Sidebar() {
                                             <a className="nav-link text-white" href="/invoices-view">Facturas</a>
                                         </li>
                                         <li className="nav-item ">
-                                            <a className="nav-link text-white" href="#">Albaranes</a>
+                                            <a className="nav-link text-white" href="/delivery-note/notes">Albaranes</a>
                                         </li>
                                     </ul>
                                 </li>

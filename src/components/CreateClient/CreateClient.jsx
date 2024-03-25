@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./CreateClient.css";
 import { Container, Modal, Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const CreateClientForm = () => {
   const [formData, setFormData] = useState({
@@ -138,7 +140,7 @@ const CreateClientForm = () => {
       </form>
 
       {/* Modal de éxito */}
-      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+      <Modal show={true} onHide={() => setShowSuccessModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Cliente Creado</Modal.Title>
         </Modal.Header>

@@ -63,7 +63,7 @@ function App() {
         <Route path="/clients-view" element={<ClientsView />} />
         <Route path="/create-client/" element={<CreateClient />} />
         <Route path="/update-client/:id?" element={<UpdateClient />} />
-        <Route path="/delivery-notes" element={<DeliveryNotes />} />
+        <Route path="/delivery-note/notes" element={<DeliveryNotes />} />
         <Route path="/order/orders" element={<OrdersView />} />
         <Route path="/order/update-order/:id" element={<UpdateOrder />} />
         <Route path="/create-order" element={<CreateOrder />} />
