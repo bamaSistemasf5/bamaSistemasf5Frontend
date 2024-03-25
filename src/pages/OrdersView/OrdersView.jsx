@@ -111,7 +111,7 @@ const OrdersView = () => {
 
   const handleEditClick = (order) => {
     console.log("Order selected for editing:", order);
-    navigate(`/order/update-order/${order.cif_cliente}`, {
+    navigate(`/order/update-order/${order.id_pedido}`, {
       state: { orderData: order },
     });
     setShowModal(true);
@@ -140,9 +140,10 @@ const OrdersView = () => {
         });
     } else if (orderToEdit) {
       navigate(`/update-order/${orderToEdit.cif_cliente}`, {
-        orderData: orderToEdit,
+        state: { orderData: orderToEdit },
       });
     }
+    
     setShowModal(false);
   };
 
@@ -242,14 +243,11 @@ const OrdersView = () => {
                     🖋️
                   </Button>
                 </td>
-                <td className="table-data descarga">
-  <Button
-    variant="success"
-    onClick={() => handleDownloadPDF(order)}
-  >
-    <FaDownload /> Descargar PDF
-  </Button>
-</td>
+                <td className="table-data descarga"><Button
+                variant="success"
+                onClick={() => handleDownloadPDF(order)} >
+                  <FaDownload /> Descargar PDF</Button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -277,7 +275,7 @@ const OrdersView = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="text-center crear-order">
+      <div className="text-center ">
         <Button variant="success" onClick={handleCreateOrderClick}>
           Crear Nuevo Pedido
         </Button>
