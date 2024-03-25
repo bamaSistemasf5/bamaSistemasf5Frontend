@@ -1,57 +1,40 @@
-import  './TopBar.css';
-import React from 'react'
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
-import { ColorModeContext, tokens } from "../../pages/Dashboard/DashboardTheme.js";
-import InputBase from "@mui/material/InputBase";
+import React, { useContext } from 'react';
+import { Box, IconButton, useTheme } from '@mui/material';
+import { ColorModeContext } from '../../pages/Dashboard/DashboardTheme.js'; // Ajusta la ruta según la ubicación real
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 
-
-const TopBar = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const colorMode = useContext(ColorModeContext);
+const TopBar = ({ colorMode, theme }) => {
+  const mode = useContext(ColorModeContext);
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
-    {/* SEARCH BAR */}<div className='dashboard-title'><h2>Dahsboard</h2></div>
-    <Box
-      display="flex"
-      backgroundColor={colors.primary[400]}
-      borderRadius="3px"
-    >
-      <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-      <IconButton type="button" sx={{ p: 1 }}>
-        <SearchIcon />
-      </IconButton>
-    </Box>
+      <div className='dashboard-title'><h2>Dashboard</h2></div>
+      <Box
+        display="flex"
+        backgroundColor={theme.palette.primary[400]}
+        borderRadius="3px"
+      >
+        {/* Aquí va tu barra de búsqueda */}
+        <IconButton type="button" sx={{ p: 1 }}>
+     
+        </IconButton>
+      </Box>
 
-    {/* ICONS */}
-    <Box display="flex">
-      <IconButton onClick={colorMode.toggleColorMode}>
-        {theme.palette.mode === "dark" ? (
+      {/* ICONS */}
+      <Box display="flex">
+        <IconButton onClick={colorMode.toggleColorMode}>
+          {theme.palette.mode === "dark" ? (
             <LightModeOutlinedIcon />
-            ) : (
+          ) : (
             <DarkModeOutlinedIcon />
-        )}
-      </IconButton>
-      <IconButton>
-        <NotificationsOutlinedIcon />
-      </IconButton>
-      <IconButton>
-        <SettingsOutlinedIcon />
-      </IconButton>
-      <IconButton>
-        <PersonOutlinedIcon />
-      </IconButton>
+          )}
+        </IconButton>
+        {/* Agrega tus otros iconos aquí */}
+      </Box>
     </Box>
-  </Box>
-  )
-}
+  );
+};
 
-export default TopBar
+export default TopBar;

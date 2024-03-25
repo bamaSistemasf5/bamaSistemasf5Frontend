@@ -1,10 +1,10 @@
 .dashboard-title {
     display: flex;
+    margin: auto;
     justify-content: space-between;
     align-items: center;
     margin-left: 10%;
     font-size: larger;
     font-weight: bolder;
-/*  
-    background-color: red; */
+
 }
