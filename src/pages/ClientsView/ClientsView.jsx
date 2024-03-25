@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ClientsView.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+import { useNavigate } from "react-router-dom";
 
 const ClientsView = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
 
   const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     cif_cliente: "",
     nombre: "",
@@ -24,9 +24,9 @@ const ClientsView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
+        const response = await axios.get("http://localhost:3000/client/clients");
         setClients(response.data);
-        setFilteredNotes(response.data);
+        setFilteredClients(response.data);
       } catch (error) {
         console.error("Error fetching clients data:", error);
       }
@@ -43,23 +43,23 @@ const ClientsView = () => {
     }));
   };
 
-  const filterNotes = () => {
+  const filterClients = () => {
     const filteredData = clients.filter((client) =>
       Object.keys(searchInputs).every((key) =>
         client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
       )
     );
-    setFilteredNotes(filteredData);
+    setFilteredClients(filteredData);
   };
 
   useEffect(() => {
-    filterNotes();
+    filterClients();
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [clientToDelete, setClientToDelete] = useState(null);
+  const [clientToEdit, setClientToEdit] = useState(null);
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
@@ -70,33 +70,31 @@ const ClientsView = () => {
   };
 
   const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
-    setShowModal(true); // Aquí asegúrate de que showModal se establezca en true
+    setClientToDelete(client);
+    setShowModal(true);
     setModalMessage(
       `¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`
     );
   };
 
   const handleConfirmAction = () => {
-    if (noteToDelete) {
+    if (clientToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.cif_cliente}`
+          `http://localhost:3000/client/clients/${clientToDelete.cif_cliente}`
         )
         .then((response) => {
           const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== noteToDelete.cif_cliente
+            (client) => client.cif_cliente !== clientToDelete.cif_cliente
           );
           setClients(updatedClients);
-          setFilteredNotes(updatedClients);
-          setnoteToDelete(null);
-          setClientDeleted(true);
+          setFilteredClients(updatedClients);
+          setClientToDelete(null);
         })
         .catch((error) => {
           console.error("Error deleting client:", error);
         });
     } else if (clientToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
       navigate(`/update-client/${clientToEdit.cif_cliente}`, {
         clientData: clientToEdit,
       });
@@ -106,14 +104,13 @@ const ClientsView = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
+    setClientToDelete(null);
+    setClientToEdit(null);
   };
 
   const handleCreateUserClick = () => {
     navigate("/create-client");
   };
-
   return (
     <div>
       <h1 className="text-center mb-4">Clientes</h1>

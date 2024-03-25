@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./DeliveryNotes.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+import { useNavigate } from "react-router-dom";
 
-const DeliveryNotes = () => { const navigate = useNavigate(); // Inicializa useNavigate
+const DeliveryNotes = () => {
+  const navigate = useNavigate();
 
   const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     nro_albaran: "",
     fecha: "",
@@ -23,24 +24,24 @@ const DeliveryNotes = () => { const navigate = useNavigate(); // Inicializa useN
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
+        const response = await axios.get("http://localhost:3000/delivery-note/notes");
         setClients(response.data);
-        setFilteredNotes(response.data);
+        setFilteredClients(response.data);
       } catch (error) {
         console.error("Error fetching clients data:", error);
       }
     };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
-const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setSearchInputs((prevState) => ({
-    ...prevState,
-    [name]: value,
-  }));
-};
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSearchInputs((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   const filterNotes = () => {
     const filteredData = clients.filter((client) =>
@@ -48,7 +49,7 @@ const handleInputChange = (e) => {
         client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
       )
     );
-    setFilteredNotes(filteredData);
+    setFilteredClients(filteredData);
   };
 
   useEffect(() => {
@@ -56,19 +57,19 @@ const handleInputChange = (e) => {
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [noteToDelete, setNoteToDelete] = useState(null);
+  const [noteToEdit, setNoteToEdit] = useState(null);
 
-  const handleEditClick = (client) => {
-    console.log("Albaran seleccionado para editar:", client);
+  const handleEditClick = (note) => {
+    console.log("Albaran seleccionado para editar:", note);
     navigate(`/update-delivery-note/${note.nro_albaran}`, {
-      state: { noteData: client },
+      state: { noteData: note },
     });
     setShowModal(true);
   };
 
-  const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
+  const handleDeleteClick = (note) => {
+    setNoteToDelete(note);
     setShowModal(true);
   };
 
@@ -76,20 +77,19 @@ const handleInputChange = (e) => {
     if (noteToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.nro_albaran}`
+          `http://localhost:3000/delivey-note/notes/${noteToDelete.nro_albaran}`
         )
         .then((response) => {
-          const updateNote = note.filter(
+          const updatedNotes = clients.filter(
             (note) => note.nro_albaran !== noteToDelete.nro_albaran
-          ); setNote(updateNote);
-
-          setFilteredNotes(updateNote);
+          );
+          setClients(updatedNotes);
+          setFilteredClients(updatedNotes);
         })
         .catch((error) => {
           console.error("Error deleting note:", error);
         });
     } else if (noteToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
       navigate(`/update-note/${noteToEdit.nro_albaran}`, {
         noteData: noteToEdit,
       });
@@ -99,13 +99,13 @@ const handleInputChange = (e) => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
+    setNoteToDelete(null);
+    setNoteToEdit(null);
   };
 
-const handleCreateDNClick = () => {
-  navigate("/create-delivery-note");
-};
+  const handleCreateClick = () => {
+    navigate("/create-delivery-note");
+  };
 
   return (
     <div>
@@ -118,7 +118,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="dn-number"
-                  value={searchInputs.cif_cliente}
+                  value={searchInputs.nro_albaran}
                   onChange={handleInputChange}
                   placeholder="Nro Albarán"
                   className="half-size-font"
@@ -128,7 +128,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="date"
-                  value={searchInputs.nombre}
+                  value={searchInputs.fecha}
                   onChange={handleInputChange}
                   placeholder="Fecha"
                   className="half-size-font"
@@ -138,7 +138,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="client"
-                  value={searchInputs.direccion}
+                  value={searchInputs.cliente}
                   onChange={handleInputChange}
                   placeholder="Cliente"
                   className="half-size-font"
@@ -148,7 +148,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="cif-client"
-                  value={searchInputs.poblacion}
+                  value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
                   placeholder="CIF cliente"
                   className="half-size-font"
@@ -158,7 +158,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="check"
-                  value={searchInputs.provincia}
+                  value={searchInputs.firmado}
                   onChange={handleInputChange}
                   placeholder="Firmado"
                   className="half-size-font"
@@ -168,7 +168,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="total"
-                  value={searchInputs.pais}
+                  value={searchInputs.importe}
                   onChange={handleInputChange}
                   placeholder="Importe"
                   className="half-size-font"
@@ -178,7 +178,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="invoiced"
-                  value={searchInputs.codigo_postal}
+                  value={searchInputs.facturado}
                   onChange={handleInputChange}
                   placeholder="Facturado"
                   className="half-size-font"
@@ -188,7 +188,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="invoiced-nr"
-                  value={searchInputs.telefono}
+                  value={searchInputs.pedido}
                   onChange={handleInputChange}
                   placeholder="Nro Pedido"
                   className="half-size-font"
@@ -198,7 +198,7 @@ const handleCreateDNClick = () => {
                 <input
                   type="text"
                   name="bill-nr"
-                  value={searchInputs.email}
+                  value={searchInputs.factura}
                   onChange={handleInputChange}
                   placeholder="Factura"
                   className="half-size-font"
@@ -207,8 +207,8 @@ const handleCreateDNClick = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => (
-              <tr key={client.cif_cliente}>
+            {filteredClients.map((note) => (
+              <tr key={note.nro_albaran}>
                 <td className="table-data">{note.nro_albaran}</td>
                 <td className="table-data">{note.fecha}</td>
                 <td className="table-data">{note.cliente}</td>
@@ -247,13 +247,13 @@ const handleCreateDNClick = () => {
           {noteToDelete && (
             <p>
               ¿Seguro que quieres eliminar el albaran{" "}
-              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
+              {noteToDelete.nro_albaran} {noteToDelete.cliente}?
             </p>
           )}
           {noteToEdit && (
             <p>
-              ¿Seguro que quieres editar al albaran {noteToEdit.cif_cliente}{" "}
-              {noteToEdit.nombre}?
+              ¿Seguro que quieres editar el albaran {noteToEdit.nro_albaran}{" "}
+              {noteToEdit.cliente}?
             </p>
           )}
         </Modal.Body>
@@ -273,6 +273,4 @@ const handleCreateDNClick = () => {
       </div>
     </div>
   );
-};
-
-export default DeliveryNotes
+  
