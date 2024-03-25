@@ -52,28 +52,35 @@ const OrdersView = () => {
     }));
   };
 
-const handleDownloadPDF = (order) => {
-  try {
-    if (order) {
-      const pdf = new jsPDF();
-      // Definir la posición inicial del texto
-      let yPos = 10;
-      // Agregar cada elemento de texto con una posición Y incrementada
-      pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
-      yPos += 10; // Incrementar la posición Y
-      pdf.text(`Fecha Pedido: ${order.fecha_pedido}`, 10, yPos);
-      yPos += 10; // Incrementar la posición Y
-      pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
-      yPos += 10; // Incrementar la posición Y
-      pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
-      // ...
-      pdf.save("pedido.pdf"); // Guarda el PDF con el nombre "pedido.pdf"
+  const handleDownloadPDF = (order) => {
+    try {
+      if (order) {
+        const pdf = new jsPDF();
+        // Definir la posición inicial del texto
+        let yPos = 10;
+        // Agregar cada elemento de texto con una posición Y incrementada
+        pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Fecha Pedido: ${order.fecha_pedido}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Total: ${order.total}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Estado: ${order.estado}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Albaranes: ${order.albaranes}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        // ...
+        pdf.save("pedido.pdf"); // Guarda el PDF con el nombre "pedido.pdf"
+      }
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
     }
-  } catch (error) {
-    console.error("Error al generar y guardar el PDF:", error);
-  }
-};
-
+  };
+  
   
   const handleDateChange = (date) => {
     setSearchInputs((prevState) => ({
