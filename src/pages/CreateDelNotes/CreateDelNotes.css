@@ -1,43 +1,33 @@
-.edit-profile-container {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-   
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .button-cancel {
-    background-color: #f44336;
-  }
-  
+
+.notes-header{
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  margin-right: 10vw;
+}
+
+.formulario-crear-notes{
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.pdf-create-notes{
+  background: green !important;
+  margin-bottom: 5vh;
+  color: #fff;
+  margin-left: 0vw;
+}
+.enviar-note{
+  margin-right: 12vw;
+  margin-left: 0vw;
+}
+
+.form-notes{
+  overflow: hidden;
+  margin-right: 230vw;
+  width: 50vw;
+
+}

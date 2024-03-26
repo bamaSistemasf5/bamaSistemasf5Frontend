@@ -2,33 +2,20 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./CreateOrder.css";
 import jsPDF from "jspdf";
-import { RiDownload2Line } from 'react-icons/ri';
-import { RiFileTextLine } from 'react-icons/ri';
+import { RiDownload2Line, RiFileTextLine } from 'react-icons/ri';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import firebase from "firebase/compat/app";
-import "firebase/storage";
-
-
-
-const firebaseConfig = {
-  // Tu configuración de Firebase aquí
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
 
 const CreateOrder = () => {
   const [formData, setFormData] = useState({
     cif_cliente: "",
     base_imponible: "",
-    fecha_pedido: new Date(), // Inicializar con la fecha actual
+    fecha_pedido: new Date(),
     iva_total: "",
     total: ""
   });
 
-  const [documento, setDocumento] = useState(null); // Nuevo estado para almacenar el documento
+  const [documento, setDocumento] = useState(null);
   const [errors, setErrors] = useState({});
   const [orderResponse, setOrderResponse] = useState(null);
   const [albaranNumber, setAlbaranNumber] = useState(null);
@@ -64,22 +51,6 @@ const CreateOrder = () => {
 
     if (validateForm()) {
       try {
-        // Subir documento a Firebase Storage y guardar la URL en Firebase
-        const storageRef = firebase.storage().ref();
-        const documentoRef = storageRef.child('documentos/' + documento.name);
-        const snapshot = await documentoRef.put(documento);
-        const documentoURL = await snapshot.ref.getDownloadURL();
-
-        // Guardar URL del documento en Firebase Realtime Database
-        await firebase.database().ref('pedidos').push({
-          cif_cliente: formData.cif_cliente,
-          base_imponible: formData.base_imponible,
-          fecha_pedido: formData.fecha_pedido.toISOString(),
-          iva_total: formData.iva_total,
-          total: formData.total,
-          documentoURL: documentoURL
-        });
-
         // Crear pedido en el servidor
         const response = await axios.post("http://localhost:3000/order/create-order", formData);
         setOrderResponse(response.data);
@@ -99,13 +70,7 @@ const CreateOrder = () => {
 
       const numeroAlbaran = generateUniqueAlbaranNumber();
 
-      const albaranData = {
-        id_albaran: numeroAlbaran,
-        id_pedido: orderResponse.id_pedido,
-        Firmado: true
-      };
-      const albaranResponse = await axios.post("http://localhost:3000/delivery-note/create-note", albaranData);
-
+      // Simplemente establecemos el número de albarán generado
       setAlbaranNumber(numeroAlbaran);
       setShowAlbaranModal(true);
     } catch (error) {
@@ -124,7 +89,6 @@ const CreateOrder = () => {
   const generatePDF = () => {
     const doc = new jsPDF();
     try {
-
       doc.text("Datos del Pedido", 10, 40);
       doc.text(`CIF Cliente: ${formData.cif_cliente}`, 10, 50);
       doc.text(`Fecha del Pedido: ${formData.fecha_pedido.toDateString()}`, 10, 70);
@@ -192,6 +156,28 @@ const CreateOrder = () => {
 };
 
 export default CreateOrder;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

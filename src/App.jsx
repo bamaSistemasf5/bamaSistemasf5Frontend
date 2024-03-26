@@ -15,6 +15,7 @@ import DeliveryNotes from "./pages/DeliveryNotes/DeliveryNotes.jsx";
 import UpdateOrder from "./pages/UpdateOrder/UpdateOrder";
 import PanelControl from "./pages/PanelControl/PanelControl";
 import Support from "./pages/Support/Support.jsx";
+import CreateDelNotes from "./pages/CreateDelNotes/CreateDelNotes";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -62,6 +63,7 @@ function App() {
         <Route path="/create-client/" element={<CreateClient />} />
         <Route path="/update-client/:id?" element={<UpdateClient />} />
         <Route path="/delivery-note/notes" element={<DeliveryNotes />} />
+        <Route path="/create-note" element={<CreateDelNotes />} />
         <Route path="/order/orders" element={<OrdersView />} />
         <Route path="/order/update-order/:id" element={<UpdateOrder />} />
         <Route path="/create-order" element={<CreateOrder />} />
