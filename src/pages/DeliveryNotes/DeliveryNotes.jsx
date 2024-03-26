@@ -27,7 +27,7 @@ const DeliveryNotes = () => {
   });
 
   const [sortBy, setSortBy] = useState({
-    column: "fecha_albaran",
+    column: "albaran",
     ascending: true,
   });
 
@@ -84,6 +84,7 @@ const DeliveryNotes = () => {
       console.error('Error al generar el PDF:', error);
     }
   };
+
 
   const handleDateChange = (date) => {
     setSearchInputs((prevState) => ({
@@ -175,6 +176,7 @@ const DeliveryNotes = () => {
         .delete(
           `http://localhost:3000/delete-note/:id/${deliveryToDelete.albaran}`
         )
+       
         .then((response) => {
           const updatedDeliveries = deliveries.filter(
             (delivery) => delivery.cif_cliente !== deliveryToDelete.cif_cliente
@@ -200,6 +202,9 @@ const DeliveryNotes = () => {
       setDeliveryToDelete(null);
       setDeliveryToEdit(null);
     };
+  
+   
+
   
     const handleCreateDeliveryNoteClick = () => {
       navigate("/create-note"); // Redirige a la página de creación de albarán

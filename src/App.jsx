@@ -44,8 +44,12 @@ function App() {
   };
 
   const handleLogout = () => {
+    // Limpiar el estado de autenticación
     setAuthenticated(false);
+    // Limpiar el almacenamiento local
+    localStorage.removeItem('userData'); // Asegúrate de cambiar 'userData' por el nombre de la clave donde se guarda la información del usuario
   };
+  
   if (isLoading) {
     return <LoadingComponent text="Cargando..." />;
   }
@@ -68,7 +72,7 @@ function App() {
         <Route path="/order/update-order/:id" element={<UpdateOrder />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/invoices-view" element={<Invoices />} />
-        <Route path="/control-panel" element={<PanelControl />} />
+        <Route path="/panel-control" element={<PanelControl />} />
         <Route path="/support" element={<Support />} />
       </Routes>
       <Footer />
