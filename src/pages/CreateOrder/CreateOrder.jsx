@@ -6,20 +6,11 @@ import { RiDownload2Line } from 'react-icons/ri';
 import { RiFileTextLine } from 'react-icons/ri';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import firebase from "firebase/compat/app";
-import "firebase/storage";
+import { useNavigate } from "react-router-dom";
 
-
-
-const firebaseConfig = {
-  // Tu configuración de Firebase aquí
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
 
 const CreateOrder = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     cif_cliente: "",
     base_imponible: "",
@@ -81,7 +72,7 @@ const CreateOrder = () => {
         });
 
         // Crear pedido en el servidor
-        const response = await axios.post("http://localhost:8000/order/create-order", formData);
+        const response = await axios.post("http://localhost:3000/order/create-order", formData);
         setOrderResponse(response.data);
         setShowPedidoModal(true);
       } catch (error) {
@@ -104,13 +95,17 @@ const CreateOrder = () => {
         id_pedido: orderResponse.id_pedido,
         Firmado: true
       };
-      const albaranResponse = await axios.post("http://localhost:8000/delivery-note/create-note", albaranData);
+      const albaranResponse = await axios.post("http://localhost:3000/delivery-note/create-note", albaranData);
 
       setAlbaranNumber(numeroAlbaran);
       setShowAlbaranModal(true);
     } catch (error) {
       console.error("Error al generar el albarán:", error);
     }
+  };
+
+  const handleCreateInvoiceClick = () => {
+    navigate("/create-invoice");
   };
 
   const handleClosePedidoModal = () => {
@@ -167,6 +162,7 @@ const CreateOrder = () => {
       </form>
       <div className="button-group">
         <button onClick={generatePDF} className="pdf-create-order"><RiDownload2Line /> Generar PDF</button>
+        <button onClick={handleCreateInvoiceClick} className="create-invoice"><RiFileTextLine />Crear Factura</button>
         <button onClick={generateAlbaran} className="create-albaran-order"><RiFileTextLine />Generar Albarán</button>
       </div>
 
@@ -192,24 +188,3 @@ const CreateOrder = () => {
 };
 
 export default CreateOrder;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
