@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import jsPDF from "jspdf";
+import { format } from 'date-fns';
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState([]);
@@ -23,6 +26,11 @@ const Invoices = () => {
     albaran: ""
   });
 
+  const [sortBy, setSortBy] = useState({
+    column: "total_factura", // Columna inicial para ordenar
+    ascending: true,
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,6 +45,13 @@ const Invoices = () => {
     fetchData();
   }, []);
 
+  const handleSortClick = (column) => {
+    setSortBy({
+      column: column,
+      ascending: sortBy.column === column ? !sortBy.ascending : true,
+    });
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchInputs((prevState) => ({
@@ -44,17 +59,36 @@ const Invoices = () => {
       [name]: value,
     }));
   };
+  
+  const handleDateChange = (date) => {
+    setSearchInputs((prevState) => ({
+      ...prevState,
+      fecha: date,
+    }));
+  };
+  
 
   const filterInvoices = () => {
-    const filteredData = invoices.filter((invoice) =>
-      Object.keys(searchInputs).every((key) => {
-        const searchValue = searchInputs[key].toLowerCase();
-        const invoiceValue = typeof invoice[key] === 'string' ? invoice[key].toLowerCase() : '';
-        return invoiceValue.includes(searchValue);
-      })
-    );
+    const filteredData = invoices.filter((invoice) => {
+      // Verificar si el nombre del cliente coincide (en minúsculas para hacer la comparación sin distinción entre mayúsculas y minúsculas)
+      const matchesCliente = invoice.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase());
+  
+      // Verificar si el CIF del cliente coincide (en minúsculas para hacer la comparación sin distinción entre mayúsculas y minúsculas)
+      const matchesCifCliente = invoice.cif_cliente.toLowerCase().includes(searchInputs.cif_cliente.toLowerCase());
+  
+      // Verificar si la fecha de la factura coincide
+      const matchesFecha = searchInputs.fecha ? invoice.fecha === searchInputs.fecha : true;
+  
+      // Verificar si la fecha de vencimiento coincide
+      const matchesFechaVencimiento = searchInputs.fecha_vencimiento ? invoice.fecha_vencimiento === searchInputs.fecha_vencimiento : true;
+  
+      // Resto de las condiciones...
+      return matchesCliente && matchesCifCliente && matchesFecha && matchesFechaVencimiento;
+    });
+  
     setFilteredInvoices(filteredData);
   };
+  // 
 
   useEffect(() => {
     filterInvoices();
@@ -86,8 +120,6 @@ const Invoices = () => {
         yPos += lineHeight;
         pdf.text(`Fecha de vencimiento: ${invoice.fecha_vencimiento}`, 10, yPos);
         yPos += lineHeight;
-        pdf.text(`Fecha de cobro: ${invoice.fecha_cobro}`, 10, yPos);
-        yPos += lineHeight;
         pdf.text(`Estado: ${invoice.estado}`, 10, yPos);
         yPos += lineHeight;
         pdf.text(`Base imponible: ${invoice.base_imponible}`, 10, yPos);
@@ -108,7 +140,6 @@ const Invoices = () => {
       console.error("Error al generar y guardar el PDF:", error);
     }
   };
-  
 
   return (
     <div>
@@ -128,19 +159,18 @@ const Invoices = () => {
                 />
               </th>
               <th>
-                <input
-                  type="date"
-                  name="date"
-                  value={searchInputs.fecha}
-                  onChange={handleInputChange}
-                  placeholder="Fecha"
+                <DatePicker
+                  selected={searchInputs.fecha ? new Date(searchInputs.fecha) : null}
+                  onChange={date => handleDateChange(date, 'fecha')}
+                  placeholderText="Fecha"
                   className="large-font"
+                  dateFormat="yyyy-MM-dd"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="cliente"
+                  name="cliente" 
                   value={searchInputs.cliente}
                   onChange={handleInputChange}
                   placeholder="Cliente"
@@ -150,7 +180,7 @@ const Invoices = () => {
               <th>
                 <input
                   type="text"
-                  name="cif-cliente"
+                  name="cif_cliente" 
                   value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
                   placeholder="Cif Cliente"
@@ -158,23 +188,12 @@ const Invoices = () => {
                 />
               </th>
               <th>
-                <input
-                  type="text"
-                  name="fecha vencimiento"
-                  value={searchInputs.fecha_vencimiento}
-                  onChange={handleInputChange}
-                  placeholder="Fecha de vencimiento"
+                <DatePicker
+                  selected={searchInputs.fecha_vencimiento ? new Date(searchInputs.fecha_vencimiento) : null}
+                  onChange={date => setSearchInputs(prevState => ({ ...prevState, fecha_vencimiento: date.toISOString().split('T')[0] }))}
+                  placeholderText="Fecha de vencimiento"
                   className="large-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="date"
-                  name="fecha cobro"
-                  value={searchInputs.fecha_cobro}
-                  onChange={handleInputChange}
-                  placeholder="Fecha de cobro"
-                  className="large-font"
+                  dateFormat="yyyy-MM-dd"
                 />
               </th>
               <th>
@@ -207,23 +226,24 @@ const Invoices = () => {
                   className="large-font"
                 />
               </th>
-              <th>
-                <input
-                  type="number"
-                  name="total-factura"
-                  value={searchInputs.total_factura}
-                  onChange={handleInputChange}
-                  placeholder="Total factura"
-                  className="large-font"
-                />
-              </th>
+              <th onClick={() => handleSortClick("total_factura")}>
+  <span
+    onClick={() => handleSortClick("total_factura")}
+    style={{ cursor: 'pointer' }}
+  >
+    Total Factura
+    {sortBy.column === "total_factura" && (
+      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+    )}
+  </span>
+</th>
               <th>
                 <input
                   type="text"
                   name="nro-pedido"
                   value={searchInputs.nro_pedido}
                   onChange={handleInputChange}
-                  placeholder="Nro de pedido"
+                  placeholder="Nro-pedido"
                   className="large-font"
                 />
               </th>
@@ -237,83 +257,80 @@ const Invoices = () => {
                   className="large-font"
                 />
               </th>
-              <th>
-                <input
-                  type="text"
-                  name="albaran"
-                  value={searchInputs.albaran}
-                  onChange={handleInputChange}
-                  placeholder="Albarán"
-                  className="large-font"
-                />
-              </th>
-              <th></th>
+              <th onClick={() => handleSortClick("albaran")}>
+  <span
+    onClick={() => handleSortClick("fecha_pedido")}
+    style={{ cursor: 'pointer' }}
+  >
+    Albaran
+    {sortBy.column === "albaran" && (
+      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+    )}
+  </span>
+</th>
             </tr>
           </thead>
           <tbody>
             {filteredInvoices.map((invoice) => (
-             
-             <tr key={invoice.nro_factura} className="datos">
-             <td className="table-data">{invoice.nro_factura}</td>
-             <td className="table-data">{invoice.fecha}</td>
-             <td className="table-data">{invoice.cliente}</td>
-             <td className="table-data">{invoice.cif_cliente}</td>
-             <td className="table-data">{invoice.fecha_vencimiento}</td>
-             <td className="table-data">{invoice.fecha_cobro}</td>
-             <td className="table-data">{invoice.estado}</td>
-             <td className="table-data">{invoice.base_imponible}</td>
-             <td className="table-data">{invoice.iva_total}</td>
-             <td className="table-data">{invoice.total_factura}</td>
-             <td className="table-data">{invoice.nro_pedido}</td>
-             <td className="table-data">{invoice.pedido}</td>
-             <td className="table-data">{invoice.albaran}</td>
-             <td className="table-data">
-               <Button
-                 variant="secondary"
-                 onClick={() => handleShowModal(invoice)}
-               >
-                 Ver Detalle
-               </Button>
-             </td>
-           </tr>
-         ))}
-       </tbody>
-     </Table>
-   </div>
-   <Modal show={showModal} onHide={handleCloseModal}>
-     <Modal.Header closeButton>
-       <Modal.Title>DETALLE DE FACTURA</Modal.Title>
-     </Modal.Header>
-     <Modal.Body>
-       {selectedInvoice && (
-         <div>
-           <p>Número de factura: {selectedInvoice.nro_factura}</p>
-           <p>Fecha: {selectedInvoice.fecha}</p>
-           <p>Cliente: {selectedInvoice.cliente}</p>
-           <p>CIF Cliente: {selectedInvoice.cif_cliente}</p>
-           <p>Fecha de vencimiento: {selectedInvoice.fecha_vencimiento}</p>
-           <p>Fecha de cobro: {selectedInvoice.fecha_cobro}</p>
-           <p>Estado: {selectedInvoice.estado}</p>
-           <p>Base imponible: {selectedInvoice.base_imponible}</p>
-           <p>Total IVA: {selectedInvoice.iva_total}</p>
-           <p>Total factura: {selectedInvoice.total_factura}</p>
-           <p>Número de pedido: {selectedInvoice.nro_pedido}</p>
-           <p>Pedido: {selectedInvoice.pedido}</p>
-           <p>Albarán: {selectedInvoice.albaran}</p>
-         </div>
-       )}
-     </Modal.Body>
-     <Modal.Footer>
-       <Button variant="primary" onClick={() => handleDownloadPDF(selectedInvoice)}>
-         Descargar PDF
-       </Button>
-       <Button variant="secondary" onClick={handleCloseModal}>
-         Cancelar
-       </Button>
-     </Modal.Footer>
-   </Modal>
- </div>
-);
+              <tr key={invoice.nro_factura} className="datos">
+                <td className="table-data">{invoice.nro_factura}</td>
+                <td className="table-data">{invoice.fecha}</td>
+                <td className="table-data">{invoice.cliente}</td>
+                <td className="table-data">{invoice.cif_cliente}</td>
+                <td className="table-data">{invoice.fecha_vencimiento}</td>
+                <td className="table-data">{invoice.estado}</td>
+                <td className="table-data">{invoice.base_imponible}</td>
+                <td className="table-data">{invoice.iva_total}</td>
+                <td className="table-data">{invoice.total_factura}</td>
+                <td className="table-data">{invoice.nro_pedido}</td>
+                <td className="table-data">{invoice.pedido}</td>
+                <td className="table-data">{invoice.albaran}</td>
+                <td className="table-data">
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleShowModal(invoice)}
+                  >
+                    Ver Detalle
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>DETALLE DE FACTURA</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedInvoice && (
+            <div>
+              <p>Número de factura: {selectedInvoice.nro_factura}</p>
+              <p>Fecha: {selectedInvoice.fecha}</p>
+              <p>Cliente: {selectedInvoice.cliente}</p>
+              <p>CIF Cliente: {selectedInvoice.cif_cliente}</p>
+              <p>Fecha de vencimiento: {selectedInvoice.fecha_vencimiento}</p>
+              <p>Estado: {selectedInvoice.estado}</p>
+              <p>Base imponible: {selectedInvoice.base_imponible}</p>
+              <p>Total IVA: {selectedInvoice.iva_total}</p>
+              <p>Total factura: {selectedInvoice.total_factura}</p>
+              <p>Número de pedido: {selectedInvoice.nro_pedido}</p>
+              <p>Pedido: {selectedInvoice.pedido}</p>
+              <p>Albarán: {selectedInvoice.albaran}</p>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => handleDownloadPDF(selectedInvoice)}>
+            Descargar PDF
+          </Button>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 };
 
 export default Invoices;

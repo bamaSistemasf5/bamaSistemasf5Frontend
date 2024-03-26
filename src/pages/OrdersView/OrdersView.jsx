@@ -7,7 +7,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from 'date-fns';
 import { FaDownload } from 'react-icons/fa';
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
+
 
 const OrdersView = () => {
   const navigate = useNavigate();
@@ -28,32 +29,6 @@ const OrdersView = () => {
     column: "fecha_pedido",
     ascending: true,
   });
-  const handleDownloadPDF = async (order) => {
-    try {
-      if (order) {
-        const pdf = new jsPDF();
-        let yPos = 10;
-        const lineHeight = 10;
-        pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Fecha de pedido: ${order.fecha_pedido}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Total: ${order.total}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Estado: ${order.estado}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Albaranes: ${order.albaranes}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.save("order.pdf");
-      }
-    } catch (error) {
-      console.error("Error generating and saving PDF:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,6 +52,36 @@ const OrdersView = () => {
     }));
   };
 
+  const handleDownloadPDF = (order) => {
+    try {
+      if (order) {
+        const pdf = new jsPDF();
+        // Definir la posición inicial del texto
+        let yPos = 10;
+        // Agregar cada elemento de texto con una posición Y incrementada
+        pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Fecha Pedido: ${order.fecha_pedido}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Total: ${order.total}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Estado: ${order.estado}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        pdf.text(`Albaranes: ${order.albaranes}`, 10, yPos);
+        yPos += 10; // Incrementar la posición Y
+        // ...
+        pdf.save("pedido.pdf"); // Guarda el PDF con el nombre "pedido.pdf"
+      }
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
+    }
+  };
+  
+  
   const handleDateChange = (date) => {
     setSearchInputs((prevState) => ({
       ...prevState,
@@ -137,7 +142,7 @@ const OrdersView = () => {
 
   const handleEditClick = (order) => {
     console.log("Order selected for editing:", order);
-    navigate(`/order/update-order/${order.cif_cliente}`, {
+    navigate(`/order/update-order/${order.id_pedido}`, {
       state: { orderData: order },
     });
     setShowModal(true);
@@ -166,9 +171,10 @@ const OrdersView = () => {
         });
     } else if (orderToEdit) {
       navigate(`/update-order/${orderToEdit.cif_cliente}`, {
-        orderData: orderToEdit,
+        state: { orderData: orderToEdit },
       });
     }
+    
     setShowModal(false);
   };
 
@@ -226,7 +232,7 @@ const OrdersView = () => {
     onClick={() => handleSortClick("fecha_pedido")}
     style={{ cursor: 'pointer' }}
   >
-    Fecha Pedido
+    Total
     {sortBy.column === "fecha_pedido" && (
       <span>{sortBy.ascending ? "↓" : "↑"}</span>
     )}
@@ -246,6 +252,7 @@ const OrdersView = () => {
               <th>
                 <span className="large-font">Albaranes</span>
               </th>
+              
             </tr>
           </thead>
           <tbody>
@@ -259,22 +266,19 @@ const OrdersView = () => {
                 <td className="table-data estado-order">{order.estado}</td>
                 <td className="table-data albaranes">{order.albaranes}</td>
                 <td className="table-data edit">
-                  <Button
-                    variant="warning"
-                    onClick={() => handleEditClick(order)}
-                    className="edit-order"
-                  >
-                    🖋️
-                  </Button>
+                <Button
+        variant="warning"
+        onClick={() => handleEditClick(order)} // Llama a handleEditClick al hacer clic en editar
+        className="edit-order"
+      >
+        🖋️
+      </Button>
                 </td>
-                <td className="table-data descarga">
-  <Button
-    variant="success"
-    onClick={() => handleDownloadPDF(order)}
-  >
-    <FaDownload /> Descargar PDF
-  </Button>
-</td>
+                <td className="table-data descarga"><Button
+                variant="success"
+                onClick={() => handleDownloadPDF(order)} >
+                  <FaDownload /> Descargar PDF</Button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -287,22 +291,19 @@ const OrdersView = () => {
         </Modal.Header>
         <Modal.Body>
           {orderToEdit && (
-            <p>
-              ¿Seguro que quieres editar el pedido {orderToEdit.id_pedido}{" "}
-              {orderToEdit.cliente}?
-            </p>
+            <p>¿Seguro que quieres editar el pedido {orderToEdit.id_pedido} {orderToEdit.cliente}?</p>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
+          <Button variant="primary" onClick={handleCloseModal}>
             Confirmar
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="text-center">
+      <div className="text-center ">
         <Button variant="success" onClick={handleCreateOrderClick}>
           Crear Nuevo Pedido
         </Button>

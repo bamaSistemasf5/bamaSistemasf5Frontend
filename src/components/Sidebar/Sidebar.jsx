@@ -43,9 +43,9 @@ function Sidebar() {
                         <hr className='text-white d-none d-sm-block' />
                         <ul className="nav nav-pills flex-column mt-2 mt-sm-0" id='parentM'>
                             <li className="nav-item  my-1 py-2 py-sm-0">
-                                <a href="/user-dashboard" className="nav-link text-white text-center text-sm-start" aria-current="page">
+                                <a href="/Panel-Control" className="nav-link text-white text-center text-sm-start" aria-current="page">
                                     <i className='bi bi-house'></i>
-                                    <span className='ms-2 d-none d-sm-inline'>Dashboard</span>
+                                    <span className='ms-2 d-none d-sm-inline'>Panel Control</span>
                                 </a>
                             </li>
                             {roleId === 1 && ( // Mostrar elementos solo si el id_rol es 2 (administrador)
@@ -57,13 +57,13 @@ function Sidebar() {
                                     </a>
                                     <ul className="nav collapse ms-2 flex-column" id='submenu' data-bs-parent ="#parentM" >
                                         <li className="nav-item">
-                                            <a className="nav-link text-white" href="/orders-view" aria-current="page">Pedidos</a>
+                                            <a className="nav-link text-white" href="/order/orders" aria-current="page">Pedidos</a>
                                         </li>
                                         <li className="nav-item ">
                                             <a className="nav-link text-white" href="/invoices-view">Facturas</a>
                                         </li>
                                         <li className="nav-item ">
-                                            <a className="nav-link text-white" href="#">Albaranes</a>
+                                            <a className="nav-link text-white" href="/delivery-note/notes">Albaranes</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -71,15 +71,9 @@ function Sidebar() {
                             {roleId === 2 && ( // Mostrar elementos solo si el id_rol es 2 (administrador)
                             <>
                             <li className="nav-item  my-1 py-2 py-sm-0">
-                                <a href="#" className="nav-link text-white text-center text-sm-start" aria-current="page">
-                                    <i className='bi bi-speedometer2'></i>
+                                <a href="client/clients-view" className="nav-link text-white text-center text-sm-start" aria-current="page">
+                                    <i className='bi bi-people'></i>
                                     <span className='ms-2 d-none d-sm-inline'>Clientes</span>
-                                </a>
-                            </li>
-                            <li className="nav-item  my-1 py-2 py-sm-0">
-                                <a href="#" className="nav-link text-white text-center text-sm-start" aria-current="page">
-                                    <i className='bi bi-speedometer2'></i>
-                                    <span className='ms-2 d-none d-sm-inline'>Analíticas</span>
                                 </a>
                             </li>
                     </>

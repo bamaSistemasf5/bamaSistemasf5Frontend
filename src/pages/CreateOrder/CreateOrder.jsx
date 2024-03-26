@@ -1,70 +1,62 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./CreateOrder.css";
+import jsPDF from "jspdf";
+import { RiDownload2Line } from 'react-icons/ri';
+import { RiFileTextLine } from 'react-icons/ri';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import firebase from "firebase/compat/app";
+import "firebase/storage";
+
+
+
+const firebaseConfig = {
+  // Tu configuración de Firebase aquí
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const CreateOrder = () => {
   const [formData, setFormData] = useState({
     cif_cliente: "",
-    nombre: "",
-    direccion: "",
-    poblacion: "",
-    provincia: "",
-    pais: "",
-    codigo_postal: "",
-    telefono: "",
-    email: ""
+    base_imponible: "",
+    fecha_pedido: new Date(), // Inicializar con la fecha actual
+    iva_total: "",
+    total: ""
   });
 
+  const [documento, setDocumento] = useState(null); // Nuevo estado para almacenar el documento
   const [errors, setErrors] = useState({});
+  const [orderResponse, setOrderResponse] = useState(null);
+  const [albaranNumber, setAlbaranNumber] = useState(null);
+  const [showPedidoModal, setShowPedidoModal] = useState(false);
+  const [showAlbaranModal, setShowAlbaranModal] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleDateChange = (date) => {
+    setFormData({ ...formData, fecha_pedido: date });
+  };
+
+  const handleDocumentoChange = (event) => {
+    const file = event.target.files[0];
+    setDocumento(file);
+  };
+
   const validateForm = () => {
     const errors = {};
-
-    if (!formData.cif_cliente) {
-      errors.cif_cliente = "El CIF del cliente es requerido";
-    }
-
-    if (!formData.nombre) {
-      errors.nombre = "El nombre del cliente es requerido";
-    }
-
-    if (!formData.direccion) {
-      errors.direccion = "La dirección del cliente es requerida";
-    }
-
-    if (!formData.poblacion) {
-      errors.poblacion = "La población del cliente es requerida";
-    }
-
-    if (!formData.provincia) {
-      errors.provincia = "La provincia del cliente es requerida";
-    }
-
-    if (!formData.pais) {
-      errors.pais = "El país del cliente es requerido";
-    }
-
-    if (!formData.codigo_postal) {
-      errors.codigo_postal = "El código postal del cliente es requerido";
-    }
-
-    if (!formData.telefono) {
-      errors.telefono = "El teléfono del cliente es requerido";
-    }
-
-    if (!formData.email) {
-      errors.email = "El correo electrónico del cliente es requerido";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "El correo electrónico no es válido";
-    }
-
     setErrors(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  const generateUniqueAlbaranNumber = () => {
+    return Math.floor(Math.random() * 1000000) + 1;
   };
 
   const handleSubmit = async (event) => {
@@ -72,51 +64,152 @@ const CreateOrder = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/api/clients", formData);
-        console.log("Cliente creado con éxito:", response.data);
-        // Aquí puedes realizar alguna acción adicional después de crear el cliente
+        // Subir documento a Firebase Storage y guardar la URL en Firebase
+        const storageRef = firebase.storage().ref();
+        const documentoRef = storageRef.child('documentos/' + documento.name);
+        const snapshot = await documentoRef.put(documento);
+        const documentoURL = await snapshot.ref.getDownloadURL();
+
+        // Guardar URL del documento en Firebase Realtime Database
+        await firebase.database().ref('pedidos').push({
+          cif_cliente: formData.cif_cliente,
+          base_imponible: formData.base_imponible,
+          fecha_pedido: formData.fecha_pedido.toISOString(),
+          iva_total: formData.iva_total,
+          total: formData.total,
+          documentoURL: documentoURL
+        });
+
+        // Crear pedido en el servidor
+        const response = await axios.post("http://localhost:3000/order/create-order", formData);
+        setOrderResponse(response.data);
+        setShowPedidoModal(true);
       } catch (error) {
-        console.error("Error al crear el cliente:", error);
-        // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
+        console.error("Error al crear el pedido:", error);
       }
     }
   };
 
+  const generateAlbaran = async () => {
+    try {
+      if (!orderResponse) {
+        console.error("Error: No se ha creado un pedido válido.");
+        return;
+      }
+
+      const numeroAlbaran = generateUniqueAlbaranNumber();
+
+      const albaranData = {
+        id_albaran: numeroAlbaran,
+        id_pedido: orderResponse.id_pedido,
+        Firmado: true
+      };
+      const albaranResponse = await axios.post("http://localhost:3000/delivery-note/create-note", albaranData);
+
+      setAlbaranNumber(numeroAlbaran);
+      setShowAlbaranModal(true);
+    } catch (error) {
+      console.error("Error al generar el albarán:", error);
+    }
+  };
+
+  const handleClosePedidoModal = () => {
+    setShowPedidoModal(false);
+  };
+
+  const handleCloseAlbaranModal = () => {
+    setShowAlbaranModal(false);
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    try {
+
+      doc.text("Datos del Pedido", 10, 40);
+      doc.text(`CIF Cliente: ${formData.cif_cliente}`, 10, 50);
+      doc.text(`Fecha del Pedido: ${formData.fecha_pedido.toDateString()}`, 10, 70);
+      doc.text(`IVA Total: ${formData.iva_total}`, 10, 80);
+      doc.text(`Total: ${formData.total}`, 10, 90);
+      if (albaranNumber) {
+        doc.text(`Número de Albarán: ${albaranNumber}`, 10, 100);
+      }
+      doc.save("pedido.pdf");
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
   return (
-    <div className="edit-profile-container">
-      <h2>Crear Albarán</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="create-order-container">
+      <h2 className="crear-header">Crear Pedido</h2>
+      <form onSubmit={handleSubmit} className="formulario-crear-order">
         <div className="form-group">
-          <label className="form-label">Número Albarán:</label>
-          <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} className="form-input" />
-          {errors.cif_cliente && <span>{errors.cif_cliente}</span>}
+          <label>CIF Cliente:</label>
+          <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} />
         </div>
         <div className="form-group">
-          <label className="form-label">Cliente:</label>
-          <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} className="form-input" />
-          {errors.nombre && <span>{errors.nombre}</span>}
+          <label>Fecha del Pedido:</label>
+          <DatePicker selected={formData.fecha_pedido} onChange={handleDateChange} />
         </div>
         <div className="form-group">
-          <label className="form-label">Fecha Albarán:</label>
-          <input type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} className="form-input" />
-          {errors.direccion && <span>{errors.direccion}</span>}
+          <label>IVA Total:</label>
+          <input type="text" name="iva_total" value={formData.iva_total} onChange={handleInputChange} />
         </div>
         <div className="form-group">
-          <label className="form-label">Importe:</label>
-          <input type="text" name="poblacion" value={formData.poblacion} onChange={handleInputChange} className="form-input" />
-          {errors.poblacion && <span>{errors.poblacion}</span>}
+          <label>Total:</label>
+          <input type="text" name="total" value={formData.total} onChange={handleInputChange} />
         </div>
         <div className="form-group">
-          <label className="form-label">CIF Pedido</label>
-          <input type="text" name="provincia" value={formData.provincia} onChange={handleInputChange} className="form-input" />
-          {errors.provincia && <span>{errors.provincia}</span>}
+          <label>Adjuntar Documento:</label>
+          <input type="file" onChange={handleDocumentoChange} />
         </div>
-       
-        <button type="submit" className="button">Descargar Albarán</button>
-        <button type="submit" className="button button-cancel">Descargar Albarán Firmado</button>
+        <button type="submit">Crear Pedido</button>
       </form>
+      <div className="button-group">
+        <button onClick={generatePDF} className="pdf-create-order"><RiDownload2Line /> Generar PDF</button>
+        <button onClick={generateAlbaran} className="create-albaran-order"><RiFileTextLine />Generar Albarán</button>
+      </div>
+
+      {showPedidoModal && (
+        <div className="modal" onClick={handleClosePedidoModal}>
+          <div className="modal-content">
+            <span className="close">&times;</span>
+            <p>¡Pedido creado con éxito!</p>
+          </div>
+        </div>
+      )}
+
+      {showAlbaranModal && (
+        <div className="modal" onClick={handleCloseAlbaranModal}>
+          <div className="modal-content">
+            <span className="close">&times;</span>
+            <p>Número de Albarán: {albaranNumber}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default CreateOrder;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
