@@ -18,6 +18,7 @@ const Invoices = () => {
     fecha_vencimiento: null,
     estado: "",
     base_imponible: "",
+    porcentaje_iva: "",
     iva_total: "",
     total_factura: "",
     pedido: "",
@@ -119,6 +120,8 @@ const Invoices = () => {
         yPos += lineHeight;
         pdf.text(`Base imponible: ${invoice.base_imponible}`, 10, yPos);
         yPos += lineHeight;
+        pdf.text(`% IVA: ${invoice.porcentaje_iva}`, 10, yPos);
+        yPos += lineHeight;
         pdf.text(`Total IVA: ${invoice.iva_total}`, 10, yPos);
         yPos += lineHeight;
         pdf.text(`Total factura: ${invoice.total_factura}`, 10, yPos);
@@ -212,6 +215,16 @@ const Invoices = () => {
               <th>
                 <input
                   type="number"
+                  name="% IVA"
+                  value={searchInputs.porcentaje_iva}
+                  onChange={handleInputChange}
+                  placeholder="% IVA"
+                  className="large-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="number"
                   name="iva_total"
                   value={searchInputs.iva_total}
                   onChange={handleInputChange}
@@ -263,6 +276,7 @@ const Invoices = () => {
                 <td className="table-data">{invoice.fecha_vencimiento}</td>
                 <td className="table-data">{invoice.estado}</td>
                 <td className="table-data">{invoice.base_imponible}</td>
+                <td className="table-data">{invoice.porcentaje_iva}</td>
                 <td className="table-data">{invoice.iva_total}</td>
                 <td className="table-data">{invoice.total_factura}</td>
                 <td className="table-data">{invoice.pedido}</td>
@@ -294,6 +308,7 @@ const Invoices = () => {
               <p>Fecha de vencimiento: {selectedInvoice.fecha_vencimiento}</p>
               <p>Estado: {selectedInvoice.estado}</p>
               <p>Base imponible: {selectedInvoice.base_imponible}</p>
+              <p>% IVA: {selectedInvoice.porcentaje_iva}</p>
               <p>Total IVA: {selectedInvoice.iva_total}</p>
               <p>Total factura: {selectedInvoice.total_factura}</p>
               <p>Pedido: {selectedInvoice.pedido}</p>

@@ -81,7 +81,7 @@ const CreateOrder = () => {
         });
 
         // Crear pedido en el servidor
-        const response = await axios.post("http://localhost:3000/order/create-order", formData);
+        const response = await axios.post("http://localhost:8000/order/create-order", formData);
         setOrderResponse(response.data);
         setShowPedidoModal(true);
       } catch (error) {
@@ -104,7 +104,7 @@ const CreateOrder = () => {
         id_pedido: orderResponse.id_pedido,
         Firmado: true
       };
-      const albaranResponse = await axios.post("http://localhost:3000/delivery-note/create-note", albaranData);
+      const albaranResponse = await axios.post("http://localhost:8000/delivery-note/create-note", albaranData);
 
       setAlbaranNumber(numeroAlbaran);
       setShowAlbaranModal(true);
