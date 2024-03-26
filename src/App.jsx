@@ -15,6 +15,8 @@ import DeliveryNotes from "./pages/DeliveryNotes/DeliveryNotes.jsx";
 import UpdateOrder from "./pages/UpdateOrder/UpdateOrder";
 import PanelControl from "./pages/PanelControl/PanelControl";
 import Support from "./pages/Support/Support.jsx";
+import CreateDelNotes from "./pages/CreateDelNotes/CreateDelNotes";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute.jsx";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -43,8 +45,12 @@ function App() {
   };
 
   const handleLogout = () => {
+    // Limpiar el estado de autenticación
     setAuthenticated(false);
+    // Limpiar el almacenamiento local
+    localStorage.removeItem('userData'); // Asegúrate de cambiar 'userData' por el nombre de la clave donde se guarda la información del usuario
   };
+  
   if (isLoading) {
     return <LoadingComponent text="Cargando..." />;
   }
@@ -62,11 +68,12 @@ function App() {
         <Route path="/create-client/" element={<CreateClient />} />
         <Route path="/update-client/:id?" element={<UpdateClient />} />
         <Route path="/delivery-note/notes" element={<DeliveryNotes />} />
+        <Route path="/create-note" element={<CreateDelNotes />} />
         <Route path="/order/orders" element={<OrdersView />} />
         <Route path="/order/update-order/:id" element={<UpdateOrder />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/invoices-view" element={<Invoices />} />
-        <Route path="/control-panel" element={<PanelControl />} />
+        <Route path="/panel-control" element={<PanelControl />} />
         <Route path="/support" element={<Support />} />
       </Routes>
       <Footer />

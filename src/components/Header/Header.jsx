@@ -20,11 +20,14 @@ export default function Header({ onLogout }) {
   const handleLogout = () => {
     // Limpia los datos de inicio de sesión si es necesario
     onLogout();
-    // Limpia el nombre de usuario
+    // Limpia el nombre de usuario del estado local
     setCurrentUser(null);
+    // Limpia el nombre de usuario del almacenamiento local
+    localStorage.removeItem("user");
     // Activa la bandera de logout para iniciar la redirección
     setLogout(true);
   };
+  
 
   const handleHome = () => {
     // Si el usuario está conectado, redirige al dashboard, de lo contrario, redirige a la página de inicio
@@ -160,3 +163,4 @@ export default function Header({ onLogout }) {
     </>
   );
 }
+
