@@ -8,7 +8,7 @@ const ClientsView = () => {
   const navigate = useNavigate(); // Inicializa useNavigate
 
   const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     cif_cliente: "",
     nombre: "",
@@ -24,9 +24,11 @@ const ClientsView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
+        const response = await axios.get(
+          "http://localhost:3000/client/clients-view"
+        );
         setClients(response.data);
-        setFilteredNotes(response.data);
+        setFilteredClients(response.data);
       } catch (error) {
         console.error("Error fetching clients data:", error);
       }
@@ -43,23 +45,22 @@ const ClientsView = () => {
     }));
   };
 
-  const filterNotes = () => {
+  const filterClients = () => {
     const filteredData = clients.filter((client) =>
       Object.keys(searchInputs).every((key) =>
         client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
       )
     );
-    setFilteredNotes(filteredData);
+    setFilteredClients(filteredData);
   };
 
   useEffect(() => {
-    filterNotes();
-  }, [searchInputs]);
+    filterClients();
+  }, [searchInputs, clients]);
 
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [clientToDelete, setclientToDelete] = useState(null);
+  const [noteToEdit, setNoteToEdit] = useState(null);
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
@@ -70,44 +71,35 @@ const ClientsView = () => {
   };
 
   const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
-    setShowModal(true); // Aquí asegúrate de que showModal se establezca en true
-    setModalMessage(
-      `¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`
-    );
+    setclientToDelete(client);
+    setShowModal(true);
   };
 
   const handleConfirmAction = () => {
-    if (noteToDelete) {
+    if (clientToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.cif_cliente}`
+          `http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`
         )
-        .then((response) => {
+        .then(() => {
           const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== noteToDelete.cif_cliente
+            (client) => client.cif_cliente !== clientToDelete.cif_cliente
           );
           setClients(updatedClients);
-          setFilteredNotes(updatedClients);
-          setnoteToDelete(null);
-          setClientDeleted(true);
+          setFilteredClients(updatedClients);
+          setclientToDelete(null);
         })
         .catch((error) => {
           console.error("Error deleting client:", error);
         });
-    } else if (clientToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
-        clientData: clientToEdit,
-      });
     }
     setShowModal(false);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
+    setclientToDelete(null);
+    setNoteToEdit(null);
   };
 
   const handleCreateUserClick = () => {
@@ -247,32 +239,24 @@ const ClientsView = () => {
         </Table>
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
+        ...
         <Modal.Body>
-          {clientToDelete && (
+          {clientToDelete && ( // Utiliza clientToDelete en lugar de clientToDelete
             <p>
               ¿Seguro que quieres eliminar al cliente{" "}
               {clientToDelete.cif_cliente} {clientToDelete.nombre}?
             </p>
           )}
-          {clientToEdit && (
+          {noteToEdit && ( // Utiliza noteToEdit en lugar de clientToEdit
             <p>
-              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
-              {clientToEdit.nombre}?
+              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
+              {noteToEdit.nombre}?
             </p>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
-            Confirmar
-          </Button>
-        </Modal.Footer>
+        ...
       </Modal>
+
       <div className="text-center">
         <Button variant="success" onClick={handleCreateUserClick}>
           Crear Nuevo Usuario
@@ -281,5 +265,4 @@ const ClientsView = () => {
     </div>
   );
 };
-
 export default ClientsView;
