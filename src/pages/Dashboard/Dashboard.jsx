@@ -17,7 +17,7 @@ export default function Dashboard() {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
       setRoleId(user.id_rol);
-      console.log(user);
+     // console.log(user);
     }
   }, []);
 
@@ -26,26 +26,14 @@ export default function Dashboard() {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <div className="content">
+      <div className="dashboard-content">
         {/* Modo oscuro del dashboard */}
         <ColorModeContext.Provider value={colorMode}>
           <ThemeProvider theme={theme}>
+       
             <CssBaseline />
-        {/* Contenido del dashboard */}
-        <TopBar />
-        {/* <DashboardSidebar /> */}
-        {/* <div className="dashboard-pie-container">
-        <DashboardPieChart />
-        </div>
-        <div className="dashboard-bar-container">
-        <DashboardBarChart />
-        </div>
-        <div className="dashboard-line-container">
-        <OrdersLineChart />
-        </div>
-        <div className="dashboard-table-container">
-        <DashboardOrdersTable/>
-        </div> */}
+            <TopBar colorMode={colorMode} theme={theme} />
+     
 
 
           </ThemeProvider>

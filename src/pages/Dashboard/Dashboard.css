@@ -5,7 +5,7 @@
   position: relative;
 }
 /*  personalizar la apariencia de las barras de desplazamiento (Google Chrome y Safari) */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 10px;
 }
 
@@ -20,7 +20,7 @@
 
 ::-webkit-scrollbar-track:hover {
   background: #c0c0c0;
-} 
+}  */
 
 .dashboard-container {
     display: flex;
