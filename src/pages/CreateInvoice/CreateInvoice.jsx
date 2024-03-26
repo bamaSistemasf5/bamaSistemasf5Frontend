@@ -94,9 +94,8 @@ const CreateInvoiceForm = () => {
           <input type="text" name="total_factura" value={formData.total_factura} onChange={handleInputChange} className="form-input" />
           {errors.total_factura && <span>{errors.total_factura}</span>}
         </div>
-        
-        <button type="submit" className="button">Crear Factura</button>
       </form>
+      <button type="submit" className="button">Crear Factura</button>
     </Container>
   );
 };
