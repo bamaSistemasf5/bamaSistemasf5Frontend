@@ -21,7 +21,6 @@ const Invoices = () => {
     base_imponible: "",
     iva_total: "",
     total_factura: "",
-    nro_pedido: "",
     pedido: "",
     albaran: ""
   });
@@ -127,8 +126,6 @@ const Invoices = () => {
         pdf.text(`Total IVA: ${invoice.iva_total}`, 10, yPos);
         yPos += lineHeight;
         pdf.text(`Total factura: ${invoice.total_factura}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Número de pedido: ${invoice.nro_pedido}`, 10, yPos);
         yPos += lineHeight;
         pdf.text(`Pedido: ${invoice.pedido}`, 10, yPos);
         yPos += lineHeight;
@@ -240,16 +237,6 @@ const Invoices = () => {
               <th>
                 <input
                   type="text"
-                  name="nro-pedido"
-                  value={searchInputs.nro_pedido}
-                  onChange={handleInputChange}
-                  placeholder="Nro-pedido"
-                  className="large-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
                   name="pedido"
                   value={searchInputs.pedido}
                   onChange={handleInputChange}
@@ -282,7 +269,6 @@ const Invoices = () => {
                 <td className="table-data">{invoice.base_imponible}</td>
                 <td className="table-data">{invoice.iva_total}</td>
                 <td className="table-data">{invoice.total_factura}</td>
-                <td className="table-data">{invoice.nro_pedido}</td>
                 <td className="table-data">{invoice.pedido}</td>
                 <td className="table-data">{invoice.albaran}</td>
                 <td className="table-data">

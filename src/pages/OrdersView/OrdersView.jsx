@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./DeliveryNotes.css";
+import "./OrdersView.css";
 import { Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -9,32 +9,31 @@ import { format } from 'date-fns';
 import { FaDownload } from 'react-icons/fa';
 import jsPDF from "jspdf";
 
-const DeliveryNotes = () => {
+
+const OrdersView = () => {
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
-    "No albarán": "",
-    "Fecha albarán": null, 
-    Cliente: "",
-    "CIF cliente": "",
-    Importe: "",
-    "Facturado o no facturado": "",
-    Pedido: "",
-    Producto: "",
-    Firmado: "",
+    id_pedido: "",
+    fecha_pedido: null, // Cambiado a null para el DatePicker
+    cliente: "",
+    cif_cliente: "",
+    total: "",
+    estado: "",
+    albaranes: "",
   });
 
   const [sortBy, setSortBy] = useState({
-    column: "Fecha albarán",
+    column: "fecha_pedido",
     ascending: true,
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5173/delivery-note/notes");
+        const response = await axios.get("http://localhost:3000/order/orders");
         setOrders(response.data);
         setFilteredOrders(response.data);
       } catch (error) {
@@ -81,11 +80,12 @@ const DeliveryNotes = () => {
       console.error('Error al generar el PDF:', error);
     }
   };
-
+  
+  
   const handleDateChange = (date) => {
     setSearchInputs((prevState) => ({
       ...prevState,
-      "Fecha albarán": date,
+      fecha_pedido: date,
     }));
   };
 
@@ -102,18 +102,18 @@ const DeliveryNotes = () => {
 
   const filterOrders = () => {
     let filteredData = orders.filter((order) =>
-      order.cliente.toLowerCase().includes(searchInputs.Cliente.toLowerCase())
+      order.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase())
     );
 
-    if (searchInputs["Fecha albarán"]) {
-      const year = format(new Date(searchInputs["Fecha albarán"]), 'yyyy');
-      const month = format(new Date(searchInputs["Fecha albarán"]), 'MM');
-      const day = format(new Date(searchInputs["Fecha albarán"]), 'dd');
+    if (searchInputs.fecha_pedido) {
+      const year = format(new Date(searchInputs.fecha_pedido), 'yyyy');
+      const month = format(new Date(searchInputs.fecha_pedido), 'MM');
+      const day = format(new Date(searchInputs.fecha_pedido), 'dd');
 
       filteredData = filteredData.filter((order) => {
-        const orderYear = format(new Date(order["Fecha albarán"]), 'yyyy');
-        const orderMonth = format(new Date(order["Fecha albarán"]), 'MM');
-        const orderDay = format(new Date(order["Fecha albarán"]), 'dd');
+        const orderYear = format(new Date(order.fecha_pedido), 'yyyy');
+        const orderMonth = format(new Date(order.fecha_pedido), 'MM');
+        const orderDay = format(new Date(order.fecha_pedido), 'dd');
 
         return (
           orderYear === year &&
@@ -141,7 +141,10 @@ const DeliveryNotes = () => {
   const [orderToEdit, setOrderToEdit] = useState(null);
 
   const handleEditClick = (order) => {
-    setOrderToEdit(order);
+    console.log("Order selected for editing:", order);
+    navigate(`/order/update-order/${order.id_pedido}`, {
+      state: { orderData: order },
+    });
     setShowModal(true);
   };
 
@@ -187,88 +190,97 @@ const DeliveryNotes = () => {
 
   return (
     <div>
-      <h1 className="text-center mb-4 pedidos">Albaranes</h1>
+      <h1 className="text-center mb-4 pedidos">Pedidos</h1>
       <div>
         <Table striped bordered responsive hover>
           <thead>
             <tr>
-            <th onClick={() => handleSortClick("Total")}>
-                <span
-                  onClick={() => handleSortClick("Total")}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Nº Albarán
-                  {sortBy.column === "Albarán" && (
-                    <span>{sortBy.ascending ? "↓" : "↑"}</span>
-                  )}
-                </span>
+            <th>
+                <span className="large-font">Nº Pedido</span>
               </th>
-              <th><span className="large-font">Nº Albarán</span></th>
-              <th onClick={() => handleSortClick("Fecha albarán")}>
-                <DatePicker
-                  selected={searchInputs["Fecha albarán"]}
-                  onChange={handleDateChange}
-                  placeholderText="Seleccionar fecha"
-                  dateFormat="yyyy-MM-dd"
+              <th onClick={() => handleSortClick("fecha_pedido")}>
+  <DatePicker
+    selected={searchInputs.fecha_pedido}
+    onChange={handleDateChange}
+    placeholderText="Seleccionar fecha"
+    dateFormat="yyyy-MM-dd"
+    // minDate={new Date()} // Comenta esta línea para permitir fechas pasadas
+    // maxDate={new Date()} // Si deseas permitir solo fechas pasadas
+    // locale="es" // Cambiar el idioma a español
+  />
+  {/* {sortBy.column === "fecha_pedido" && (
+    <span>{sortBy.ascending ? "↓" : "↑"}</span>
+  )} */}
+</th>
+
+
+              <th>
+                <input
+                  type="text"
+                  name="cliente"
+                  value={searchInputs.cliente}
+                  onChange={handleInputChange}
+                  placeholder="Cliente"
+                  className="large-font"
                 />
               </th>
-              <th><span className="large-font">CIF Cliente</span></th>
-              <th onClick={() => handleSortClick("Total")}>
-                <span
-                  onClick={() => handleSortClick("Total")}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Total
-                  {sortBy.column === "Total" && (
-                    <span>{sortBy.ascending ? "↓" : "↑"}</span>
-                  )}
-                </span>
+              <th>
+                <span className="large-font">CIF Cliente</span>
               </th>
-              <th><input
-                type="text"
-                name="estado"
-                value={searchInputs.estado}
-                onChange={handleInputChange}
-                placeholder="Estado"
-                className="large-font"
-              /></th>
-              <th><span className="large-font">Albaranes</span></th>
-              <th className="table-header">Editar</th>
-              <th className="table-header">Descargar PDF</th>
+              <th onClick={() => handleSortClick("fecha_pedido")}>
+  <span
+    onClick={() => handleSortClick("fecha_pedido")}
+    style={{ cursor: 'pointer' }}
+  >
+    Total
+    {sortBy.column === "fecha_pedido" && (
+      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+    )}
+  </span>
+</th>
+
+              <th>
+                <input
+                  type="text"
+                  name="estado"
+                  value={searchInputs.estado}
+                  onChange={handleInputChange}
+                  placeholder="Estado"
+                  className="large-font"
+                />
+              </th>
+              <th>
+                <span className="large-font">Albaranes</span>
+              </th>
+              
             </tr>
           </thead>
           <tbody>
-          {Array.isArray(filteredOrders) && filteredOrders.map((delivery_notes) => (
-  <tr key={delivery_notes["no albarán"]}>
-    <td className="table-data npedido">{delivery_notes["no albarán"]}</td>
-    <td className="table-data fpedido">{delivery_notes["fecha albarán"]}</td>
-    <td className="table-data client-delivery">{delivery_notes.cliente}</td>
-    <td className="table-data cif-delivery">{delivery_notes["cif cliente"]}</td>
-    <td className="table-data total-delivery">{delivery_notes.importe}</td>
-    <td className="table-data estado-delivery">{delivery_notes["facturado o no facturado"]}</td>
-    <td className="table-data albaranes">{delivery_notes.pedido}</td>
-    <td className="table-data albaranes">{delivery_notes.producto}</td>
-    <td className="table-data albaranes">{delivery_notes.firmado}</td>
-    <td className="table-data edit">
-      <Button
+            {filteredOrders.map((order) => (
+              <tr key={order.id_pedido}>
+                <td className="table-data npedido">{order.id_pedido}</td>
+                <td className="table-data fpedido">{order.fecha_pedido}</td>
+                <td className="table-data client-order">{order.cliente}</td>
+                <td className="table-data cif-order">{order.cif_cliente}</td>
+                <td className="table-data total-order">{order.total}</td>
+                <td className="table-data estado-order">{order.estado}</td>
+                <td className="table-data albaranes">{order.albaranes}</td>
+                <td className="table-data edit">
+                <Button
         variant="warning"
-        onClick={() => handleEditClick(delivery_notes)}
+        onClick={() => handleEditClick(order)} // Llama a handleEditClick al hacer clic en editar
         className="edit-order"
       >
         🖋️
       </Button>
-    </td>
-    <td className="table-data descarga">
-      <Button
-        variant="success"
-        onClick={() => handleDownloadPDF(order)}
-      >
-        <FaDownload /> Descargar PDF
-      </Button>
-    </td>
-  </tr>
-))}
-
+                </td>
+                <td className="table-data descarga"><Button
+                variant="success"
+                onClick={() => handleDownloadPDF(order)} >
+                  <FaDownload /> Descargar PDF</Button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </div>
@@ -286,12 +298,12 @@ const DeliveryNotes = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
+          <Button variant="primary" onClick={handleCloseModal}>
             Confirmar
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="text-center">
+      <div className="text-center ">
         <Button variant="success" onClick={handleCreateOrderClick}>
           Crear Nuevo Pedido
         </Button>
@@ -300,4 +312,4 @@ const DeliveryNotes = () => {
   );
 };
 
-export default DeliveryNotes;
+export default OrdersView;

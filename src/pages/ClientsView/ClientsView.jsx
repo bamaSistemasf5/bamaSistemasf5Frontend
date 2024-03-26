@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ClientsView.css";
-import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+import { Table, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const ClientsView = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
 
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
@@ -24,7 +24,7 @@ const ClientsView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
+        const response = await axios.get("http://localhost:3000/client/clients");
         setClients(response.data);
         setFilteredClients(response.data);
       } catch (error) {
@@ -43,45 +43,35 @@ const ClientsView = () => {
     }));
   };
 
-  const filterClients = () => {
-    const filteredData = clients.filter((client) =>
-      Object.keys(searchInputs).every((key) =>
-        client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
-      )
-    );
-    setFilteredClients(filteredData);
-  };
-
   useEffect(() => {
-    filterClients();
-  }, [searchInputs]);
+    const filterClients = () => {
+      const filteredData = clients.filter((client) =>
+        Object.keys(searchInputs).every((key) =>
+          client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
+        )
+      );
+      setFilteredClients(filteredData);
+    };
 
-  const [showModal, setShowModal] = useState(false);
-  const [clientToDelete, setClientToDelete] = useState(null);
-  const [clientToEdit, setClientToEdit] = useState(null);
+    filterClients();
+  }, [searchInputs, clients]);
 
   const handleEditClick = (client) => {
     console.log("Cliente seleccionado para editar:", client);
     navigate(`/update-client/${client.cif_cliente}`, {
-      state: { clientData: client },
+      state: { noteData: client },
     });
-    setShowModal(true);
   };
 
   const handleDeleteClick = (client) => {
-    setClientToDelete(client);
-    setShowModal(true);
-  };
-
-  const handleConfirmAction = () => {
-    if (clientToDelete) {
+    if (window.confirm(`¿Seguro que quieres eliminar al cliente ${client.cif_cliente} ${client.nombre}?`)) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${clientToDelete.cif_cliente}`
+          `http://localhost:3000/client/clients/${client.cif_cliente}`
         )
         .then((response) => {
           const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== clientToDelete.cif_cliente
+            (client) => client.cif_cliente !== client.cif_cliente
           );
           setClients(updatedClients);
           setFilteredClients(updatedClients);
@@ -89,23 +79,20 @@ const ClientsView = () => {
         .catch((error) => {
           console.error("Error deleting client:", error);
         });
-    } else if (clientToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${clientToEdit.cif_cliente}`, {
-        clientData: clientToEdit,
-      });
     }
-    setShowModal(false);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setClientToDelete(null);
-    setClientToEdit(null);
   };
 
   const handleCreateUserClick = () => {
     navigate("/create-client");
+  };
+
+  const toggleActiveStatus = (client) => {
+    // Cambiar el estado activo/inactivo del cliente
+    const updatedClients = clients.map((c) =>
+      c.cif_cliente === client.cif_cliente ? { ...c, activo: !c.activo } : c
+    );
+    setClients(updatedClients);
+    setFilteredClients(updatedClients);
   };
 
   return (
@@ -122,7 +109,7 @@ const ClientsView = () => {
                   value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
                   placeholder="CIF Cliente"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -132,7 +119,7 @@ const ClientsView = () => {
                   value={searchInputs.nombre}
                   onChange={handleInputChange}
                   placeholder="Nombre"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -142,7 +129,7 @@ const ClientsView = () => {
                   value={searchInputs.direccion}
                   onChange={handleInputChange}
                   placeholder="Dirección"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -152,7 +139,7 @@ const ClientsView = () => {
                   value={searchInputs.poblacion}
                   onChange={handleInputChange}
                   placeholder="Población"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -162,7 +149,7 @@ const ClientsView = () => {
                   value={searchInputs.provincia}
                   onChange={handleInputChange}
                   placeholder="Provincia"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -172,7 +159,7 @@ const ClientsView = () => {
                   value={searchInputs.pais}
                   onChange={handleInputChange}
                   placeholder="País"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -182,7 +169,7 @@ const ClientsView = () => {
                   value={searchInputs.codigo_postal}
                   onChange={handleInputChange}
                   placeholder="Código Postal"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -192,7 +179,7 @@ const ClientsView = () => {
                   value={searchInputs.telefono}
                   onChange={handleInputChange}
                   placeholder="Teléfono"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
@@ -202,23 +189,34 @@ const ClientsView = () => {
                   value={searchInputs.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
+              <th>Estado</th> {/* Nueva columna para mostrar el estado activo/inactivo */}
+              <th>Editar</th>
+              <th>Eliminar</th>
             </tr>
           </thead>
           <tbody>
             {filteredClients.map((client) => (
-              <tr key={client.cif_cliente}>
-                <td className="table-data">{client.cif_cliente}</td>
-                <td className="table-data">{client.nombre}</td>
-                <td className="table-data">{client.direccion}</td>
-                <td className="table-data">{client.poblacion}</td>
-                <td className="table-data">{client.provincia}</td>
-                <td className="table-data">{client.pais}</td>
-                <td className="table-data">{client.codigo_postal}</td>
-                <td className="table-data">{client.telefono}</td>
-                <td className="table-data">{client.email}</td>
+              <tr key={client.cif_cliente} className="client">
+                <td className="table-data client-cif">{client.cif_cliente}</td>
+                <td className="table-data client-nombre">{client.nombre}</td>
+                <td className="table-data client-direccion">{client.direccion}</td>
+                <td className="table-data client-poblacion">{client.poblacion}</td>
+                <td className="table-data client-provincia">{client.provincia}</td>
+                <td className="table-data cient-pais">{client.pais}</td>
+                <td className="table-data client-postal">{client.codigo_postal}</td>
+                <td className="table-data client-tlf">{client.telefono}</td>
+                <td className="table-data client-mail">{client.email}</td>
+                <td className="table-data">
+                  <Button
+                    variant={client.activo ? "success" : "danger"} // Cambiar color del botón según el estado activo/inactivo
+                    onClick={() => toggleActiveStatus(client)} // Cambiar estado activo/inactivo
+                  >
+                    {client.activo ? "Activo" : "Inactivo"}
+                  </Button>
+                </td>
                 <td className="table-data">
                   <Button
                     variant="warning"
@@ -240,36 +238,9 @@ const ClientsView = () => {
           </tbody>
         </Table>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {clientToDelete && (
-            <p>
-              ¿Seguro que quieres eliminar al cliente{" "}
-              {clientToDelete.cif_cliente} {clientToDelete.nombre}?
-            </p>
-          )}
-          {clientToEdit && (
-            <p>
-              ¿Seguro que quieres editar al cliente {clientToEdit.cif_cliente}{" "}
-              {clientToEdit.nombre}?
-            </p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
-            Confirmar
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <div className="text-center">
-        <Button variant="success" onClick={handleCreateUserClick}>
-          Crear Nuevo Usuario
+        <Button onClick={handleCreateUserClick} className="crear-cliente">
+          Crear Nuevo Cliente
         </Button>
       </div>
     </div>
@@ -277,3 +248,4 @@ const ClientsView = () => {
 };
 
 export default ClientsView;
+

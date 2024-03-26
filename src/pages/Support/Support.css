@@ -1,0 +1,32 @@
+.support-container{
+    display: flex;
+    padding-left: 2em;
+    padding-top: 2em;
+    padding-right: 6em;
+    margin-bottom: 3em;
+   
+}
+.btn-support {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  background-color: #EC660D !important;
+  display: flex;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 100px;
+    color: #fff !important;
+    border: none;
+    margin-bottom: 10%;
+  }
+
+  .support-info{
+    display: flex;
+   
+    flex-direction: column;
+    justify-content:left;
+    align-items: center;
+    align-self: start;
+
+  }
+
+ 

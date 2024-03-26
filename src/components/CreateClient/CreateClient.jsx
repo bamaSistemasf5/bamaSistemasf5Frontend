@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./CreateClient.css";
+import { Container, Modal, Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const CreateClientForm = () => {
   const [formData, setFormData] = useState({
@@ -72,20 +75,20 @@ const CreateClientForm = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/api/clients", formData);
+        const response = await axios.post("http://localhost:3000/client/create-client", formData);
         console.log("Cliente creado con éxito:", response.data);
-        // Aquí puedes realizar alguna acción adicional después de crear el cliente
+        // Puedes realizar alguna acción adicional después de crear el cliente
       } catch (error) {
         console.error("Error al crear el cliente:", error);
-        // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
+        // Puedes manejar el error aquí, como mostrar un mensaje de error al usuario
       }
     }
   };
 
   return (
-    <div className="edit-profile-container">
-      <h2>Crear Cliente</h2>
-      <form onSubmit={handleSubmit}>
+    <Container className="create-container">
+      <h2 className="h2-client-create">Crear Cliente</h2>
+      <form onSubmit={handleSubmit} className="formulario-create">
         <div className="form-group">
           <label className="form-label">CIF Cliente:</label>
           <input type="text" name="cif_cliente" value={formData.cif_cliente} onChange={handleInputChange} className="form-input" />
@@ -133,8 +136,10 @@ const CreateClientForm = () => {
         </div>
         <button type="submit" className="button">Crear Cliente</button>
       </form>
-    </div>
+    </Container>
   );
 };
 
 export default CreateClientForm;
+
+

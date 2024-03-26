@@ -47,8 +47,8 @@ const UpdateClient = () => {
     axios.put(`http://localhost:3000/update-client/${id}`, formData)
       .then(response => {
         console.log('Client data updated successfully:', response.data);
-        // Redirigir a la página de detalles del cliente después de la actualización
-        navigate(`/client-details/${id}`);
+        // Redirigir a la página de detalles del cliente después de la actualización (BETA)
+        // navigate(`/client-details/${id}`);
       })
       .catch(error => {
         console.error('Error updating client data:', error);
