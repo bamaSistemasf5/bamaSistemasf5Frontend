@@ -12,11 +12,10 @@ const Invoices = () => {
   const [filteredInvoices, setFilteredInvoices] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     nro_factura: "",
-    fecha: "",
+    fecha: null,
     cliente: "",
     cif_cliente: "",
-    fecha_vencimiento: "",
-    fecha_cobro: "",
+    fecha_vencimiento: null,
     estado: "",
     base_imponible: "",
     iva_total: "",
@@ -45,53 +44,50 @@ const Invoices = () => {
   }, []);
 
   const handleSortClick = (column) => {
-    setSortBy({
+    setSortBy(prevState => ({
       column: column,
       ascending: sortBy.column === column ? !sortBy.ascending : true,
-    });
+    }));
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSearchInputs((prevState) => ({
+    setSearchInputs(prevState => ({
       ...prevState,
       [name]: value,
     }));
   };
   
-  const handleDateChange = (date) => {
-    setSearchInputs((prevState) => ({
+  const handleDateChange = (date, name) => {
+    setSearchInputs(prevState => ({
       ...prevState,
-      fecha: date,
+      [name]: date,
     }));
   };
-  
 
   const filterInvoices = () => {
-    const filteredData = invoices.filter((invoice) => {
-      // Verificar si el nombre del cliente coincide (en minúsculas para hacer la comparación sin distinción entre mayúsculas y minúsculas)
+    let filteredData = invoices.filter((invoice) => {
       const matchesCliente = invoice.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase());
-  
-      // Verificar si el CIF del cliente coincide (en minúsculas para hacer la comparación sin distinción entre mayúsculas y minúsculas)
       const matchesCifCliente = invoice.cif_cliente.toLowerCase().includes(searchInputs.cif_cliente.toLowerCase());
-  
-      // Verificar si la fecha de la factura coincide
-      const matchesFecha = searchInputs.fecha ? invoice.fecha === searchInputs.fecha : true;
-  
-      // Verificar si la fecha de vencimiento coincide
-      const matchesFechaVencimiento = searchInputs.fecha_vencimiento ? invoice.fecha_vencimiento === searchInputs.fecha_vencimiento : true;
-  
-      // Resto de las condiciones...
+      const matchesFecha = !searchInputs.fecha || format(new Date(invoice.fecha), 'yyyy-MM-dd') === format(new Date(searchInputs.fecha), 'yyyy-MM-dd');
+      const matchesFechaVencimiento = !searchInputs.fecha_vencimiento || format(new Date(invoice.fecha_vencimiento), 'yyyy-MM-dd') === format(new Date(searchInputs.fecha_vencimiento), 'yyyy-MM-dd');
       return matchesCliente && matchesCifCliente && matchesFecha && matchesFechaVencimiento;
     });
-  
+
+    filteredData.sort((a, b) => {
+      if (sortBy.column === "albaran") {
+        return sortBy.ascending ? a.albaran.localeCompare(b.albaran) : b.albaran.localeCompare(a.albaran);
+      } else {
+        return sortBy.ascending ? a[sortBy.column] - b[sortBy.column] : b[sortBy.column] - a[sortBy.column];
+      }
+    });
+
     setFilteredInvoices(filteredData);
   };
-  // 
 
   useEffect(() => {
     filterInvoices();
-  }, [searchInputs]);
+  }, [searchInputs, sortBy]);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -148,7 +144,7 @@ const Invoices = () => {
               <th>
                 <input
                   type="text"
-                  name="dn-number"
+                  name="nro_factura"
                   value={searchInputs.nro_factura}
                   onChange={handleInputChange}
                   placeholder="Nro Factura"
@@ -185,13 +181,13 @@ const Invoices = () => {
                 />
               </th>
               <th>
-                <DatePicker
-                  selected={searchInputs.fecha_vencimiento ? new Date(searchInputs.fecha_vencimiento) : null}
-                  onChange={date => setSearchInputs(prevState => ({ ...prevState, fecha_vencimiento: date.toISOString().split('T')[0] }))}
-                  placeholderText="Fecha de vencimiento"
-                  className="large-font"
-                  dateFormat="yyyy-MM-dd"
-                />
+              <DatePicker
+                 selected={searchInputs.fecha_vencimiento ? new Date(searchInputs.fecha_vencimiento) : null}
+                 onChange={(date) => handleDateChange(date, 'fecha_vencimiento')}
+                 placeholderText="Fecha de vencimiento"
+                 className="large-font"
+                 dateFormat="yyyy-MM-dd"
+              />
               </th>
               <th>
                 <input
@@ -300,7 +296,6 @@ const Invoices = () => {
               <p>Base imponible: {selectedInvoice.base_imponible}</p>
               <p>Total IVA: {selectedInvoice.iva_total}</p>
               <p>Total factura: {selectedInvoice.total_factura}</p>
-              <p>Número de pedido: {selectedInvoice.nro_pedido}</p>
               <p>Pedido: {selectedInvoice.pedido}</p>
               <p>Albarán: {selectedInvoice.albaran}</p>
             </div>
