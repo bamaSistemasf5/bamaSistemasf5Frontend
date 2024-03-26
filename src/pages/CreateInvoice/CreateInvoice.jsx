@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CreateInvoiceForm = () => {
   const [formData, setFormData] = useState({
-    id_factura: "",
     id_pedido: "",
     cif_cliente: "",
     fecha_fact: "",
@@ -24,10 +23,6 @@ const CreateInvoiceForm = () => {
 
   const validateForm = () => {
     const errors = {};
-
-    if (!formData.id_factura) {
-      errors.id_factura = "";
-    }
 
     if (!formData.id_pedido) {
       errors.id_pedido = "El id de pedido  es requerido";
@@ -72,15 +67,11 @@ const CreateInvoiceForm = () => {
     <Container className="create-container">
       <h2 className="h2-client-create">Crear Nueva Factura</h2>
       <form onSubmit={handleSubmit} className="formulario-create">
-      <div className="form-group">
-          <label className="form-label">ID factura:</label>
-          <input type="text" name="id factura" value={formData.id_factura} onChange={handleInputChange} className="form-input" />
-          {errors.nombre && <span>{errors.nombre}</span>}
-        </div>
+      
         <div className="form-group">
           <label className="form-label">ID Pedido:</label>
-          <input type="text" name="id pedido" value={formData.id_pedido} onChange={handleInputChange} className="form-input" />
-          {errors.direccion && <span>{errors.direccion}</span>}
+          <input type="text" name="id_pedido" value={formData.id_pedido} onChange={handleInputChange} className="form-input" />
+          {errors.id_pedido && <span>{errors.id_pedido}</span>}
         </div>
         <div className="form-group">
           <label className="form-label">CIF Cliente:</label>
@@ -90,18 +81,18 @@ const CreateInvoiceForm = () => {
        
         <div className="form-group">
           <label className="form-label">Fecha factura:</label>
-          <input type="text" name="fecha factura" value={formData.fecha_fact} onChange={handleInputChange} className="form-input" />
-          {errors.poblacion && <span>{errors.fecha_fact}</span>}
+          <input type="date" name="fecha_fact" value={formData.fecha_fact} onChange={handleInputChange} className="form-input" />
+          {errors.fecha_fact && <span>{errors.fecha_fact}</span>}
         </div>
         <div className="form-group">
           <label className="form-label">% IVA:</label>
-          <input type="text" name="%iva" value={formData.porcentaje_iva} onChange={handleInputChange} className="form-input" />
-          {errors.provincia && <span>{errors.porcentaje_iva}</span>}
+          <input type="text" name="porcentaje_iva" value={formData.porcentaje_iva} onChange={handleInputChange} className="form-input" />
+          {errors.porcentaje_iva && <span>{errors.porcentaje_iva}</span>}
         </div>
         <div className="form-group">
           <label className="form-label">Total Factura:</label>
-          <input type="text" name="total factura" value={formData.total_factura} onChange={handleInputChange} className="form-input" />
-          {errors.pais && <span>{errors.total_factura}</span>}
+          <input type="text" name="total_factura" value={formData.total_factura} onChange={handleInputChange} className="form-input" />
+          {errors.total_factura && <span>{errors.total_factura}</span>}
         </div>
         
         <button type="submit" className="button">Crear Factura</button>
