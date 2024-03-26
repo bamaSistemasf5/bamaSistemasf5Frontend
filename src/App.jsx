@@ -16,6 +16,7 @@ import UpdateOrder from "./pages/UpdateOrder/UpdateOrder";
 import PanelControl from "./pages/PanelControl/PanelControl";
 import Support from "./pages/Support/Support.jsx";
 import CreateDelNotes from "./pages/CreateDelNotes/CreateDelNotes";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute.jsx";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
