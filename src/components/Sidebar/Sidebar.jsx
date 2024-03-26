@@ -5,7 +5,6 @@ import 'bootstrap/js/dist/dropdown'
 import 'bootstrap/js/dist/collapse'
 import './Sidebar.css'
 
-
 function Sidebar() {
     const [currentUser, setCurrentUser] = useState(null);
     const [roleId, setRoleId] = useState(null); // Estado para almacenar el id_rol del usuario

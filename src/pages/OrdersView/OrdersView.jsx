@@ -2,33 +2,67 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OrdersView.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns';
+import { FaDownload } from 'react-icons/fa';
+import jsPDF from 'jspdf';
 
 const OrdersView = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
 
-  const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
-    nro_pedido: "",
-    fecha: "",
+    id_pedido: "",
+    fecha_pedido: null, // Cambiado a null para el DatePicker
     cliente: "",
     cif_cliente: "",
-    importe: "",
-    porcentaje_facturado: "",
+    total: "",
     estado: "",
-    facturas: "",
     albaranes: "",
   });
+
+  const [sortBy, setSortBy] = useState({
+    column: "fecha_pedido",
+    ascending: true,
+  });
+  const handleDownloadPDF = async (order) => {
+    try {
+      if (order) {
+        const pdf = new jsPDF();
+        let yPos = 10;
+        const lineHeight = 10;
+        pdf.text(`Número de pedido: ${order.id_pedido}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Fecha de pedido: ${order.fecha_pedido}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Cliente: ${order.cliente}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`CIF Cliente: ${order.cif_cliente}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Total: ${order.total}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Estado: ${order.estado}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Albaranes: ${order.albaranes}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.save("order.pdf");
+      }
+    } catch (error) {
+      console.error("Error generating and saving PDF:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
-        setClients(response.data);
-        setFilteredNotes(response.data);
+        const response = await axios.get("http://localhost:3000/order/orders");
+        setOrders(response.data);
+        setFilteredOrders(response.data);
       } catch (error) {
-        console.error("Error fetching clients data:", error);
+        console.error("Error fetching orders data:", error);
       }
     };
 
@@ -43,56 +77,96 @@ const OrdersView = () => {
     }));
   };
 
-  const filterNotes = () => {
-    const filteredData = clients.filter((client) =>
-      Object.keys(searchInputs).every((key) =>
-        client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
-      )
-    );
-    setFilteredNotes(filteredData);
+  const handleDateChange = (date) => {
+    setSearchInputs((prevState) => ({
+      ...prevState,
+      fecha_pedido: date,
+    }));
+  };
+
+  const handleSortClick = (column) => {
+    setSortBy({
+      column: column,
+      ascending: sortBy.column === column ? !sortBy.ascending : true,
+    });
   };
 
   useEffect(() => {
-    filterNotes();
-  }, [searchInputs]);
+    filterOrders();
+  }, [searchInputs, sortBy]);
+
+  const filterOrders = () => {
+    let filteredData = orders.filter((order) =>
+      order.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase())
+    );
+
+    if (searchInputs.fecha_pedido) {
+      const year = format(new Date(searchInputs.fecha_pedido), 'yyyy');
+      const month = format(new Date(searchInputs.fecha_pedido), 'MM');
+      const day = format(new Date(searchInputs.fecha_pedido), 'dd');
+
+      filteredData = filteredData.filter((order) => {
+        const orderYear = format(new Date(order.fecha_pedido), 'yyyy');
+        const orderMonth = format(new Date(order.fecha_pedido), 'MM');
+        const orderDay = format(new Date(order.fecha_pedido), 'dd');
+
+        return (
+          orderYear === year &&
+          orderMonth === month &&
+          orderDay === day
+        );
+      });
+    }
+
+    filteredData.sort((a, b) => {
+      const dateA = new Date(a[sortBy.column]);
+      const dateB = new Date(b[sortBy.column]);
+      if (sortBy.ascending) {
+        return dateA - dateB;
+      } else {
+        return dateB - dateA;
+      }
+    });
+
+    setFilteredOrders(filteredData);
+  };
 
   const [showModal, setShowModal] = useState(false);
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+  const [orderToEdit, setOrderToEdit] = useState(null);
 
-  const handleEditClick = (client) => {
-    console.log("Cliente seleccionado para editar:", client);
-    navigate(`/update-client/${client.cif_cliente}`, {
-      state: { noteData: client },
+  const handleEditClick = (order) => {
+    console.log("Order selected for editing:", order);
+    navigate(`/order/update-order/${order.cif_cliente}`, {
+      state: { orderData: order },
     });
     setShowModal(true);
   };
 
-  const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
+  const handleDeleteClick = (order) => {
+    setOrderToDelete(order);
     setShowModal(true);
   };
 
   const handleConfirmAction = () => {
-    if (noteToDelete) {
+    if (orderToDelete) {
       axios
         .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.cif_cliente}`
+          `http://localhost:3000/order/delete-order/${orderToDelete.id_pedido}`
         )
         .then((response) => {
-          const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== noteToDelete.cif_cliente
+          const updatedOrders = orders.filter(
+            (order) => order.cif_cliente !== orderToDelete.cif_cliente
           );
-          setClients(updatedClients);
-          setFilteredNotes(updatedClients);
+          setOrders(updatedOrders);
+          setFilteredOrders(updatedOrders);
         })
         .catch((error) => {
-          console.error("Error deleting client:", error);
+          console.error("Error deleting order:", error);
         });
-    } else if (noteToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-order/${noteToEdit.cif_cliente}`, {
-        noteData: noteToEdit,
+    } else if (orderToEdit) {
+      navigate(`/update-order/${orderToEdit.cif_cliente}`, {
+        orderData: orderToEdit,
       });
     }
     setShowModal(false);
@@ -100,161 +174,122 @@ const OrdersView = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
+    setOrderToDelete(null);
+    setOrderToEdit(null);
   };
 
-  const handleCreateUserClick = () => {
+  const handleCreateOrderClick = () => {
     navigate("/create-order");
   };
 
   return (
     <div>
-      <h1 className="text-center mb-4">Clientes</h1>
+      <h1 className="text-center mb-4 pedidos">Pedidos</h1>
       <div>
         <Table striped bordered responsive hover>
           <thead>
             <tr>
-              <th>
-                <input
-                  type="text"
-                  name="cif_cliente"
-                  value={searchInputs.cif_cliente}
-                  onChange={handleInputChange}
-                  placeholder="Nro Pedido"
-                  className="half-size-font"
-                />
+            <th>
+                <span className="large-font">Nº Pedido</span>
               </th>
+              <th onClick={() => handleSortClick("fecha_pedido")}>
+  <DatePicker
+    selected={searchInputs.fecha_pedido}
+    onChange={handleDateChange}
+    placeholderText="Seleccionar fecha"
+    dateFormat="yyyy-MM-dd"
+    // minDate={new Date()} // Comenta esta línea para permitir fechas pasadas
+    // maxDate={new Date()} // Si deseas permitir solo fechas pasadas
+    // locale="es" // Cambiar el idioma a español
+  />
+  {/* {sortBy.column === "fecha_pedido" && (
+    <span>{sortBy.ascending ? "↓" : "↑"}</span>
+  )} */}
+</th>
+
+
               <th>
                 <input
                   type="text"
-                  name="nombre"
-                  value={searchInputs.nombre}
-                  onChange={handleInputChange}
-                  placeholder="Fecha pedido"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="direccion"
-                  value={searchInputs.direccion}
+                  name="cliente"
+                  value={searchInputs.cliente}
                   onChange={handleInputChange}
                   placeholder="Cliente"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
-                <input
-                  type="text"
-                  name="poblacion"
-                  value={searchInputs.poblacion}
-                  onChange={handleInputChange}
-                  placeholder="CIF cliente"
-                  className="half-size-font"
-                />
+                <span className="large-font">CIF Cliente</span>
               </th>
+              <th onClick={() => handleSortClick("fecha_pedido")}>
+  <span
+    onClick={() => handleSortClick("fecha_pedido")}
+    style={{ cursor: 'pointer' }}
+  >
+    Fecha Pedido
+    {sortBy.column === "fecha_pedido" && (
+      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+    )}
+  </span>
+</th>
+
               <th>
                 <input
                   type="text"
-                  name="provincia"
-                  value={searchInputs.provincia}
+                  name="estado"
+                  value={searchInputs.estado}
                   onChange={handleInputChange}
-                  placeholder="Importe"
-                  className="half-size-font"
+                  placeholder="Estado"
+                  className="large-font"
                 />
               </th>
               <th>
-                <input
-                  type="text"
-                  name="pais"
-                  value={searchInputs.pais}
-                  onChange={handleInputChange}
-                  placeholder="Porcentaje facturado"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="Estado"
-                  value={searchInputs.codigo_postal}
-                  onChange={handleInputChange}
-                  placeholder="Código Postal"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="telefono"
-                  value={searchInputs.telefono}
-                  onChange={handleInputChange}
-                  placeholder="Total facturas"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="text"
-                  name="email"
-                  value={searchInputs.email}
-                  onChange={handleInputChange}
-                  placeholder="Total Albaranes"
-                  className="half-size-font"
-                />
+                <span className="large-font">Albaranes</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => (
-              <tr key={client.cif_cliente}>
-                <td className="table-data">{client.cif_cliente}</td>
-                <td className="table-data">{client.nombre}</td>
-                <td className="table-data">{client.direccion}</td>
-                <td className="table-data">{client.poblacion}</td>
-                <td className="table-data">{client.provincia}</td>
-                <td className="table-data">{client.pais}</td>
-                <td className="table-data">{client.codigo_postal}</td>
-                <td className="table-data">{client.telefono}</td>
-                <td className="table-data">{client.email}</td>
-                <td className="table-data">
+            {filteredOrders.map((order) => (
+              <tr key={order.id_pedido}>
+                <td className="table-data npedido">{order.id_pedido}</td>
+                <td className="table-data fpedido">{order.fecha_pedido}</td>
+                <td className="table-data client-order">{order.cliente}</td>
+                <td className="table-data cif-order">{order.cif_cliente}</td>
+                <td className="table-data total-order">{order.total}</td>
+                <td className="table-data estado-order">{order.estado}</td>
+                <td className="table-data albaranes">{order.albaranes}</td>
+                <td className="table-data edit">
                   <Button
                     variant="warning"
-                    onClick={() => handleEditClick(client)}
+                    onClick={() => handleEditClick(order)}
+                    className="edit-order"
                   >
                     🖋️
                   </Button>
                 </td>
-                <td className="table-data">
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDeleteClick(client)}
-                  >
-                    ↓
-                  </Button>
-                </td>
+                <td className="table-data descarga">
+  <Button
+    variant="success"
+    onClick={() => handleDownloadPDF(order)}
+  >
+    <FaDownload /> Descargar PDF
+  </Button>
+</td>
               </tr>
             ))}
           </tbody>
         </Table>
       </div>
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {noteToDelete && (
+          {orderToEdit && (
             <p>
-              ¿Seguro que quieres eliminar al cliente{" "}
-              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
-            </p>
-          )}
-          {noteToEdit && (
-            <p>
-              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
-              {noteToEdit.nombre}?
+              ¿Seguro que quieres editar el pedido {orderToEdit.id_pedido}{" "}
+              {orderToEdit.cliente}?
             </p>
           )}
         </Modal.Body>
@@ -268,7 +303,7 @@ const OrdersView = () => {
         </Modal.Footer>
       </Modal>
       <div className="text-center">
-        <Button variant="success" onClick={handleCreateUserClick}>
+        <Button variant="success" onClick={handleCreateOrderClick}>
           Crear Nuevo Pedido
         </Button>
       </div>

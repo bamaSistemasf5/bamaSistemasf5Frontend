@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./CreateClient.css";
-import { Container } from "react-bootstrap";
+import { Container, Modal, Button } from "react-bootstrap";
 
 const CreateClientForm = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ const CreateClientForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -73,12 +74,13 @@ const CreateClientForm = () => {
 
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:3000/create-client", formData);
+        const response = await axios.post("http://localhost:3000/client/create-client", formData);
         console.log("Cliente creado con éxito:", response.data);
-        // Aquí puedes realizar alguna acción adicional después de crear el cliente
+        setShowSuccessModal(true); // Mostrar modal de éxito
+        // Puedes realizar alguna acción adicional después de crear el cliente
       } catch (error) {
         console.error("Error al crear el cliente:", error);
-        // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
+        // Puedes manejar el error aquí, como mostrar un mensaje de error al usuario
       }
     }
   };
@@ -134,8 +136,23 @@ const CreateClientForm = () => {
         </div>
         <button type="submit" className="button">Crear Cliente</button>
       </form>
+
+      {/* Modal de éxito */}
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cliente Creado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¡El cliente se ha creado correctamente!</p>
+          {/* Puedes agregar más contenido al cuerpo del modal si lo deseas */}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>Cerrar</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
 
 export default CreateClientForm;
+

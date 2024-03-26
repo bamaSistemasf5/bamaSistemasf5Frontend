@@ -1,0 +1,58 @@
+.large-font{
+    font-size: 12px;
+    overflow:hidden;
+  }
+  .pedidos{
+    overflow: hidden;
+  }
+
+  .albaranes{
+    width: 25vw;
+    font-size: 12px !important;
+  }
+
+  .edit-order{
+    width: 3vw;
+  }
+  .delete-order{
+    width: 3vw;
+  }
+
+ .estado-order{
+    font-size: 12px !important;
+    width: 5vw;
+  }
+
+  .total-order{
+    font-size: 12px !important;
+    width: 5vw;
+    height: 5vh;
+  }
+
+  .cif-order{
+    font-size: 12px !important;
+    width: 10vw;
+  }
+
+  .fpedido{
+    font-size: 12px !important;
+    width: 12vw;
+  }
+
+  .client-order{
+    font-size: 12px !important;
+    width: 12vw;
+  }
+
+  .npedido{
+    font-size: 12px !important;
+    width: 8vw;
+  }
+
+  .edit{
+    width: 2vw;
+  }
+
+  .delete{
+    width: 2vw;
+  }

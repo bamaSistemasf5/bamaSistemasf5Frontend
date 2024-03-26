@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import "./Invoices.css";
+import "./Invoices.css";
 import { Table, Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate (mejor que usenavigate) para manejar la redirección
+import jsPDF from "jspdf";
 
 const Invoices = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
-
-  const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredNotes] = useState([]);
+  const [invoices, setInvoices] = useState([]);
+  const [filteredInvoices, setFilteredInvoices] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     nro_factura: "",
     fecha: "",
@@ -18,8 +16,7 @@ const Invoices = () => {
     fecha_cobro: "",
     estado: "",
     base_imponible: "",
-    porc_iva: "",
-    importe_iva: "",
+    iva_total: "",
     total_factura: "",
     nro_pedido: "",
     pedido: "",
@@ -29,11 +26,11 @@ const Invoices = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/clients-view");
-        setClients(response.data);
-        setFilteredNotes(response.data);
+        const response = await axios.get("http://localhost:3000/invoices-view");
+        setInvoices(response.data);
+        setFilteredInvoices(response.data);
       } catch (error) {
-        console.error("Error fetching clients data:", error);
+        console.error("Error fetching invoices data:", error);
       }
     };
 
@@ -48,75 +45,75 @@ const Invoices = () => {
     }));
   };
 
-  const filterNotes = () => {
-    const filteredData = clients.filter((client) =>
-      Object.keys(searchInputs).every((key) =>
-        client[key].toLowerCase().includes(searchInputs[key].toLowerCase())
-      )
+  const filterInvoices = () => {
+    const filteredData = invoices.filter((invoice) =>
+      Object.keys(searchInputs).every((key) => {
+        const searchValue = searchInputs[key].toLowerCase();
+        const invoiceValue = typeof invoice[key] === 'string' ? invoice[key].toLowerCase() : '';
+        return invoiceValue.includes(searchValue);
+      })
     );
-    setFilteredNotes(filteredData);
+    setFilteredInvoices(filteredData);
   };
 
   useEffect(() => {
-    filterNotes();
+    filterInvoices();
   }, [searchInputs]);
 
   const [showModal, setShowModal] = useState(false);
-  const [noteToDelete, setnoteToDelete] = useState(null);
-  const [noteToEdit, setnoteToEdit] = useState(null);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-  const handleEditClick = (client) => {
-    console.log("Cliente seleccionado para editar:", client);
-    navigate(`/update-invoice/${client.cif_cliente}`, {
-      state: { noteData: client },
-    });
+  const handleShowModal = (invoice) => {
+    setSelectedInvoice(invoice);
     setShowModal(true);
   };
+  
+  const handleCloseModal = () => setShowModal(false);
 
-  const handleDeleteClick = (client) => {
-    setnoteToDelete(client);
-    setShowModal(true);
-  };
-
-  const handleConfirmAction = () => {
-    if (noteToDelete) {
-      axios
-        .delete(
-          `http://localhost:3000/clients-view/${noteToDelete.cif_cliente}`
-        )
-        .then((response) => {
-          const updatedClients = clients.filter(
-            (client) => client.cif_cliente !== noteToDelete.cif_cliente
-          );
-          setClients(updatedClients);
-          setFilteredNotes(updatedClients);
-        })
-        .catch((error) => {
-          console.error("Error deleting client:", error);
-        });
-    } else if (noteToEdit) {
-      // Redirige a la página de edición con los detalles del cliente
-      navigate(`/update-client/${noteToEdit.cif_cliente}`, {
-        noteData: noteToEdit,
-      });
+  const handleDownloadPDF = async (invoice) => {
+    try {
+      if (invoice) {
+        const pdf = new jsPDF();
+        let yPos = 10;
+        const lineHeight = 10;
+        pdf.text(`Número de factura: ${invoice.nro_factura}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Fecha: ${invoice.fecha}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Cliente: ${invoice.cliente}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`CIF Cliente: ${invoice.cif_cliente}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Fecha de vencimiento: ${invoice.fecha_vencimiento}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Fecha de cobro: ${invoice.fecha_cobro}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Estado: ${invoice.estado}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Base imponible: ${invoice.base_imponible}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Total IVA: ${invoice.iva_total}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Total factura: ${invoice.total_factura}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Número de pedido: ${invoice.nro_pedido}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Pedido: ${invoice.pedido}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.text(`Albarán: ${invoice.albaran}`, 10, yPos);
+        yPos += lineHeight;
+        pdf.save("invoice.pdf");
+      }
+    } catch (error) {
+      console.error("Error al generar y guardar el PDF:", error);
     }
-    setShowModal(false);
   };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setnoteToDelete(null);
-    setnoteToEdit(null);
-  };
-
-  const handleCreateClick = () => {
-    navigate("/create-invoice");
-  };
+  
 
   return (
     <div>
-      <h1 className="text-center mb-4">Facturas</h1>
-      <div>
+      <h1 className="text-center mb-4 facturas">Facturas</h1>
+      <div className="table-responsive">
         <Table striped bordered responsive hover>
           <thead>
             <tr>
@@ -124,211 +121,199 @@ const Invoices = () => {
                 <input
                   type="text"
                   name="dn-number"
-                  value={searchInputs.cif_cliente}
+                  value={searchInputs.nro_factura}
                   onChange={handleInputChange}
                   placeholder="Nro Factura"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
-                  type="text"
+                  type="date"
                   name="date"
-                  value={searchInputs.nombre}
+                  value={searchInputs.fecha}
                   onChange={handleInputChange}
                   placeholder="Fecha"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="client"
-                  value={searchInputs.direccion}
+                  name="cliente"
+                  value={searchInputs.cliente}
                   onChange={handleInputChange}
                   placeholder="Cliente"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="cif-client"
-                  value={searchInputs.poblacion}
+                  name="cif-cliente"
+                  value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
-                  placeholder="CIF cliente"
-                  className="half-size-font"
+                  placeholder="Cif Cliente"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
-                  type="date"
-                  name="check"
-                  value={searchInputs.provincia}
+                  type="text"
+                  name="fecha vencimiento"
+                  value={searchInputs.fecha_vencimiento}
                   onChange={handleInputChange}
                   placeholder="Fecha de vencimiento"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="date"
-                  name="check"
-                  value={searchInputs.provincia}
+                  name="fecha cobro"
+                  value={searchInputs.fecha_cobro}
                   onChange={handleInputChange}
                   placeholder="Fecha de cobro"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
-                  type="checkbox"
+                  type="text"
                   name="check"
-                  value={searchInputs.provincia}
+                  value={searchInputs.estado}
                   onChange={handleInputChange}
                   placeholder="Estado"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
-                  type="number"
-                  name="total"
-                  value={searchInputs.pais}
+                  type="text"
+                  name="base-imponible"
+                  value={searchInputs.base_imponible}
                   onChange={handleInputChange}
                   placeholder="Base imponible"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="number"
-                  name="invoiced"
-                  value={searchInputs.codigo_postal}
-                  onChange={handleInputChange}
-                  placeholder="% IVA"
-                  className="half-size-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="number"
-                  name="invoiced-nr"
-                  value={searchInputs.telefono}
+                  name="iva_total"
+                  value={searchInputs.iva_total}
                   onChange={handleInputChange}
                   placeholder="Total IVA"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="number"
-                  name="bill-nr"
-                  value={searchInputs.email}
+                  name="total-factura"
+                  value={searchInputs.total_factura}
                   onChange={handleInputChange}
                   placeholder="Total factura"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="check"
-                  value={searchInputs.provincia}
+                  name="nro-pedido"
+                  value={searchInputs.nro_pedido}
                   onChange={handleInputChange}
                   placeholder="Nro de pedido"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="check"
-                  value={searchInputs.provincia}
+                  name="pedido"
+                  value={searchInputs.pedido}
                   onChange={handleInputChange}
                   placeholder="Pedido"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
               <th>
                 <input
                   type="text"
-                  name="check"
-                  value={searchInputs.provincia}
+                  name="albaran"
+                  value={searchInputs.albaran}
                   onChange={handleInputChange}
                   placeholder="Albarán"
-                  className="half-size-font"
+                  className="large-font"
                 />
               </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => (
-              <tr key={client.cif_cliente}>
-                <td className="table-data">{client.cif_cliente}</td>
-                <td className="table-data">{client.nombre}</td>
-                <td className="table-data">{client.direccion}</td>
-                <td className="table-data">{client.poblacion}</td>
-                <td className="table-data">{client.provincia}</td>
-                <td className="table-data">{client.pais}</td>
-                <td className="table-data">{client.codigo_postal}</td>
-                <td className="table-data">{client.telefono}</td>
-                <td className="table-data">{client.email}</td>
-                <td className="table-data">
-                  <Button
-                    variant="warning"
-                    onClick={() => handleEditClick(client)}
-                  >
-                    🖋️
-                  </Button>
-                </td>
-                <td className="table-data">
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDeleteClick(client)}
-                  >
-                    🗑️
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {noteToDelete && (
-            <p>
-              ¿Seguro que quieres eliminar al cliente{" "}
-              {noteToDelete.cif_cliente} {noteToDelete.nombre}?
-            </p>
-          )}
-          {noteToEdit && (
-            <p>
-              ¿Seguro que quieres editar al cliente {noteToEdit.cif_cliente}{" "}
-              {noteToEdit.nombre}?
-            </p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleConfirmAction}>
-            Confirmar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="text-center">
-        <Button variant="success" onClick={handleCreateClick}>
-          Crear Nueva Factura
-        </Button>
-      </div>
-    </div>
-  );
+            {filteredInvoices.map((invoice) => (
+             
+             <tr key={invoice.nro_factura} className="datos">
+             <td className="table-data">{invoice.nro_factura}</td>
+             <td className="table-data">{invoice.fecha}</td>
+             <td className="table-data">{invoice.cliente}</td>
+             <td className="table-data">{invoice.cif_cliente}</td>
+             <td className="table-data">{invoice.fecha_vencimiento}</td>
+             <td className="table-data">{invoice.fecha_cobro}</td>
+             <td className="table-data">{invoice.estado}</td>
+             <td className="table-data">{invoice.base_imponible}</td>
+             <td className="table-data">{invoice.iva_total}</td>
+             <td className="table-data">{invoice.total_factura}</td>
+             <td className="table-data">{invoice.nro_pedido}</td>
+             <td className="table-data">{invoice.pedido}</td>
+             <td className="table-data">{invoice.albaran}</td>
+             <td className="table-data">
+               <Button
+                 variant="secondary"
+                 onClick={() => handleShowModal(invoice)}
+               >
+                 Ver Detalle
+               </Button>
+             </td>
+           </tr>
+         ))}
+       </tbody>
+     </Table>
+   </div>
+   <Modal show={showModal} onHide={handleCloseModal}>
+     <Modal.Header closeButton>
+       <Modal.Title>DETALLE DE FACTURA</Modal.Title>
+     </Modal.Header>
+     <Modal.Body>
+       {selectedInvoice && (
+         <div>
+           <p>Número de factura: {selectedInvoice.nro_factura}</p>
+           <p>Fecha: {selectedInvoice.fecha}</p>
+           <p>Cliente: {selectedInvoice.cliente}</p>
+           <p>CIF Cliente: {selectedInvoice.cif_cliente}</p>
+           <p>Fecha de vencimiento: {selectedInvoice.fecha_vencimiento}</p>
+           <p>Fecha de cobro: {selectedInvoice.fecha_cobro}</p>
+           <p>Estado: {selectedInvoice.estado}</p>
+           <p>Base imponible: {selectedInvoice.base_imponible}</p>
+           <p>Total IVA: {selectedInvoice.iva_total}</p>
+           <p>Total factura: {selectedInvoice.total_factura}</p>
+           <p>Número de pedido: {selectedInvoice.nro_pedido}</p>
+           <p>Pedido: {selectedInvoice.pedido}</p>
+           <p>Albarán: {selectedInvoice.albaran}</p>
+         </div>
+       )}
+     </Modal.Body>
+     <Modal.Footer>
+       <Button variant="primary" onClick={() => handleDownloadPDF(selectedInvoice)}>
+         Descargar PDF
+       </Button>
+       <Button variant="secondary" onClick={handleCloseModal}>
+         Cancelar
+       </Button>
+     </Modal.Footer>
+   </Modal>
+ </div>
+);
 };
 
-export default Invoices
+export default Invoices;
