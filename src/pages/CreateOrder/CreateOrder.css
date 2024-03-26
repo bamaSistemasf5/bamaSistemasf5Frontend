@@ -1,0 +1,27 @@
+
+.crear-header{
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
+}
+
+.formulario-crear-order{
+  justify-content: center;
+  margin-left: 45vw;
+  align-items: center;
+}
+
+.pdf-create-order{
+  background: green;
+  margin-bottom: 5vh;
+  color: #fff;
+  margin-left: 20vw;
+}
+
+.create-albaran-order{
+  margin-right: 20vw;
+  height: 5vh;
+  color: #fff;
+  background: #ec660d;
+}

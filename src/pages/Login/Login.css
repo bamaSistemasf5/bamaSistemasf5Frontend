@@ -1,0 +1,76 @@
+.form-group {
+    margin-bottom: 1rem;
+    width: 20%;
+  }
+  
+  .form-group label {
+    margin-right: 0.5rem;
+  }
+  
+  .form-group input {
+    border-radius: 4px;
+    margin: inherit;
+  }
+  
+  .btn-iniciar {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  background-color: #EC660D !important;
+    color: #fff !important;
+    border: none;
+    margin-bottom: 10%;
+  }
+
+  .form-group label{
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .acceso{
+    color: #E77219;
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  .img-container {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: 150px; /* Altura fija */
+    overflow: hidden; /* Oculta cualquier contenido que sobresalga de los límites */
+  }
+  
+  .img {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: auto; /* Mantiene la proporción de la imagen */
+  }
+
+  .login-container {
+    display: flex;
+    justify-content: center;
+    margin-left: 270px;
+    width: 80%;
+  }
+
+  .soporte{
+    margin-right: 151px;
+    margin-top: 4vh;
+    width: 19vw;
+  }
+  form{
+    width: 605px;
+  }
+  .contenido{
+    width: 40vh;
+    overflow-x: hidden;
+    width: 19vw;
+  }
+  .icono-telf{
+    display: flex;
+    gap: 1vw;
+  }
+  .telefono{
+   width: 2vw; 
+  }
+  .icono-mesj{
+    display: flex;
+    gap: 1vw;
+  }

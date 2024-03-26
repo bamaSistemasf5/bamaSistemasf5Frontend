@@ -1,0 +1,115 @@
+.large-font{
+  font-size: 12px;
+  overflow:hidden;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.custom-container {
+  margin: 2em;
+  max-width: 96%; /* Reducir el margen lateral a la mitad */
+}
+.client{
+  max-width: 30px;
+}
+.crear-cliente{
+  background: #EC550D;
+  margin-bottom: 2vh;
+}
+input {
+  width: 80%;
+  display: flex;
+  margin: auto;
+  padding-left: 2%;
+}
+
+.buttons-title {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  font-size: 0.8em;
+}
+
+td {
+  font-size: 12px !important;
+}
+tr:hover {
+  color: #EC550D!important;
+}
+
+
+
+/* Estilos para dispositivos móviles (hasta 767px) */
+@media (max-width: 767px) {
+  th {
+    max-width: 30px;
+  }
+
+  .table-responsive th,
+  .table-responsive td {
+    font-size: 0.001em;
+    max-width: 20px;
+    -webkit-overflow-scrolling: touch; /* Propiedad para mejorar el scroll en iOS */
+  }
+  .table-responsive th {
+    font-size: 12px;
+  }
+  .buttons-title {
+    font-size: 0.4em;
+  }
+
+  .table-responsive td {
+    font-size: 8px;
+  }
+
+  .e-d-buttons {
+    height: 10px;
+    width: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5px;
+  }
+}
+
+/* Estilos para tablets (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .Container {
+    max-width: 100%;
+    height: 100%;
+  }
+  table {
+    height: 70vh;
+  }
+  th {
+    max-width: 30px;
+  }
+  .buttons-title {
+    font-size: 0.4em;
+  }
+  .table-data {
+    font-size: 2px;
+    max-width: 50px;
+    -webkit-overflow-scrolling: touch; /* Propiedad para mejorar el scroll en iOS */
+  }
+  .table-responsive th,
+  .table-responsive td {
+    font-size: 0.001em;
+  }
+  .table-responsive th {
+    font-size: 12px;
+  }
+  .table-responsive td {
+    font-size: 8px;
+  }
+  .e-d-buttons {
+    width: 4px;
+    margin: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+  }
+}

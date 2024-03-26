@@ -1,0 +1,33 @@
+
+.notes-header{
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  margin-right: 10vw;
+}
+
+.formulario-crear-notes{
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.pdf-create-notes{
+  background: green !important;
+  margin-bottom: 5vh;
+  color: #fff;
+  margin-left: 0vw;
+}
+.enviar-note{
+  margin-right: 12vw;
+  margin-left: 0vw;
+}
+
+.form-notes{
+  overflow: hidden;
+  margin-right: 230vw;
+  width: 50vw;
+
+}

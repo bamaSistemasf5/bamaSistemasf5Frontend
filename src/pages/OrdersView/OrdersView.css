@@ -1,0 +1,101 @@
+.large-font{
+    font-size: 12px;
+    overflow:hidden;
+  }
+  .pedidos{
+    overflow: hidden;
+  }
+
+  .albaranes{
+    width: 25vw;
+    font-size: 12px !important;
+  }
+
+  .edit-order{
+    width: 3vw;
+  }
+  .delete-order{
+    width: 3vw;
+  }
+
+ .estado-order{
+    font-size: 12px !important;
+    width: 5vw;
+  }
+
+  .total-order{
+    font-size: 12px !important;
+    width: 5vw;
+    height: 5vh;
+  }
+
+  .cif-order{
+    font-size: 12px !important;
+    width: 10vw;
+  }
+
+  .fpedido{
+    font-size: 12px !important;
+    width: 12vw;
+  }
+
+  .client-order{
+    font-size: 12px !important;
+    width: 12vw;
+  }
+
+  .npedido{
+    font-size: 12px !important;
+    width: 8vw;
+  }
+
+  .edit{
+    width: 2vw;
+  }
+
+  .delete{
+    width: 2vw;
+  }
+  
+  .crear-order{
+    margin-bottom: 2vh;
+  }
+
+  /* Estilos para el fondo oscuro detrás del modal */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5); /* Ajusta el nivel de opacidad según lo desees */
+}
+
+/* Estilos para el contenido del modal */
+.modal-content {
+  background-color: white; /* Color de fondo del modal */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+/* Estilos para el botón de cerrar en el modal */
+.modal-header .close {
+  color: black; /* Color del icono de cierre */
+  font-size: 1.5rem; /* Tamaño del icono */
+}
+
+/* Estilos para el título del modal */
+.modal-title {
+  font-size: 1.5rem; /* Tamaño del título */
+}
+
+/* Estilos para el cuerpo del modal */
+.modal-body {
+  padding: 20px; /* Espaciado interior */
+}
+
+/* Estilos para el pie del modal */
+.modal-footer {
+  padding: 20px; /* Espaciado interior */
+  justify-content: center; /* Centra los botones */
+}
+
+/* Estilos para los botones del modal */
+.modal-footer .btn {
+  margin-left: 10px; /* Espaciado entre botones */
+}
