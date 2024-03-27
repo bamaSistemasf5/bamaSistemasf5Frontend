@@ -49,6 +49,7 @@ const DashboardOrdersTable = () => {
       <Box
         m="40px 0 0 0"
         height="75vh"
+        width="80vw"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
