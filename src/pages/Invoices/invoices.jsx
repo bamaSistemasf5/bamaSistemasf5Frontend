@@ -12,16 +12,15 @@ const Invoices = () => {
   const [filteredInvoices, setFilteredInvoices] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
     nro_factura: "",
-    fecha: "",
+    fecha: null,
     cliente: "",
     cif_cliente: "",
-    fecha_vencimiento: "",
-    fecha_cobro: "",
+    fecha_vencimiento: null,
     estado: "",
     base_imponible: "",
+    porcentaje_iva: "",
     iva_total: "",
     total_factura: "",
-    nro_pedido: "",
     pedido: "",
     albaran: ""
   });
@@ -46,53 +45,50 @@ const Invoices = () => {
   }, []);
 
   const handleSortClick = (column) => {
-    setSortBy({
+    setSortBy(prevState => ({
       column: column,
       ascending: sortBy.column === column ? !sortBy.ascending : true,
-    });
+    }));
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSearchInputs((prevState) => ({
+    setSearchInputs(prevState => ({
       ...prevState,
       [name]: value,
     }));
   };
   
-  const handleDateChange = (date) => {
-    setSearchInputs((prevState) => ({
+  const handleDateChange = (date, name) => {
+    setSearchInputs(prevState => ({
       ...prevState,
-      fecha: date,
+      [name]: date,
     }));
   };
-  
 
   const filterInvoices = () => {
-    const filteredData = invoices.filter((invoice) => {
-      // Verificar si el nombre del cliente coincide (en minúsculas para hacer la comparación sin distinción entre mayúsculas y minúsculas)
+    let filteredData = invoices.filter((invoice) => {
       const matchesCliente = invoice.cliente.toLowerCase().includes(searchInputs.cliente.toLowerCase());
-  
-      // Verificar si el CIF del cliente coincide (en minúsculas para hacer la comparación sin distinción entre mayúsculas y minúsculas)
       const matchesCifCliente = invoice.cif_cliente.toLowerCase().includes(searchInputs.cif_cliente.toLowerCase());
-  
-      // Verificar si la fecha de la factura coincide
-      const matchesFecha = searchInputs.fecha ? invoice.fecha === searchInputs.fecha : true;
-  
-      // Verificar si la fecha de vencimiento coincide
-      const matchesFechaVencimiento = searchInputs.fecha_vencimiento ? invoice.fecha_vencimiento === searchInputs.fecha_vencimiento : true;
-  
-      // Resto de las condiciones...
+      const matchesFecha = !searchInputs.fecha || format(new Date(invoice.fecha), 'yyyy-MM-dd') === format(new Date(searchInputs.fecha), 'yyyy-MM-dd');
+      const matchesFechaVencimiento = !searchInputs.fecha_vencimiento || format(new Date(invoice.fecha_vencimiento), 'yyyy-MM-dd') === format(new Date(searchInputs.fecha_vencimiento), 'yyyy-MM-dd');
       return matchesCliente && matchesCifCliente && matchesFecha && matchesFechaVencimiento;
     });
-  
+
+    filteredData.sort((a, b) => {
+      if (sortBy.column === "albaran") {
+        return sortBy.ascending ? a.albaran.localeCompare(b.albaran) : b.albaran.localeCompare(a.albaran);
+      } else {
+        return sortBy.ascending ? a[sortBy.column] - b[sortBy.column] : b[sortBy.column] - a[sortBy.column];
+      }
+    });
+
     setFilteredInvoices(filteredData);
   };
-  // 
 
   useEffect(() => {
     filterInvoices();
-  }, [searchInputs]);
+  }, [searchInputs, sortBy]);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -124,11 +120,11 @@ const Invoices = () => {
         yPos += lineHeight;
         pdf.text(`Base imponible: ${invoice.base_imponible}`, 10, yPos);
         yPos += lineHeight;
+        pdf.text(`% IVA: ${invoice.porcentaje_iva}`, 10, yPos);
+        yPos += lineHeight;
         pdf.text(`Total IVA: ${invoice.iva_total}`, 10, yPos);
         yPos += lineHeight;
         pdf.text(`Total factura: ${invoice.total_factura}`, 10, yPos);
-        yPos += lineHeight;
-        pdf.text(`Número de pedido: ${invoice.nro_pedido}`, 10, yPos);
         yPos += lineHeight;
         pdf.text(`Pedido: ${invoice.pedido}`, 10, yPos);
         yPos += lineHeight;
@@ -151,7 +147,7 @@ const Invoices = () => {
               <th>
                 <input
                   type="text"
-                  name="dn-number"
+                  name="nro_factura"
                   value={searchInputs.nro_factura}
                   onChange={handleInputChange}
                   placeholder="Nro Factura"
@@ -170,7 +166,7 @@ const Invoices = () => {
               <th>
                 <input
                   type="text"
-                  name="cliente" // Cambia el nombre del campo a "cliente"
+                  name="cliente" 
                   value={searchInputs.cliente}
                   onChange={handleInputChange}
                   placeholder="Cliente"
@@ -180,7 +176,7 @@ const Invoices = () => {
               <th>
                 <input
                   type="text"
-                  name="cif_cliente" // Cambia el nombre del campo a "cif_cliente"
+                  name="cif_cliente" 
                   value={searchInputs.cif_cliente}
                   onChange={handleInputChange}
                   placeholder="Cif Cliente"
@@ -188,13 +184,13 @@ const Invoices = () => {
                 />
               </th>
               <th>
-                <DatePicker
-                  selected={searchInputs.fecha_vencimiento ? new Date(searchInputs.fecha_vencimiento) : null}
-                  onChange={date => setSearchInputs(prevState => ({ ...prevState, fecha_vencimiento: date.toISOString().split('T')[0] }))}
-                  placeholderText="Fecha de vencimiento"
-                  className="large-font"
-                  dateFormat="yyyy-MM-dd"
-                />
+              <DatePicker
+                 selected={searchInputs.fecha_vencimiento ? new Date(searchInputs.fecha_vencimiento) : null}
+                 onChange={(date) => handleDateChange(date, 'fecha_vencimiento')}
+                 placeholderText="Fecha de vencimiento"
+                 className="large-font"
+                 dateFormat="yyyy-MM-dd"
+              />
               </th>
               <th>
                 <input
@@ -219,6 +215,16 @@ const Invoices = () => {
               <th>
                 <input
                   type="number"
+                  name="% IVA"
+                  value={searchInputs.porcentaje_iva}
+                  onChange={handleInputChange}
+                  placeholder="% IVA"
+                  className="large-font"
+                />
+              </th>
+              <th>
+                <input
+                  type="number"
                   name="iva_total"
                   value={searchInputs.iva_total}
                   onChange={handleInputChange}
@@ -237,16 +243,6 @@ const Invoices = () => {
     )}
   </span>
 </th>
-              <th>
-                <input
-                  type="text"
-                  name="nro-pedido"
-                  value={searchInputs.nro_pedido}
-                  onChange={handleInputChange}
-                  placeholder="Nro-pedido"
-                  className="large-font"
-                />
-              </th>
               <th>
                 <input
                   type="text"
@@ -280,9 +276,9 @@ const Invoices = () => {
                 <td className="table-data">{invoice.fecha_vencimiento}</td>
                 <td className="table-data">{invoice.estado}</td>
                 <td className="table-data">{invoice.base_imponible}</td>
+                <td className="table-data">{invoice.porcentaje_iva}</td>
                 <td className="table-data">{invoice.iva_total}</td>
                 <td className="table-data">{invoice.total_factura}</td>
-                <td className="table-data">{invoice.nro_pedido}</td>
                 <td className="table-data">{invoice.pedido}</td>
                 <td className="table-data">{invoice.albaran}</td>
                 <td className="table-data">
@@ -312,9 +308,9 @@ const Invoices = () => {
               <p>Fecha de vencimiento: {selectedInvoice.fecha_vencimiento}</p>
               <p>Estado: {selectedInvoice.estado}</p>
               <p>Base imponible: {selectedInvoice.base_imponible}</p>
+              <p>% IVA: {selectedInvoice.porcentaje_iva}</p>
               <p>Total IVA: {selectedInvoice.iva_total}</p>
               <p>Total factura: {selectedInvoice.total_factura}</p>
-              <p>Número de pedido: {selectedInvoice.nro_pedido}</p>
               <p>Pedido: {selectedInvoice.pedido}</p>
               <p>Albarán: {selectedInvoice.albaran}</p>
             </div>

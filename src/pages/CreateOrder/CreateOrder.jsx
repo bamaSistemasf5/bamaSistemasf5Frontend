@@ -5,8 +5,11 @@ import jsPDF from "jspdf";
 import { RiDownload2Line, RiFileTextLine } from 'react-icons/ri';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
+
 
 const CreateOrder = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     cif_cliente: "",
     base_imponible: "",
@@ -78,6 +81,10 @@ const CreateOrder = () => {
     }
   };
 
+  const handleCreateInvoiceClick = () => {
+    navigate("/create-invoice");
+  };
+
   const handleClosePedidoModal = () => {
     setShowPedidoModal(false);
   };
@@ -131,6 +138,7 @@ const CreateOrder = () => {
       </form>
       <div className="button-group">
         <button onClick={generatePDF} className="pdf-create-order"><RiDownload2Line /> Generar PDF</button>
+        <button onClick={handleCreateInvoiceClick} className="create-invoice"><RiFileTextLine />Crear Factura</button>
         <button onClick={generateAlbaran} className="create-albaran-order"><RiFileTextLine />Generar Albarán</button>
       </div>
 
@@ -156,46 +164,3 @@ const CreateOrder = () => {
 };
 
 export default CreateOrder;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

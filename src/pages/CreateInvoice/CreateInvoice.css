@@ -1,0 +1,81 @@
+.edit-profile-container {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+   
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    width: 35%;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .button {
+    background-color: #EC660D !important;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 10%;
+    height: 40%;
+    margin-bottom: 10vh;
+    display: flex;
+    margin-left: 35vw;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .button-cancel {
+    background-color: #f44336;
+  }
+  
+  .h2-client-create{
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 2vh;
+    margin-bottom: 12vh;
+  }
+
+  .formulario-create{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Crea dos columnas de igual anchura */
+    width: 204vh;
+    overflow-x: hidden;
+  }
+  
+  .create-container{
+    overflow: hidden;
+  }
+  
+  /* responsive */
+
+  @media only screen and (max-width: 768px) {
+    .formulario-create {
+      grid-template-columns: 3fr; /* Cambiar a una sola columna en dispositivos móviles */
+      width: auto; /* Ancho automático para adaptarse al contenido */
+    }
+  }
+  
