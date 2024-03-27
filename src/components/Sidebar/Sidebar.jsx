@@ -43,7 +43,7 @@ function Sidebar() {
                         <hr className='text-white d-none d-sm-block' />
                         <ul className="nav nav-pills flex-column mt-2 mt-sm-0" id='parentM'>
                             <li className="nav-item  my-1 py-2 py-sm-0">
-                                <a href="/Panel-Control" className="nav-link text-white text-center text-sm-start" aria-current="page">
+                                <a href="/panel-control" className="nav-link text-white text-center text-sm-start" aria-current="page">
                                     <i className='bi bi-house'></i>
                                     <span className='ms-2 d-none d-sm-inline'>Panel Control</span>
                                 </a>

@@ -4,6 +4,7 @@ import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../../pages/Dashboard/DashboardTheme.js";
 import { format } from "date-fns";
 import axios from "axios";
+import React from "react";
 
 const DashboardBarChart = ({ isDashboard = false }) => {
   const theme = useTheme();
