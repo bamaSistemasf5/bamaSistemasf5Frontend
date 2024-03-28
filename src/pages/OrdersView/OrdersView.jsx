@@ -204,13 +204,7 @@ const OrdersView = () => {
     onChange={handleDateChange}
     placeholderText="Seleccionar fecha"
     dateFormat="yyyy-MM-dd"
-    // minDate={new Date()} // Comenta esta línea para permitir fechas pasadas
-    // maxDate={new Date()} // Si deseas permitir solo fechas pasadas
-    // locale="es" // Cambiar el idioma a español
   />
-  {/* {sortBy.column === "fecha_pedido" && (
-    <span>{sortBy.ascending ? "↓" : "↑"}</span>
-  )} */}
 </th>
 
 
