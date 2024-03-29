@@ -104,9 +104,11 @@ const CreateDelNotes = () => {
           <input type="text" name="firmado" value={formData.firmado} onChange={handleInputChange} className="form-input" />
           {errors.firmado && <span>{errors.firmado}</span>}
         </div>
-       
+       <div className="botones">
         <button type="submit" className="button enviar-note">Enviar Albarán</button>
         <button type="button" onClick={generatePDF} className="button pdf-create-notes">Descargar Albarán</button>
+
+       </div>
       </form>
       {showModal && (
         <div className="modal">

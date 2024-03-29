@@ -97,7 +97,7 @@ const ClientsView = () => {
 
   return (
     <div>
-      <h1 className="text-center mb-4">Clientes</h1>
+      <h1 className="text-center mb-4 header-client">Clientes</h1>
       <div>
         <Table striped bordered responsive hover>
           <thead>

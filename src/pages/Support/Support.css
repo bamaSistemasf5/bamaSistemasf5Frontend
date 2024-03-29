@@ -4,7 +4,12 @@
     padding-top: 2em;
     padding-right: 6em;
     margin-bottom: 3em;
+    width: 80vw;
    
+}
+
+.header-support{
+  overflow: hidden;
 }
 .btn-support {
     padding: 0.5rem 1rem;

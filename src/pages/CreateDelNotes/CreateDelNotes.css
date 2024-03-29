@@ -31,3 +31,7 @@
   width: 50vw;
 
 }
+
+.botones{
+  display: flex;
+}

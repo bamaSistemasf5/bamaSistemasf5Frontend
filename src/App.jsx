@@ -16,6 +16,7 @@ import UpdateOrder from "./pages/UpdateOrder/UpdateOrder";
 import PanelControl from "./pages/PanelControl/PanelControl";
 import Support from "./pages/Support/Support.jsx";
 import CreateInvoiceForm from "./pages/CreateInvoice/CreateInvoice.jsx";
+import CreateDelNotes from "./pages/CreateDelNotes/CreateDelNotes";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -72,7 +73,7 @@ function App() {
         <Route path="/order/update-order/:id" element={<UpdateOrder />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/invoices-view" element={<Invoices />} />
-        <Route path="/create-invoice/" element={<CreateInvoiceForm/>} />
+        <Route path="/create-invoice" element={<CreateInvoiceForm/>} />
         <Route path="/control-panel" element={<PanelControl />} />
         <Route path="/support" element={<Support />} />
       </Routes>

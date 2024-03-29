@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Invoices.css";
-import { Table, Button, Modal } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import jsPDF from "jspdf";
@@ -89,16 +89,6 @@ const Invoices = () => {
   useEffect(() => {
     filterInvoices();
   }, [searchInputs, sortBy]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
-
-  const handleShowModal = (invoice) => {
-    setSelectedInvoice(invoice);
-    setShowModal(true);
-  };
-  
-  const handleCloseModal = () => setShowModal(false);
 
   const handleDownloadPDF = async (invoice) => {
     try {
@@ -210,123 +200,93 @@ const Invoices = () => {
                   onChange={handleInputChange}
                   placeholder="Base imponible"
                   className="large-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="number"
-                  name="% IVA"
-                  value={searchInputs.porcentaje_iva}
-                  onChange={handleInputChange}
-                  placeholder="% IVA"
-                  className="large-font"
-                />
-              </th>
-              <th>
-                <input
-                  type="number"
-                  name="iva_total"
-                  value={searchInputs.iva_total}
-                  onChange={handleInputChange}
-                  placeholder="Total IVA"
-                  className="large-font"
-                />
-              </th>
-              <th onClick={() => handleSortClick("total_factura")}>
-  <span
-    onClick={() => handleSortClick("total_factura")}
-    style={{ cursor: 'pointer' }}
-  >
-    Total Factura
-    {sortBy.column === "total_factura" && (
-      <span>{sortBy.ascending ? "↓" : "↑"}</span>
-    )}
-  </span>
-</th>
-              <th>
-                <input
-                  type="text"
-                  name="pedido"
-                  value={searchInputs.pedido}
-                  onChange={handleInputChange}
-                  placeholder="Pedido"
-                  className="large-font"
-                />
-              </th>
-              <th onClick={() => handleSortClick("albaran")}>
-  <span
-    onClick={() => handleSortClick("fecha_pedido")}
-    style={{ cursor: 'pointer' }}
-  >
-    Albaran
-    {sortBy.column === "albaran" && (
-      <span>{sortBy.ascending ? "↓" : "↑"}</span>
-    )}
-  </span>
-</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredInvoices.map((invoice) => (
-              <tr key={invoice.nro_factura} className="datos">
-                <td className="table-data">{invoice.nro_factura}</td>
-                <td className="table-data">{invoice.fecha}</td>
-                <td className="table-data">{invoice.cliente}</td>
-                <td className="table-data">{invoice.cif_cliente}</td>
-                <td className="table-data">{invoice.fecha_vencimiento}</td>
-                <td className="table-data">{invoice.estado}</td>
-                <td className="table-data">{invoice.base_imponible}</td>
-                <td className="table-data">{invoice.porcentaje_iva}</td>
-                <td className="table-data">{invoice.iva_total}</td>
-                <td className="table-data">{invoice.total_factura}</td>
-                <td className="table-data">{invoice.pedido}</td>
-                <td className="table-data">{invoice.albaran}</td>
-                <td className="table-data">
-                  <Button
-                    variant="secondary"
-                    onClick={() => handleShowModal(invoice)}
+                  />
+                </th>
+                <th>
+                  <input
+                    type="number"
+                    name="% IVA"
+                    value={searchInputs.porcentaje_iva}
+                    onChange={handleInputChange}
+                    placeholder="% IVA"
+                    className="large-font"
+                  />
+                </th>
+                <th>
+                  <input
+                    type="number"
+                    name="iva_total"
+                    value={searchInputs.iva_total}
+                    onChange={handleInputChange}
+                    placeholder="Total IVA"
+                    className="large-font"
+                  />
+                </th>
+                <th onClick={() => handleSortClick("total_factura")}>
+                  <span
+                    onClick={() => handleSortClick("total_factura")}
+                    style={{ cursor: 'pointer' }}
                   >
-                    Ver Detalle
-                  </Button>
-                </td>
+                    Total Factura
+                    {sortBy.column === "total_factura" && (
+                      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+                    )}
+                  </span>
+                </th>
+                <th>
+                  <input
+                    type="text"
+                    name="pedido"
+                    value={searchInputs.pedido}
+                    onChange={handleInputChange}
+                    placeholder="Pedido"
+                    className="large-font"
+                  />
+                </th>
+                <th onClick={() => handleSortClick("albaran")}>
+                  <span
+                    onClick={() => handleSortClick("fecha_pedido")}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Albaran
+                    {sortBy.column === "albaran" && (
+                      <span>{sortBy.ascending ? "↓" : "↑"}</span>
+                    )}
+                  </span>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {filteredInvoices.map((invoice) => (
+                <tr key={invoice.nro_factura} className="datos">
+                  <td className="table-data">{invoice.nro_factura}</td>
+                  <td className="table-data">{invoice.fecha}</td>
+                  <td className="table-data">{invoice.cliente}</td>
+                  <td className="table-data">{invoice.cif_cliente}</td>
+                  <td className="table-data">{invoice.fecha_vencimiento}</td>
+                  <td className="table-data">{invoice.estado}</td>
+                  <td className="table-data">{invoice.base_imponible}</td>
+                  <td className="table-data">{invoice.porcentaje_iva}</td>
+                  <td className="table-data">{invoice.iva_total}</td>
+                  <td className="table-data">{invoice.total_factura}</td>
+                  <td className="table-data">{invoice.pedido}</td>
+                  <td className="table-data">{invoice.albaran}</td>
+                  <td className="table-data">
+                    <Button
+                      variant="secondary"
+                      onClick={() => handleDownloadPDF(invoice)}
+                    >
+                      Descargar PDF
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>DETALLE DE FACTURA</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedInvoice && (
-            <div>
-              <p>Número de factura: {selectedInvoice.nro_factura}</p>
-              <p>Fecha: {selectedInvoice.fecha}</p>
-              <p>Cliente: {selectedInvoice.cliente}</p>
-              <p>CIF Cliente: {selectedInvoice.cif_cliente}</p>
-              <p>Fecha de vencimiento: {selectedInvoice.fecha_vencimiento}</p>
-              <p>Estado: {selectedInvoice.estado}</p>
-              <p>Base imponible: {selectedInvoice.base_imponible}</p>
-              <p>% IVA: {selectedInvoice.porcentaje_iva}</p>
-              <p>Total IVA: {selectedInvoice.iva_total}</p>
-              <p>Total factura: {selectedInvoice.total_factura}</p>
-              <p>Pedido: {selectedInvoice.pedido}</p>
-              <p>Albarán: {selectedInvoice.albaran}</p>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => handleDownloadPDF(selectedInvoice)}>
-            Descargar PDF
-          </Button>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
-  );
-};
-
-export default Invoices;
+    );
+  };
+  
+  export default Invoices;
+  

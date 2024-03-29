@@ -2,6 +2,9 @@
   font-size: 12px;
   overflow:hidden;
 }
+.header-client{
+  overflow: hidden;
+}
 
 .text-center {
   text-align: center;

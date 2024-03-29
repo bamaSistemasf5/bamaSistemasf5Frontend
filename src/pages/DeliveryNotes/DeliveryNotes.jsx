@@ -15,7 +15,7 @@ const DeliveryNotes = () => {
   const [deliveries, setDeliveries] = useState([]);
   const [filteredDeliveries, setFilteredDeliveries] = useState([]);
   const [searchInputs, setSearchInputs] = useState({
-    albaran: "",
+    no_albaran: "",
     fecha_albaran: null, 
     cliente: "",
     cif_cliente: "",
@@ -27,7 +27,7 @@ const DeliveryNotes = () => {
   });
 
   const [sortBy, setSortBy] = useState({
-    column: "albaran",
+    column: "no_albaran",
     ascending: true,
   });
 
@@ -61,7 +61,7 @@ const DeliveryNotes = () => {
         // Definir la posición inicial del texto
         let yPos = 10;
         // Agregar cada elemento de texto con una posición Y incrementada
-        pdf.text(`Albarán: ${delivery.albaran}`, 10, yPos);
+        pdf.text(`No_Albarán: ${delivery.no_albaran}`, 10, yPos);
         yPos += 10; // Incrementar la posición Y
         pdf.text(`Fecha Albaran: ${delivery.fecha_albaran}`, 10, yPos);
         yPos += 10; // Incrementar la posición Y
@@ -217,13 +217,13 @@ const DeliveryNotes = () => {
           <Table striped bordered responsive hover>
             <thead>
               <tr>
-                <th onClick={() => handleSortClick("albaran")}>
+                <th onClick={() => handleSortClick("no_albaran")}>
                   <span
-                    onClick={() => handleSortClick("albaran")}
+                    onClick={() => handleSortClick("no_albaran")}
                     style={{ cursor: 'pointer' }}
                     >
                     Nº Albarán
-                    {sortBy.column === "albaran" && (
+                    {sortBy.column === "no_albaran" && (
                       <span>{sortBy.ascending ? "↓" : "↑"}</span>
                     )}
                   </span>
@@ -294,7 +294,7 @@ const DeliveryNotes = () => {
             <tbody>
               {Array.isArray(filteredDeliveries) && filteredDeliveries.map((delivery_notes) => (
                 <tr key={delivery_notes.albaran}>
-                  <td className="table-data npedido">{delivery_notes.albaran}</td>
+                  <td className="table-data npedido">{delivery_notes.no_albaran}</td>
                   <td className="table-data fecha-delivery">{delivery_notes.fecha_albaran}</td>
                   <td className="table-data cliente-delivery">{delivery_notes.cliente}</td>
                   <td className="table-data cif-delivery">{delivery_notes.cif_cliente}</td>

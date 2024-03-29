@@ -29,7 +29,7 @@ const Support = ({ currentUser }) => {
   return (
     <div className="support-container">
       <div className="content">
-        <h2 className='access'>Contacta con Soporte Técnico</h2>
+        <h2 className='access header-support'>Contacta con Soporte Técnico</h2>
         {error && <p className="error-message">{error}</p>}
         <Form onSubmit={handleSubmit} className='form'>
           <Form.Group controlId="formMessage">
