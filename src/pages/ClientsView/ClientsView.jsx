@@ -24,7 +24,7 @@ const ClientsView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/client/clients");
+        const response = await axios.get("https://backbamaf5-1.onrender.com/client/clients");
         setClients(response.data);
         setFilteredClients(response.data);
       } catch (error) {

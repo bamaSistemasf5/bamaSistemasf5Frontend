@@ -33,7 +33,7 @@ const OrdersView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/order/orders");
+        const response = await axios.get("https://backbamaf5-1.onrender.com/order/orders");
         setOrders(response.data);
         setFilteredOrders(response.data);
       } catch (error) {
